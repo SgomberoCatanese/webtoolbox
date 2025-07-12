@@ -37,6 +37,22 @@
       margin-top: 1rem;
       text-align: center;
     }
+    @media (max-width: 650px) {
+  #canvasContainer {
+    max-width: 100%;
+    margin: 1rem auto;
+  }
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+  #selectionBox {
+    /* Rimane uguale */
+  }
+  #cropControls {
+    margin-top: 1rem;
+  }
+    }
   </style>
 </head>
 <body>
@@ -203,6 +219,83 @@
         `;
       }, 'image/png');
     });
+    // Aggiungi all'inizio
+let ongoingTouch = null;
+
+function getEventPos(e) {
+  if (e.touches && e.touches.length > 0) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top,
+    };
+  } else if (e.clientX !== undefined && e.clientY !== undefined) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  }
+  return null;
+}
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const pos = getEventPos(e);
+  if (!pos) return;
+  isDragging = true;
+  startX = pos.x;
+  startY = pos.y;
+  selectionBox.style.left = startX + 'px';
+  selectionBox.style.top = startY + 'px';
+  selectionBox.style.width = '0px';
+  selectionBox.style.height = '0px';
+  selectionBox.style.display = 'block';
+});
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!isDragging) return;
+  const pos = getEventPos(e);
+  if (!pos) return;
+  currentX = pos.x;
+  currentY = pos.y;
+
+  const x = Math.min(currentX, startX);
+  const y = Math.min(currentY, startY);
+  const width = Math.abs(currentX - startX);
+  const height = Math.abs(currentY - startY);
+
+  selectionBox.style.left = x + 'px';
+  selectionBox.style.top = y + 'px';
+  selectionBox.style.width = width + 'px';
+  selectionBox.style.height = height + 'px';
+});
+
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  if (!isDragging) return;
+  isDragging = false;
+
+  const rect = canvas.getBoundingClientRect();
+  currentX = currentX || startX;
+  currentY = currentY || startY;
+
+  const x = Math.min(currentX, startX);
+  const y = Math.min(currentY, startY);
+  const width = Math.abs(currentX - startX);
+  const height = Math.abs(currentY - startY);
+
+  if (width < 10 || height < 10) {
+    selectionBox.style.display = 'none';
+    selection = null;
+    cropControls.style.display = 'none';
+    return;
+  }
+
+  selection = { x, y, width, height };
+  cropControls.style.display = 'block';
+});
   </script>
 </body>
 </html>
