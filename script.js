@@ -93,3 +93,26 @@ function convertFile(file, format) {
     reader.readAsDataURL(file);
   });
 }
+// Sempre carica "hard refresh" su accessi futuri
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
+}
+// Forza refresh se la pagina è stata caricata da cache
+if (performance.navigation.type === 2) {
+  location.reload(true);
+}
+// Questo resetta ogni volta che l'utente esce dalla pagina
+window.addEventListener('beforeunload', () => {
+  // Cancella localStorage/sessionStorage (se usato)
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Cancella oggetti URL creati
+  if (window.convertedBlobs) {
+    window.convertedBlobs.forEach(url => URL.revokeObjectURL(url));
+  }
+});
