@@ -2,239 +2,354 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ruota Immagini - WebToolbox.fun</title>
-  <link rel="stylesheet" href="style.css?v=1.0.6">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ruota immagini online con multitasking e interazione – WebToolbox.fun</title>
+  <meta name="description" content="Ruota immagini JPG, PNG online gratis. Supporto multi-file con rotazioni singole, o rotazione libera per un'immagine con mouse/touch." />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    nav {
+      background-color: #1db954;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    nav .logo {
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #121212;
+    }
+    nav ul {
+      display: flex;
+      gap: 1rem;
+      list-style: none;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+    nav a {
+      color: #121212;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a.active {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+    p.description {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #aaa;
+    }
+    #banner {
+      background-color: #1db954;
+      color: #121212;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    input[type="file"] {
+      display: block;
+      margin: 0 auto 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #1db954;
+      color: #121212;
+      font-weight: bold;
+      max-width: 320px;
+    }
+    button {
+      display: block;
+      margin: 1rem auto 2rem;
+      padding: 0.7rem 1.5rem;
+      background-color: #1db954;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #121212;
+      max-width: 220px;
+    }
+    #multiContainer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .multiItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px;
+      border: 2px solid #1db954;
+      padding: 10px;
+      border-radius: 8px;
+      background: #222;
+    }
+    .multiItem img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      cursor: default;
+    }
+    .multiItem select, .multiItem input[type="number"] {
+      width: 100%;
+      margin-top: 5px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #1db954;
+      color: #121212;
+      text-align: center;
+    }
+    #singleContainer {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid #1db954;
+      border-radius: 8px;
+      padding: 15px;
+      background: #222;
+      margin-bottom: 2rem;
+    }
+    #singleImg {
+      max-width: 90vw;
+      max-height: 60vh;
+      border-radius: 8px;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.1s ease-out;
+    }
+    #singleRotationValue {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #1db954;
+    }
+    #resultContainer {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    #resultContainer img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid #1db954;
+      margin-bottom: 0.5rem;
+    }
+    #resultContainer a {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #1db954;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="logo">🧰 WebToolbox.fun</div>
-    <ul>
-      <li><a href="index.html">Converti Immagini</a></li>
-      <li><a href="ridimensiona.html">Ridimensiona</a></li>
-      <li><a href="ruota-immagini.html" class="active">Ruota</a></li>
-      <li><a href="flip-immagini.html">Specchia</a></li>
-      <li><a href="crop-immagini.html">Ritaglia</a></li>
-      <li><a href="base64.html">Img → Base64</a></li>
-      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
-    </ul>
-  </nav>
+<nav>
+  <div class="logo">🧰 WebToolbox.fun</div>
+  <ul>
+    <li><a href="index.html">Converti Immagini</a></li>
+    <li><a href="ridimensiona.html">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html" class="active">Ruota</a></li>
+    <li><a href="flip-immagini.html">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html">Img → Base64</a></li>
+    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+  </ul>
+</nav>
 
-  <header>
-    <h1>Ruota Immagini</h1>
-    <p>Carica un'immagine e ruotala a 90°, 180° o 270° direttamente dal browser.</p>
-  </header>
+<main>
+  <h1>Ruota immagini online con multitasking e interazione</h1>
+  <p class="description">Carica immagini JPG o PNG. Se ne carichi più di una, scegli rotazioni fisse sotto ogni immagine. Se ne carichi una sola, ruotala liberamente con mouse o dito.</p>
 
-  <main>
-    <div id="rotate-area" class="upload-section" tabindex="0">
-      <p>Clicca per selezionare un'immagine</p>
-      <input type="file" id="rotateInput" accept="image/*">
-    </div>
+  <div id="banner"></div>
 
-    <div id="rotateControls" style="display:none; text-align:center; margin-top:2rem;">
-      <label>Angolo di rotazione:</label><br><br>
-      <select id="rotationSelect">
-        <option value="90">90°</option>
-        <option value="180">180°</option>
-        <option value="270">270°</option>
-      </select>
-      <br><br>
-      <button class="convert-btn" id="rotateBtn">Ruota</button>
-    </div>
+  <input type="file" id="inputFiles" accept="image/png, image/jpeg" multiple />
 
-    <div id="rotateOutput" style="margin-top:2rem; text-align:center;"></div>
-  </main>
+  <div id="multiContainer" aria-live="polite" aria-label="Seleziona rotazioni per ogni immagine"></div>
 
-  <footer>
-    <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
-  </footer>
-<style>
-  /* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  <div id="singleContainer" aria-live="polite" aria-label="Interazione immagine singola">
+    <img id="singleImg" src="" alt="Immagine da ruotare" />
+    <div id="singleRotationValue">Rotazione: 0°</div>
+  </div>
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
-  color: #eee;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+  <button id="rotateBtn">Ruota e Scarica</button>
 
-nav {
-  background-color: #1db954;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
-}
+  <div id="resultContainer"></div>
+</main>
 
-nav .logo {
-  font-weight: bold;
-  font-size: 1.4rem;
-  color: #121212;
-}
+<script>
+  const inputFiles = document.getElementById('inputFiles');
+  const multiContainer = document.getElementById('multiContainer');
+  const singleContainer = document.getElementById('singleContainer');
+  const singleImg = document.getElementById('singleImg');
+  const singleRotationValue = document.getElementById('singleRotationValue');
+  const rotateBtn = document.getElementById('rotateBtn');
+  const banner = document.getElementById('banner');
+  const resultContainer = document.getElementById('resultContainer');
 
-nav ul {
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  flex-wrap: wrap;
-}
+  let loadedFiles = [];
+  let singleRotation = 0;
 
-nav a {
-  text-decoration: none;
-  color: #121212;
-  font-weight: bold;
-}
+  function updateBanner() {
+    if(loadedFiles.length === 0) {
+      banner.style.display = 'none';
+      multiContainer.style.display = 'none';
+      singleContainer.style.display = 'none';
+      rotateBtn.style.display = 'none';
+      return;
+    }
+    banner.style.display = 'block';
+    banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}.`;
 
-nav a.active {
-  text-decoration: underline;
-}
+    rotateBtn.style.display = 'block';
 
-header {
-  padding: 2rem;
-  text-align: center;
-}
-
-main {
-  flex: 1;
-  padding: 2rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.upload-section {
-  border: 3px dashed #555;
-  padding: 2rem;
-  text-align: center;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.upload-section.hover {
-  border-color: #1db954;
-}
-
-input[type="file"] {
-  display: none;
-}
-
-.select-format {
-  display: block;
-  margin: 2rem 0 0.5rem;
-}
-
-select {
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: none;
-  font-size: 1rem;
-}
-
-.convert-btn {
-  margin-top: 1.5rem;
-  background: #1db954;
-  border: none;
-  color: #121212;
-  padding: 0.7rem 1.5rem;
-  cursor: pointer;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: background-color 0.3s ease;
-}
-
-.convert-btn:disabled {
-  background: #555;
-  cursor: not-allowed;
-}
-
-#output {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-#output img {
-  max-width: 100%;
-  border: 1px solid #1db954;
-  border-radius: 6px;
-  margin-top: 1rem;
-}
-
-footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #1e1e1e;
-  font-size: 0.9rem;
-}
-</style>
-  <script src="cache.js?v=1.0.6"></script>
-  <script>
-    const rotateInput = document.getElementById('rotateInput');
-    const rotateArea = document.getElementById('rotate-area');
-    const rotateControls = document.getElementById('rotateControls');
-    const rotateBtn = document.getElementById('rotateBtn');
-    const rotateOutput = document.getElementById('rotateOutput');
-    const rotationSelect = document.getElementById('rotationSelect');
-
-    let originalImage = new Image();
-
-    rotateArea.addEventListener('click', () => rotateInput.click());
-
-    rotateInput.addEventListener('change', () => {
-      const file = rotateInput.files[0];
-      if (!file || !file.type.startsWith('image/')) return;
-
+    if(loadedFiles.length === 1) {
+      multiContainer.style.display = 'none';
+      singleContainer.style.display = 'flex';
+      singleRotation = 0;
+      singleRotationValue.textContent = `Rotazione: ${singleRotation}°`;
+      singleImg.style.transform = `rotate(0deg)`;
+      // Carica immagine singola
       const reader = new FileReader();
-      reader.onload = () => {
-        originalImage.src = reader.result;
-        rotateControls.style.display = 'block';
-        rotateOutput.innerHTML = `<p>Anteprima originale:</p><img src="${reader.result}" style="max-width:300px; border:1px solid #1db954; border-radius:6px;">`;
+      reader.onload = e => {
+        singleImg.src = e.target.result;
       };
-      reader.readAsDataURL(file);
-    });
+      reader.readAsDataURL(loadedFiles[0]);
+    } else {
+      singleContainer.style.display = 'none';
+      multiContainer.style.display = 'flex';
+      multiContainer.innerHTML = '';
+      loadedFiles.forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const div = document.createElement('div');
+          div.className = 'multiItem';
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = file.name;
 
-    rotateBtn.addEventListener('click', () => {
-      const angle = parseInt(rotationSelect.value);
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+          const select = document.createElement('select');
+          select.setAttribute('aria-label', `Rotazione immagine ${file.name}`);
+          select.dataset.index = i;
 
-      if (angle === 180) {
-        canvas.width = originalImage.width;
-        canvas.height = originalImage.height;
-        ctx.translate(canvas.width, canvas.height);
-      } else {
-        canvas.width = originalImage.height;
-        canvas.height = originalImage.width;
-        if (angle === 90) {
-          ctx.translate(canvas.width, 0);
-        } else if (angle === 270) {
-          ctx.translate(0, canvas.height);
-        }
-      }
+          const degrees = [0, 90, 180, 270, 360];
+          degrees.forEach(deg => {
+            const option = document.createElement('option');
+            option.value = deg;
+            option.textContent = deg + '°';
+            select.appendChild(option);
+          });
+          // Opzione personalizzata
+          const customOption = document.createElement('option');
+          customOption.value = 'custom';
+          customOption.textContent = 'Personalizzato';
+          select.appendChild(customOption);
 
-      ctx.rotate((angle * Math.PI) / 180);
-      ctx.drawImage(originalImage, 0, 0);
+          const inputCustom = document.createElement('input');
+          inputCustom.type = 'number';
+          inputCustom.min = 0;
+          inputCustom.value = 0;
+          inputCustom.style.display = 'none';
+          inputCustom.placeholder = '° Personalizzato';
+          inputCustom.dataset.index = i;
+          inputCustom.style.marginTop = '6px';
+          inputCustom.style.borderRadius = '6px';
+          inputCustom.style.padding = '6px 8px';
+          inputCustom.style.border = 'none';
+          inputCustom.style.fontWeight = 'bold';
+          inputCustom.style.backgroundColor = '#1db954';
+          inputCustom.style.color = '#121212';
+          inputCustom.style.textAlign = 'center';
 
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        if (!window.convertedBlobs) window.convertedBlobs = [];
-        window.convertedBlobs.push(url);
+          select.addEventListener('change', () => {
+            if(select.value === 'custom') {
+              inputCustom.style.display = 'block';
+            } else {
+              inputCustom.style.display = 'none';
+              inputCustom.value = select.value;
+            }
+          });
 
-        rotateOutput.innerHTML = `
-          <p>Immagine ruotata:</p>
-          <a href="${url}" download="immagine-ruotata.png">Scarica PNG</a><br>
-          <img src="${url}" style="max-width:300px; margin-top:1rem; border:1px solid #1db954; border-radius:6px;">
-        `;
-      }, 'image/png');
-    });
-  </script>
-</body>
-</html>
+          inputCustom.addEventListener('input', () => {
+            select.value = 'custom';
+          });
+
+          div.appendChild(img);
+          div.appendChild(select);
+          div.appendChild(inputCustom);
+
+          multiContainer.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+
+  inputFiles.addEventListener('change', e => {
+    loadedFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    resultContainer.innerHTML = '';
+    updateBanner();
+  });
+
+  // Drag rotation for single image
+  let dragging = false;
+  let startX = 0;
+  let lastRotation = 0;
+
+  function clampAngle(angle) {
+    return ((angle % 360) + 360) % 360;
+  }
+
+  function updateSingleRotationDisplay() {
+    singleRotationValue.textContent = `Rotazione: ${Math.round(singleRotation)}°`;
+    singleImg.style.transform = `rotate(${singleRotation}deg)`;
+  }
+
+  singleImg.addEventListener('mousedown', e => {
+    e.preventDefault();
+    dragging = true;
+    startX = e.clientX;
+    lastRotation = singleRotation;
+    singleImg.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mouseup', () => {
+    if(dragging) {
+      dragging = false;
+      singleImg.style.cursor = 'grab';
+    }
+  });
+
+  window.addEventListener('mousemove', e => {
+    if(dragging) {
+      const deltaX = e.clientX - startX;
+      singleRotation = clampAngle(lastRotation + deltaX);
+      updateSingleRotationDisplay();
+    }
+  });
+
+  // Touch events for mobile
