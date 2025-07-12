@@ -1,184 +1,143 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ritaglia Immagini - WebToolbox.fun</title>
-  <link rel="stylesheet" href="style.css?v=1.0.7" />
-  <style>
-    /* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
-  color: #eee;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-nav {
-  background-color: #1db954;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
-}
-
-nav .logo {
-  font-weight: bold;
-  font-size: 1.4rem;
-  color: #121212;
-}
-
-nav ul {
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  flex-wrap: wrap;
-}
-
-nav a {
-  text-decoration: none;
-  color: #121212;
-  font-weight: bold;
-}
-
-nav a.active {
-  text-decoration: underline;
-}
-
-header {
-  padding: 2rem;
-  text-align: center;
-}
-
-main {
-  flex: 1;
-  padding: 2rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.upload-section {
-  border: 3px dashed #555;
-  padding: 2rem;
-  text-align: center;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.upload-section.hover {
-  border-color: #1db954;
-}
-
-input[type="file"] {
-  display: none;
-}
-
-.select-format {
-  display: block;
-  margin: 2rem 0 0.5rem;
-}
-
-select {
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: none;
-  font-size: 1rem;
-}
-
-.convert-btn {
-  margin-top: 1.5rem;
-  background: #1db954;
-  border: none;
-  color: #121212;
-  padding: 0.7rem 1.5rem;
-  cursor: pointer;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: background-color 0.3s ease;
-}
-
-.convert-btn:disabled {
-  background: #555;
-  cursor: not-allowed;
-}
-
-#output {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-#output img {
-  max-width: 100%;
-  border: 1px solid #1db954;
-  border-radius: 6px;
-  margin-top: 1rem;
-}
-
-footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #1e1e1e;
-  font-size: 0.9rem;
-}
-    /* Solo stile per canvas e selezione */
-    #canvasContainer {
-      position: relative;
-      max-width: 600px;
-      margin: 2rem auto;
-      border: 2px solid #1db954;
-      border-radius: 8px;
-      user-select: none;
-    }
-    canvas {
-      max-width: 100%;
-      display: block;
-      border-radius: 8px;
-      cursor: crosshair;
-    }
-    #selectionBox {
-      position: absolute;
-      border: 2px dashed #1db954;
-      background-color: rgba(29, 185, 84, 0.3);
-      pointer-events: none;
-      display: none;
-      border-radius: 6px;
-    }
-    #cropControls {
-      text-align: center;
-      margin-top: 1rem;
-    }
-    #cropOutput {
-      margin-top: 1rem;
-      text-align: center;
-    }
-    @media (max-width: 650px) {
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ritaglia Immagini - WebToolbox.fun</title>
+<style>
+  /* Reset base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #eee;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  nav {
+    background-color: #1db954;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    flex-wrap: wrap;
+  }
+  nav .logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #121212;
+  }
+  nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  nav a {
+    text-decoration: none;
+    color: #121212;
+    font-weight: bold;
+  }
+  nav a.active {
+    text-decoration: underline;
+  }
+  header {
+    padding: 2rem;
+    text-align: center;
+  }
+  main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 650px;
+    margin: 0 auto 3rem;
+  }
+  #cropArea {
+    text-align: center;
+  }
+  input[type="file"] {
+    background-color: #1db954;
+    color: #121212;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
   #canvasContainer {
+    position: relative;
     max-width: 100%;
-    margin: 1rem auto;
+    border: 2px solid #1db954;
+    border-radius: 8px;
+    user-select: none;
   }
   canvas {
-    width: 100% !important;
-    height: auto !important;
+    max-width: 100%;
+    display: block;
+    border-radius: 8px;
+    cursor: crosshair;
   }
   #selectionBox {
-    /* Rimane uguale */
+    position: absolute;
+    border: 2px dashed #1db954;
+    background-color: rgba(29, 185, 84, 0.3);
+    pointer-events: none;
+    display: none;
+    border-radius: 6px;
   }
   #cropControls {
+    text-align: center;
     margin-top: 1rem;
   }
+  #cropControls button {
+    background: #1db954;
+    border: none;
+    color: #121212;
+    padding: 0.7rem 1.5rem;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+  }
+  #cropControls button:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+  #cropOutput {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  #cropOutput img {
+    max-width: 100%;
+    max-width: 300px;
+    border: 1px solid #1db954;
+    border-radius: 6px;
+    margin-top: 1rem;
+  }
+  footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #1e1e1e;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 650px) {
+    #canvasContainer {
+      max-width: 100%;
+      margin: 1rem auto;
     }
-  </style>
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+  }
+</style>
 </head>
 <body>
   <nav>
@@ -196,11 +155,11 @@ footer {
 
   <header>
     <h1>Ritaglia Immagini</h1>
-    <p>Carica un’immagine e seleziona con il mouse l’area da ritagliare.</p>
+    <p>Carica un’immagine e seleziona con mouse o dito l’area da ritagliare.</p>
   </header>
 
   <main>
-    <div id="cropArea" style="text-align:center;">
+    <div id="cropArea">
       <input type="file" id="cropInput" accept="image/*" />
     </div>
 
@@ -210,7 +169,7 @@ footer {
     </div>
 
     <div id="cropControls" style="display:none;">
-      <button class="convert-btn" id="cropBtn">Ritaglia e Scarica</button>
+      <button id="cropBtn">Ritaglia e Scarica</button>
     </div>
 
     <div id="cropOutput"></div>
@@ -220,207 +179,151 @@ footer {
     <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
   </footer>
 
-  <script src="cache.js?v=1.0.7" defer></script>
-  <script>
-    const cropInput = document.getElementById('cropInput');
-    const canvasContainer = document.getElementById('canvasContainer');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const selectionBox = document.getElementById('selectionBox');
-    const cropControls = document.getElementById('cropControls');
-    const cropBtn = document.getElementById('cropBtn');
-    const cropOutput = document.getElementById('cropOutput');
+<script>
+  const cropInput = document.getElementById('cropInput');
+  const canvasContainer = document.getElementById('canvasContainer');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const selectionBox = document.getElementById('selectionBox');
+  const cropControls = document.getElementById('cropControls');
+  const cropBtn = document.getElementById('cropBtn');
+  const cropOutput = document.getElementById('cropOutput');
 
-    let img = new Image();
-    let isDragging = false;
-    let startX, startY, currentX, currentY;
-    let selection = null;
+  let img = new Image();
+  let isDragging = false;
+  let startX, startY, currentX, currentY;
+  let selection = null;
 
-    cropInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file || !file.type.startsWith('image/')) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        img.src = reader.result;
+  function getEventPos(e) {
+    if (e.touches && e.touches.length > 0) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
       };
-      reader.readAsDataURL(file);
-    });
-
-    img.onload = () => {
-      // Set canvas size uguale immagine
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      canvasContainer.style.display = 'block';
-      cropControls.style.display = 'none';
-      cropOutput.innerHTML = '';
-      selectionBox.style.display = 'none';
-      selection = null;
-    };
-
-    canvas.addEventListener('mousedown', e => {
-      isDragging = true;
+    } else if (e.clientX !== undefined && e.clientY !== undefined) {
       const rect = canvas.getBoundingClientRect();
-      startX = e.clientX - rect.left;
-      startY = e.clientY - rect.top;
-
-      selectionBox.style.left = startX + 'px';
-      selectionBox.style.top = startY + 'px';
-      selectionBox.style.width = '0px';
-      selectionBox.style.height = '0px';
-      selectionBox.style.display = 'block';
-    });
-
-    canvas.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      const rect = canvas.getBoundingClientRect();
-      currentX = e.clientX - rect.left;
-      currentY = e.clientY - rect.top;
-
-      const x = Math.min(currentX, startX);
-      const y = Math.min(currentY, startY);
-      const width = Math.abs(currentX - startX);
-      const height = Math.abs(currentY - startY);
-
-      selectionBox.style.left = x + 'px';
-      selectionBox.style.top = y + 'px';
-      selectionBox.style.width = width + 'px';
-      selectionBox.style.height = height + 'px';
-    });
-
-    canvas.addEventListener('mouseup', e => {
-      isDragging = false;
-      const rect = canvas.getBoundingClientRect();
-      currentX = e.clientX - rect.left;
-      currentY = e.clientY - rect.top;
-
-      const x = Math.min(currentX, startX);
-      const y = Math.min(currentY, startY);
-      const width = Math.abs(currentX - startX);
-      const height = Math.abs(currentY - startY);
-
-      if (width < 10 || height < 10) {
-        selectionBox.style.display = 'none';
-        selection = null;
-        cropControls.style.display = 'none';
-        return;
-      }
-
-      selection = { x, y, width, height };
-      cropControls.style.display = 'block';
-    });
-
-    cropBtn.addEventListener('click', () => {
-      if (!selection) return alert('Seleziona un’area da ritagliare');
-
-      // Crea canvas per il ritaglio
-      const cropCanvas = document.createElement('canvas');
-      const cropCtx = cropCanvas.getContext('2d');
-      cropCanvas.width = selection.width;
-      cropCanvas.height = selection.height;
-
-      cropCtx.drawImage(
-        img,
-        selection.x,
-        selection.y,
-        selection.width,
-        selection.height,
-        0,
-        0,
-        selection.width,
-        selection.height
-      );
-
-      cropCanvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        if (!window.convertedBlobs) window.convertedBlobs = [];
-        window.convertedBlobs.push(url);
-
-        cropOutput.innerHTML = `
-          <p>Immagine ritagliata:</p>
-          <a href="${url}" download="immagine-ritagliata.png">Scarica PNG</a><br>
-          <img src="${url}" style="max-width:300px; margin-top:1rem; border:1px solid #1db954; border-radius:6px;">
-        `;
-      }, 'image/png');
-    });
-    // Aggiungi all'inizio
-let ongoingTouch = null;
-
-function getEventPos(e) {
-  if (e.touches && e.touches.length > 0) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: e.touches[0].clientX - rect.left,
-      y: e.touches[0].clientY - rect.top,
-    };
-  } else if (e.clientX !== undefined && e.clientY !== undefined) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    }
+    return null;
   }
-  return null;
-}
 
-canvas.addEventListener('touchstart', e => {
-  e.preventDefault();
-  const pos = getEventPos(e);
-  if (!pos) return;
-  isDragging = true;
-  startX = pos.x;
-  startY = pos.y;
-  selectionBox.style.left = startX + 'px';
-  selectionBox.style.top = startY + 'px';
-  selectionBox.style.width = '0px';
-  selectionBox.style.height = '0px';
-  selectionBox.style.display = 'block';
-});
+  cropInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
 
-canvas.addEventListener('touchmove', e => {
-  e.preventDefault();
-  if (!isDragging) return;
-  const pos = getEventPos(e);
-  if (!pos) return;
-  currentX = pos.x;
-  currentY = pos.y;
+    const reader = new FileReader();
+    reader.onload = () => {
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
-  const x = Math.min(currentX, startX);
-  const y = Math.min(currentY, startY);
-  const width = Math.abs(currentX - startX);
-  const height = Math.abs(currentY - startY);
-
-  selectionBox.style.left = x + 'px';
-  selectionBox.style.top = y + 'px';
-  selectionBox.style.width = width + 'px';
-  selectionBox.style.height = height + 'px';
-});
-
-canvas.addEventListener('touchend', e => {
-  e.preventDefault();
-  if (!isDragging) return;
-  isDragging = false;
-
-  const rect = canvas.getBoundingClientRect();
-  currentX = currentX || startX;
-  currentY = currentY || startY;
-
-  const x = Math.min(currentX, startX);
-  const y = Math.min(currentY, startY);
-  const width = Math.abs(currentX - startX);
-  const height = Math.abs(currentY - startY);
-
-  if (width < 10 || height < 10) {
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    canvasContainer.style.display = 'block';
+    cropControls.style.display = 'none';
+    cropOutput.innerHTML = '';
     selectionBox.style.display = 'none';
     selection = null;
-    cropControls.style.display = 'none';
-    return;
-  }
+  };
 
-  selection = { x, y, width, height };
-  cropControls.style.display = 'block';
-});
-  </script>
-</body>
-</html>
+  canvas.addEventListener('mousedown', e => {
+    e.preventDefault();
+    isDragging = true;
+    const pos = getEventPos(e);
+    if (!pos) return;
+    startX = pos.x;
+    startY = pos.y;
+
+    selectionBox.style.left = startX + 'px';
+    selectionBox.style.top = startY + 'px';
+    selectionBox.style.width = '0px';
+    selectionBox.style.height = '0px';
+    selectionBox.style.display = 'block';
+  });
+
+  canvas.addEventListener('mousemove', e => {
+    e.preventDefault();
+    if (!isDragging) return;
+    const pos = getEventPos(e);
+    if (!pos) return;
+    currentX = pos.x;
+    currentY = pos.y;
+
+    const x = Math.min(currentX, startX);
+    const y = Math.min(currentY, startY);
+    const width = Math.abs(currentX - startX);
+    const height = Math.abs(currentY - startY);
+
+    selectionBox.style.left = x + 'px';
+    selectionBox.style.top = y + 'px';
+    selectionBox.style.width = width + 'px';
+    selectionBox.style.height = height + 'px';
+  });
+
+  canvas.addEventListener('mouseup', e => {
+    e.preventDefault();
+    isDragging = false;
+    const pos = getEventPos(e);
+    if (!pos) return;
+    currentX = pos.x;
+    currentY = pos.y;
+
+    const x = Math.min(currentX, startX);
+    const y = Math.min(currentY, startY);
+    const width = Math.abs(currentX - startX);
+    const height = Math.abs(currentY - startY);
+
+    if (width < 10 || height < 10) {
+      selectionBox.style.display = 'none';
+      selection = null;
+      cropControls.style.display = 'none';
+      return;
+    }
+
+    selection = { x, y, width, height };
+    cropControls.style.display = 'block';
+  });
+
+  // TOUCH EVENTS
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    isDragging = true;
+    const pos = getEventPos(e);
+    if (!pos) return;
+    startX = pos.x;
+    startY = pos.y;
+
+    selectionBox.style.left = startX + 'px';
+    selectionBox.style.top = startY + 'px';
+    selectionBox.style.width = '0px';
+    selectionBox.style.height = '0px';
+    selectionBox.style.display = 'block';
+  });
+
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!isDragging) return;
+    const pos = getEventPos(e);
+    if (!pos) return;
+    currentX = pos.x;
+    currentY = pos.y;
+
+    const x = Math.min(currentX, startX);
+    const y = Math.min(currentY, startY);
+    const width = Math.abs(currentX - startX);
+    const height = Math.abs(currentY - startY);
+
+    selectionBox.style.left = x + 'px';
+    selectionBox.style.top = y + 'px';
+    selectionBox.style.width = width + 'px';
+    selectionBox.style.height = height + 'px';
+  });
+
+  canvas.addEvent
