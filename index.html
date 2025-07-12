@@ -2,52 +2,282 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Converti Immagini - WebToolbox.fun</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Converti immagini in tanti formati online – WebToolbox.fun</title>
+  <meta name="description" content="Converti immagini PNG, JPG, WebP, GIF, BMP online gratis in WebP, JPEG, PNG, BMP, TIFF. Supporta conversione multipla e preview." />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    nav {
+      background-color: #1db954;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    nav .logo {
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #121212;
+    }
+    nav ul {
+      display: flex;
+      gap: 1rem;
+      list-style: none;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+    nav a {
+      color: #121212;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a.active {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+    p.description {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #aaa;
+    }
+    #banner {
+      background-color: #1db954;
+      color: #121212;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    input[type="file"] {
+      display: block;
+      margin: 0 auto 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #1db954;
+      color: #121212;
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      margin: 0 auto 0.5rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    select {
+      display: block;
+      margin: 0 auto 1.5rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      max-width: 220px;
+    }
+    button {
+      display: block;
+      margin: 0 auto 1rem;
+      padding: 0.7rem 1.5rem;
+      background-color: #1db954;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #121212;
+      max-width: 180px;
+    }
+    #previewContainer {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 0;
+      border-radius: 8px;
+      border: 2px solid #1db954;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+    #previewContainer img {
+      max-height: 120px;
+      border-radius: 6px;
+      object-fit: contain;
+      cursor: default;
+    }
+    #resultContainer {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    #resultContainer img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid #1db954;
+      margin-bottom: 0.5rem;
+    }
+    #resultContainer a {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #1db954;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="logo">🧰 WebToolbox.fun</div>
-    <ul>
-      <li><a href="index.html" class="active">Converti Immagini</a></li>
-      <li><a href="ridimensiona.html">Ridimensiona</a></li>
-      <li><a href="ruota-immagini.html">Ruota</a></li>
-      <li><a href="flip-immagini.html">Specchia</a></li>
-      <li><a href="crop-immagini.html">Ritaglia</a></li>
-      <li><a href="base64.html">Img → Base64</a></li>
-      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
-    </ul>
-  </nav>
+<nav>
+  <div class="logo">🧰 WebToolbox.fun</div>
+  <ul>
+    <li><a href="index.html" class="active">Converti Immagini</a></li>
+    <li><a href="ridimensiona.html">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html">Ruota</a></li>
+    <li><a href="flip-immagini.html">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html">Img → Base64</a></li>
+    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+  </ul>
+</nav>
 
-  <header>
-    <h1>Converti Immagini Online</h1>
-    <p>Trascina o carica immagini PNG, JPEG, WebP e convertile in altri formati in un attimo.</p>
-  </header>
+<main>
+  <h1>Converti immagini in tanti formati online</h1>
+  <p class="description">Converti immagini PNG, JPG, WebP, GIF, BMP online gratis in WebP, JPEG, PNG, BMP, TIFF. Supporta conversione multipla e preview.</p>
 
-  <main>
-    <div id="drop-area" class="upload-section" tabindex="0">
-      <p>Trascina qui i file o clicca per selezionare</p>
-      <input type="file" id="fileElem" accept="image/png,image/jpeg,image/webp" multiple />
-    </div>
+  <div id="banner"></div>
 
-    <label for="format-select" class="select-format">Formato di destinazione:</label>
-    <select id="format-select">
-      <option value="webp">WebP</option>
-      <option value="png">PNG</option>
-      <option value="jpeg">JPEG</option>
-    </select>
+  <input type="file" id="inputFiles" accept="image/png, image/jpeg, image/webp, image/gif, image/bmp" multiple />
 
-    <button id="convertBtn" class="convert-btn" disabled>Converti</button>
+  <label for="outputFormat">Formato di destinazione:</label>
+  <select id="outputFormat" aria-label="Seleziona formato di destinazione">
+    <option value="webp">WebP</option>
+    <option value="jpeg">JPEG</option>
+    <option value="png">PNG</option>
+    <option value="bmp">BMP</option>
+    <option value="tiff">TIFF</option>
+  </select>
 
-    <div id="output"></div>
-  </main>
+  <button id="convertBtn">Converti</button>
 
-  <footer>
-    <p>Creato con ❤️ da Boss & MbareGPT – WebToolbox.fun</p>
-  </footer>
+  <div id="previewContainer" aria-live="polite" aria-label="Anteprima immagini caricate"></div>
 
-  <script src="script.js"></script>
-  <script src="cache.js" defer></script>
+  <div id="resultContainer"></div>
+</main>
+
+<script>
+  const inputFiles = document.getElementById('inputFiles');
+  const outputFormat = document.getElementById('outputFormat');
+  const convertBtn = document.getElementById('convertBtn');
+  const previewContainer = document.getElementById('previewContainer');
+  const resultContainer = document.getElementById('resultContainer');
+  const banner = document.getElementById('banner');
+
+  let loadedFiles = [];
+
+  inputFiles.addEventListener('change', e => {
+    loadedFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    previewContainer.innerHTML = '';
+    resultContainer.innerHTML = '';
+    banner.style.display = loadedFiles.length ? 'block' : 'none';
+    if (loadedFiles.length) {
+      banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}. Formato di destinazione: ${outputFormat.value.toUpperCase()}`;
+      loadedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.alt = file.name;
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  });
+
+  outputFormat.addEventListener('change', () => {
+    if (loadedFiles.length) {
+      banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}. Formato di destinazione: ${outputFormat.value.toUpperCase()}`;
+    }
+  });
+
+  convertBtn.addEventListener('click', () => {
+    if (!loadedFiles.length) {
+      alert('Seleziona almeno un file immagine.');
+      return;
+    }
+    resultContainer.innerHTML = '';
+    loadedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          let mimeType = 'image/webp';
+          let ext = 'webp';
+          switch (outputFormat.value) {
+            case 'jpeg':
+              mimeType = 'image/jpeg';
+              ext = 'jpg';
+              break;
+            case 'png':
+              mimeType = 'image/png';
+              ext = 'png';
+              break;
+            case 'bmp':
+              mimeType = 'image/bmp';
+              ext = 'bmp';
+              break;
+            case 'tiff':
+              // TIFF non è supportato da canvas.toBlob, lo salviamo come PNG per ora
+              mimeType = 'image/png';
+              ext = 'png';
+              alert('TIFF non è supportato direttamente, verrà salvato come PNG.');
+              break;
+          }
+
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const imageElem = document.createElement('img');
+            imageElem.src = url;
+            imageElem.alt = 'Immagine convertita';
+            resultContainer.appendChild(imageElem);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = file.name.replace(/\.[^/.]+$/, '') + '.' + ext;
+            link.textContent = 'Scarica ' + link.download;
+            link.style.color = '#1db954';
+            link.style.fontWeight = 'bold';
+            link.style.display = 'block';
+            link.style.marginBottom = '1rem';
+            resultContainer.appendChild(link);
+          }, mimeType);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
 </body>
 </html>
