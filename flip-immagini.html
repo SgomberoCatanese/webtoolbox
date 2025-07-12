@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Specchia Immagini - WebToolbox.fun</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  nav {
+    background-color: #1db954;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  nav .logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #121212;
+  }
+  nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  nav a {
+    color: #121212;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  nav a.active {
+    text-decoration: underline;
+  }
+  main {
+    max-width: 650px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 0.3rem;
+  }
+  p.description {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #aaa;
+  }
+  input[type="file"] {
+    display: block;
+    margin: 0 auto 1.5rem;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    background-color: #1db954;
+    color: #121212;
+    font-weight: bold;
+  }
+  #imageContainer {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  #imageContainer img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 2px solid #1db954;
+  }
+  .btn-group {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  button {
+    background-color: #1db954;
+    border: none;
+    color: #121212;
+    padding: 0.7rem 1.5rem;
+    margin: 0 0.5rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  #downloadLink {
+    display: block;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    font-weight: bold;
+    color: #1db954;
+    text-decoration: none;
+  }
+  footer {
+    background-color: #1e1e1e;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">🧰 WebToolbox.fun</div>
+  <ul>
+    <li><a href="index.html">Converti Immagini</a></li>
+    <li><a href="ridimensiona.html">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html">Ruota</a></li>
+    <li><a href="flip-immagini.html" class="active">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html">Img → Base64</a></li>
+    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1>Specchia Immagini</h1>
+  <p class="description">Carica un’immagine e specchiala orizzontalmente o verticalmente.</p>
+  <input type="file" id="inputImage" accept="image/*" />
+  <div id="imageContainer" style="display:none;">
+    <canvas id="canvas"></canvas>
+  </div>
+  <div class="btn-group" style="display:none;">
+    <button id="flipHBtn" disabled>Specchia Orizzontale</button>
+    <button id="flipVBtn" disabled>Specchia Verticale</button>
+  </div>
+  <a id="downloadLink" href="#" download="immagine-specchiata.png" style="display:none;">Scarica Immagine Specchiata</a>
+</main>
+
+<footer>
+  <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
+</footer>
+
+<script>
+  const inputImage = document.getElementById('inputImage');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const imageContainer = document.getElementById('imageContainer');
+  const flipHBtn = document.getElementById('flipHBtn');
+  const flipVBtn = document.getElementById('flipVBtn');
+  const btnGroup = flipHBtn.parentElement;
+  const downloadLink = document.getElementById('downloadLink');
+
+  let img = new Image();
+  let currentImageData = null;
+
+  inputImage.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return alert('Seleziona un file immagine valido.');
+
+    const url = URL.createObjectURL(file);
+    img.src = url;
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      imageContainer.style.display = 'block';
+      btnGroup.style.display = 'block';
+      flipHBtn.disabled = false;
+      flipVBtn.disabled = false;
+      downloadLink.style.display = 'none';
+      currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    };
+  });
+
+  function updateCanvas(imageData) {
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  function flipHorizontal() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
+
+    currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    showDownload();
+  }
+
+  function flipVertical() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(0, canvas.height);
+    ctx.scale(1, -1);
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
+
+    currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    showDownload();
+  }
+
+  flipHBtn.addEventListener('click', () => {
+    flipHorizontal();
+  });
+
+  flipVBtn.addEventListener('click', () => {
+    flipVertical();
+  });
+
+  function showDownload() {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      downloadLink.href = url;
+      downloadLink.style.display = 'inline-block';
+    }, 'image/png');
+  }
+</script>
+</body>
+</html>
