@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Img → Base64 - WebToolbox.fun</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  nav {
+    background-color: #1db954;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  nav .logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #121212;
+  }
+  nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  nav a {
+    color: #121212;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  nav a.active {
+    text-decoration: underline;
+  }
+  main {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    margin-bottom: 0.3rem;
+  }
+  p.description {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #aaa;
+  }
+  input[type="file"] {
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    background-color: #1db954;
+    color: #121212;
+    font-weight: bold;
+  }
+  #output {
+    width: 100%;
+    max-width: 680px;
+    height: 200px;
+    background: #222;
+    color: #0f0;
+    font-family: monospace;
+    overflow: auto;
+    padding: 1rem;
+    border-radius: 8px;
+    user-select: all;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  footer {
+    background-color: #1e1e1e;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">🧰 WebToolbox.fun</div>
+  <ul>
+    <li><a href="index.html">Converti Immagini</a></li>
+    <li><a href="ridimensiona.html">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html">Ruota</a></li>
+    <li><a href="flip-immagini.html">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html" class="active">Img → Base64</a></li>
+    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1>Converti Immagine in Base64</h1>
+  <p class="description">Carica un'immagine e ottieni la sua stringa Base64 pronta da copiare.</p>
+  <input type="file" id="inputImage" accept="image/*" />
+  <pre id="output" readonly></pre>
+</main>
+
+<footer>
+  <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
+</footer>
+
+<script>
+  const inputImage = document.getElementById('inputImage');
+  const output = document.getElementById('output');
+
+  inputImage.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) {
+      output.textContent = 'Seleziona un file immagine valido.';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      output.textContent = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+</script>
+</body>
+</html>
