@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ritaglia Immagini - WebToolbox.fun</title>
+  <link rel="stylesheet" href="style.css?v=1.0.7" />
+  <style>
+    /* Solo stile per canvas e selezione */
+    #canvasContainer {
+      position: relative;
+      max-width: 600px;
+      margin: 2rem auto;
+      border: 2px solid #1db954;
+      border-radius: 8px;
+      user-select: none;
+    }
+    canvas {
+      max-width: 100%;
+      display: block;
+      border-radius: 8px;
+      cursor: crosshair;
+    }
+    #selectionBox {
+      position: absolute;
+      border: 2px dashed #1db954;
+      background-color: rgba(29, 185, 84, 0.3);
+      pointer-events: none;
+      display: none;
+      border-radius: 6px;
+    }
+    #cropControls {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    #cropOutput {
+      margin-top: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">🧰 WebToolbox.fun</div>
+    <ul>
+      <li><a href="index.html">Converti Immagini</a></li>
+      <li><a href="ridimensiona.html">Ridimensiona</a></li>
+      <li><a href="ruota-immagini.html">Ruota</a></li>
+      <li><a href="flip-immagini.html">Specchia</a></li>
+      <li><a href="crop-immagini.html" class="active">Ritaglia</a></li>
+      <li><a href="base64.html">Img → Base64</a></li>
+      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Ritaglia Immagini</h1>
+    <p>Carica un’immagine e seleziona con il mouse l’area da ritagliare.</p>
+  </header>
+
+  <main>
+    <div id="cropArea" style="text-align:center;">
+      <input type="file" id="cropInput" accept="image/*" />
+    </div>
+
+    <div id="canvasContainer" style="display:none;">
+      <canvas id="canvas"></canvas>
+      <div id="selectionBox"></div>
+    </div>
+
+    <div id="cropControls" style="display:none;">
+      <button class="convert-btn" id="cropBtn">Ritaglia e Scarica</button>
+    </div>
+
+    <div id="cropOutput"></div>
+  </main>
+
+  <footer>
+    <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
+  </footer>
+
+  <script src="cache.js?v=1.0.7" defer></script>
+  <script>
+    const cropInput = document.getElementById('cropInput');
+    const canvasContainer = document.getElementById('canvasContainer');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const selectionBox = document.getElementById('selectionBox');
+    const cropControls = document.getElementById('cropControls');
+    const cropBtn = document.getElementById('cropBtn');
+    const cropOutput = document.getElementById('cropOutput');
+
+    let img = new Image();
+    let isDragging = false;
+    let startX, startY, currentX, currentY;
+    let selection = null;
+
+    cropInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    img.onload = () => {
+      // Set canvas size uguale immagine
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      canvasContainer.style.display = 'block';
+      cropControls.style.display = 'none';
+      cropOutput.innerHTML = '';
+      selectionBox.style.display = 'none';
+      selection = null;
+    };
+
+    canvas.addEventListener('mousedown', e => {
+      isDragging = true;
+      const rect = canvas.getBoundingClientRect();
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+
+      selectionBox.style.left = startX + 'px';
+      selectionBox.style.top = startY + 'px';
+      selectionBox.style.width = '0px';
+      selectionBox.style.height = '0px';
+      selectionBox.style.display = 'block';
+    });
+
+    canvas.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const rect = canvas.getBoundingClientRect();
+      currentX = e.clientX - rect.left;
+      currentY = e.clientY - rect.top;
+
+      const x = Math.min(currentX, startX);
+      const y = Math.min(currentY, startY);
+      const width = Math.abs(currentX - startX);
+      const height = Math.abs(currentY - startY);
+
+      selectionBox.style.left = x + 'px';
+      selectionBox.style.top = y + 'px';
+      selectionBox.style.width = width + 'px';
+      selectionBox.style.height = height + 'px';
+    });
+
+    canvas.addEventListener('mouseup', e => {
+      isDragging = false;
+      const rect = canvas.getBoundingClientRect();
+      currentX = e.clientX - rect.left;
+      currentY = e.clientY - rect.top;
+
+      const x = Math.min(currentX, startX);
+      const y = Math.min(currentY, startY);
+      const width = Math.abs(currentX - startX);
+      const height = Math.abs(currentY - startY);
+
+      if (width < 10 || height < 10) {
+        selectionBox.style.display = 'none';
+        selection = null;
+        cropControls.style.display = 'none';
+        return;
+      }
+
+      selection = { x, y, width, height };
+      cropControls.style.display = 'block';
+    });
+
+    cropBtn.addEventListener('click', () => {
+      if (!selection) return alert('Seleziona un’area da ritagliare');
+
+      // Crea canvas per il ritaglio
+      const cropCanvas = document.createElement('canvas');
+      const cropCtx = cropCanvas.getContext('2d');
+      cropCanvas.width = selection.width;
+      cropCanvas.height = selection.height;
+
+      cropCtx.drawImage(
+        img,
+        selection.x,
+        selection.y,
+        selection.width,
+        selection.height,
+        0,
+        0,
+        selection.width,
+        selection.height
+      );
+
+      cropCanvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        if (!window.convertedBlobs) window.convertedBlobs = [];
+        window.convertedBlobs.push(url);
+
+        cropOutput.innerHTML = `
+          <p>Immagine ritagliata:</p>
+          <a href="${url}" download="immagine-ritagliata.png">Scarica PNG</a><br>
+          <img src="${url}" style="max-width:300px; margin-top:1rem; border:1px solid #1db954; border-radius:6px;">
+        `;
+      }, 'image/png');
+    });
+  </script>
+</body>
+</html>
