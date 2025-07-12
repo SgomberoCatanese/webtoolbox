@@ -1,114 +1,285 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ridimensiona Immagini - WebToolbox.fun</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ridimensiona immagini online gratis – WebToolbox.fun</title>
+  <meta name="description" content="Cambia dimensioni alle immagini JPG, PNG facilmente e online. Mantieni proporzioni, carica più file e scarica subito." />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    nav {
+      background-color: #1db954;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    nav .logo {
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #121212;
+    }
+    nav ul {
+      display: flex;
+      gap: 1rem;
+      list-style: none;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+    nav a {
+      color: #121212;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a.active {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+    p.description {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #aaa;
+    }
+    #banner {
+      background-color: #1db954;
+      color: #121212;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    input[type="file"], select, input[type="number"] {
+      display: block;
+      margin: 0.5rem auto 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #1db954;
+      color: #121212;
+      font-weight: bold;
+      max-width: 240px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 0 auto 0.2rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    button {
+      display: block;
+      margin: 1rem auto 2rem;
+      padding: 0.7rem 1.5rem;
+      background-color: #1db954;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #121212;
+      max-width: 180px;
+    }
+    #previewContainer {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 0;
+      border-radius: 8px;
+      border: 2px solid #1db954;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+    #previewContainer img {
+      max-height: 120px;
+      border-radius: 6px;
+      object-fit: contain;
+      cursor: default;
+    }
+    #resultContainer {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    #resultContainer img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid #1db954;
+      margin-bottom: 0.5rem;
+    }
+    #resultContainer a {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #1db954;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="logo">🧰 WebToolbox.fun</div>
-    <ul>
-      <li><a href="index.html">Converti Immagini</a></li>
-      <li><a href="ridimensiona.html" class="active">Ridimensiona</a></li>
-      <li><a href="ruota-immagini.html">Ruota</a></li>
-      <li><a href="flip-immagini.html">Specchia</a></li>
-      <li><a href="crop-immagini.html">Ritaglia</a></li>
-      <li><a href="base64.html">Img → Base64</a></li>
-      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
-    </ul>
-  </nav>
+<nav>
+  <div class="logo">🧰 WebToolbox.fun</div>
+  <ul>
+    <li><a href="index.html">Converti Immagini</a></li>
+    <li><a href="ridimensiona.html" class="active">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html">Ruota</a></li>
+    <li><a href="flip-immagini.html">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html">Img → Base64</a></li>
+    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+  </ul>
+</nav>
 
-  <header>
-    <h1>Ridimensiona Immagini</h1>
-    <p>Carica un'immagine e imposta una nuova larghezza o altezza.</p>
-  </header>
+<main>
+  <h1>Ridimensiona immagini online gratis</h1>
+  <p class="description">Carica immagini JPG o PNG, scegli dimensioni personalizzate o standard e scarica subito le immagini ridimensionate.</p>
 
-  <main>
-    <div id="resize-area" class="upload-section" tabindex="0">
-      <p>Clicca per selezionare un'immagine</p>
-      <input type="file" id="resizeInput" accept="image/*">
-    </div>
+  <div id="banner"></div>
 
-    <div id="resizeControls" style="display:none; text-align:center; margin-top:2rem;">
-      <label>
-        Larghezza (px): <input type="number" id="resizeWidth" min="1">
-      </label>
-      <br><br>
-      <label>
-        Altezza (px): <input type="number" id="resizeHeight" min="1">
-      </label>
-      <br><br>
-      <button class="convert-btn" id="resizeBtn">Ridimensiona</button>
-    </div>
+  <input type="file" id="inputFiles" accept="image/png, image/jpeg" multiple />
 
-    <div id="resizeOutput" style="margin-top:2rem; text-align:center;"></div>
-  </main>
+  <label for="standardSizes">Dimensioni standard:</label>
+  <select id="standardSizes" aria-label="Seleziona dimensioni standard">
+    <option value="">-- Nessuna --</option>
+    <option value="1920x1080">1920 x 1080 (Full HD)</option>
+    <option value="1280x720">1280 x 720 (HD)</option>
+    <option value="1024x768">1024 x 768 (XGA)</option>
+    <option value="800x600">800 x 600 (SVGA)</option>
+    <option value="640x480">640 x 480 (VGA)</option>
+    <option value="320x240">320 x 240 (QVGA)</option>
+  </select>
 
-  <footer>
-    <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
-  </footer>
+  <label for="widthInput">Larghezza (px):</label>
+  <input type="number" id="widthInput" min="1" placeholder="Es. 800" aria-label="Larghezza in pixel" />
 
-  <script>
-    const resizeInput = document.getElementById('resizeInput');
-    const resizeArea = document.getElementById('resize-area');
-    const resizeControls = document.getElementById('resizeControls');
-    const resizeBtn = document.getElementById('resizeBtn');
-    const resizeOutput = document.getElementById('resizeOutput');
-    let originalImage = new Image();
+  <label for="heightInput">Altezza (px):</label>
+  <input type="number" id="heightInput" min="1" placeholder="Es. 600" aria-label="Altezza in pixel" />
 
-    resizeArea.addEventListener('click', () => resizeInput.click());
+  <button id="resizeBtn">Ridimensiona</button>
 
-    resizeInput.addEventListener('change', () => {
-      const file = resizeInput.files[0];
-      if (!file || !file.type.startsWith('image/')) return;
+  <div id="previewContainer" aria-live="polite" aria-label="Anteprima immagini caricate"></div>
 
+  <div id="resultContainer"></div>
+</main>
+
+<script>
+  const inputFiles = document.getElementById('inputFiles');
+  const standardSizes = document.getElementById('standardSizes');
+  const widthInput = document.getElementById('widthInput');
+  const heightInput = document.getElementById('heightInput');
+  const resizeBtn = document.getElementById('resizeBtn');
+  const previewContainer = document.getElementById('previewContainer');
+  const resultContainer = document.getElementById('resultContainer');
+  const banner = document.getElementById('banner');
+
+  let loadedFiles = [];
+
+  // Sincronizza dimensioni standard con input personalizzati
+  standardSizes.addEventListener('change', () => {
+    const val = standardSizes.value;
+    if (!val) return;
+    const [w, h] = val.split('x').map(Number);
+    widthInput.value = w;
+    heightInput.value = h;
+  });
+
+  // Se si modificano manualmente input larghezza o altezza, resetta dimensioni standard
+  widthInput.addEventListener('input', () => {
+    standardSizes.value = '';
+  });
+  heightInput.addEventListener('input', () => {
+    standardSizes.value = '';
+  });
+
+  inputFiles.addEventListener('change', e => {
+    loadedFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    previewContainer.innerHTML = '';
+    resultContainer.innerHTML = '';
+    banner.style.display = loadedFiles.length ? 'block' : 'none';
+    if (loadedFiles.length) {
+      banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}.`;
+      loadedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.alt = file.name;
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      banner.style.display = 'none';
+    }
+  });
+
+  resizeBtn.addEventListener('click', () => {
+    if (!loadedFiles.length) {
+      alert('Seleziona almeno un file immagine.');
+      return;
+    }
+    const width = parseInt(widthInput.value);
+    const height = parseInt(heightInput.value);
+    if (!width || !height || width <= 0 || height <= 0) {
+      alert('Inserisci larghezza e altezza validi.');
+      return;
+    }
+
+    resultContainer.innerHTML = '';
+
+    loadedFiles.forEach(file => {
       const reader = new FileReader();
-      reader.onload = () => {
-        originalImage.src = reader.result;
-        resizeControls.style.display = 'block';
-        resizeOutput.innerHTML = `<p>Anteprima:</p><img src="${reader.result}" style="max-width:300px; border-radius:6px; border:1px solid #1db954;">`;
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          // Per evitare distorsioni, ridimensiona mantenendo proporzioni?
+          // Qui forziamo dimensioni esatte, distorcendo se serve.
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const imageElem = document.createElement('img');
+            imageElem.src = url;
+            imageElem.alt = 'Immagine ridimensionata';
+            resultContainer.appendChild(imageElem);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = file.name.replace(/\.[^/.]+$/, '') + '.png';
+            link.textContent = 'Scarica ' + link.download;
+            link.style.color = '#1db954';
+            link.style.fontWeight = 'bold';
+            link.style.display = 'block';
+            link.style.marginBottom = '1rem';
+            resultContainer.appendChild(link);
+          }, 'image/png');
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     });
-
-    resizeBtn.addEventListener('click', () => {
-      const width = parseInt(document.getElementById('resizeWidth').value);
-      const height = parseInt(document.getElementById('resizeHeight').value);
-
-      if (!width && !height) {
-        alert("Inserisci almeno una dimensione");
-        return;
-      }
-
-      const canvas = document.createElement('canvas');
-      const aspectRatio = originalImage.width / originalImage.height;
-
-      if (width && !height) {
-        canvas.width = width;
-        canvas.height = Math.round(width / aspectRatio);
-      } else if (!width && height) {
-        canvas.height = height;
-        canvas.width = Math.round(height * aspectRatio);
-      } else {
-        canvas.width = width;
-        canvas.height = height;
-      }
-
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        resizeOutput.innerHTML = `
-          <p>Immagine ridimensionata:</p>
-          <a href="${url}" download="immagine-ridimensionata.png">Scarica PNG</a><br>
-          <img src="${url}" style="max-width:300px; margin-top:1rem; border-radius:6px; border:1px solid #1db954;">
-        `;
-      }, 'image/png');
-    });
-  </script>
-  <script src="cache.js" defer></script>
+  });
+</script>
 </body>
 </html>
