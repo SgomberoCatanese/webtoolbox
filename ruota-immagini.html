@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ruota Immagini - WebToolbox.fun</title>
+  <link rel="stylesheet" href="style.css?v=1.0.6">
+</head>
+<body>
+  <nav>
+    <div class="logo">🧰 WebToolbox.fun</div>
+    <ul>
+      <li><a href="index.html">Converti Immagini</a></li>
+      <li><a href="ridimensiona.html">Ridimensiona</a></li>
+      <li><a href="ruota-immagini.html" class="active">Ruota</a></li>
+      <li><a href="flip-immagini.html">Specchia</a></li>
+      <li><a href="crop-immagini.html">Ritaglia</a></li>
+      <li><a href="base64.html">Img → Base64</a></li>
+      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Ruota Immagini</h1>
+    <p>Carica un'immagine e ruotala a 90°, 180° o 270° direttamente dal browser.</p>
+  </header>
+
+  <main>
+    <div id="rotate-area" class="upload-section" tabindex="0">
+      <p>Clicca per selezionare un'immagine</p>
+      <input type="file" id="rotateInput" accept="image/*">
+    </div>
+
+    <div id="rotateControls" style="display:none; text-align:center; margin-top:2rem;">
+      <label>Angolo di rotazione:</label><br><br>
+      <select id="rotationSelect">
+        <option value="90">90°</option>
+        <option value="180">180°</option>
+        <option value="270">270°</option>
+      </select>
+      <br><br>
+      <button class="convert-btn" id="rotateBtn">Ruota</button>
+    </div>
+
+    <div id="rotateOutput" style="margin-top:2rem; text-align:center;"></div>
+  </main>
+
+  <footer>
+    <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
+  </footer>
+
+  <script src="cache.js?v=1.0.6"></script>
+  <script>
+    const rotateInput = document.getElementById('rotateInput');
+    const rotateArea = document.getElementById('rotate-area');
+    const rotateControls = document.getElementById('rotateControls');
+    const rotateBtn = document.getElementById('rotateBtn');
+    const rotateOutput = document.getElementById('rotateOutput');
+    const rotationSelect = document.getElementById('rotationSelect');
+
+    let originalImage = new Image();
+
+    rotateArea.addEventListener('click', () => rotateInput.click());
+
+    rotateInput.addEventListener('change', () => {
+      const file = rotateInput.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        originalImage.src = reader.result;
+        rotateControls.style.display = 'block';
+        rotateOutput.innerHTML = `<p>Anteprima originale:</p><img src="${reader.result}" style="max-width:300px; border:1px solid #1db954; border-radius:6px;">`;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    rotateBtn.addEventListener('click', () => {
+      const angle = parseInt(rotationSelect.value);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      if (angle === 180) {
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+        ctx.translate(canvas.width, canvas.height);
+      } else {
+        canvas.width = originalImage.height;
+        canvas.height = originalImage.width;
+        if (angle === 90) {
+          ctx.translate(canvas.width, 0);
+        } else if (angle === 270) {
+          ctx.translate(0, canvas.height);
+        }
+      }
+
+      ctx.rotate((angle * Math.PI) / 180);
+      ctx.drawImage(originalImage, 0, 0);
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        if (!window.convertedBlobs) window.convertedBlobs = [];
+        window.convertedBlobs.push(url);
+
+        rotateOutput.innerHTML = `
+          <p>Immagine ruotata:</p>
+          <a href="${url}" download="immagine-ruotata.png">Scarica PNG</a><br>
+          <img src="${url}" style="max-width:300px; margin-top:1rem; border:1px solid #1db954; border-radius:6px;">
+        `;
+      }, 'image/png');
+    });
+  </script>
+</body>
+</html>
