@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ridimensiona Immagini - WebToolbox.fun</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <div class="logo">🧰 WebToolbox.fun</div>
+    <ul>
+      <li><a href="index.html">Converti Immagini</a></li>
+      <li><a href="ridimensiona.html" class="active">Ridimensiona</a></li>
+      <li><a href="ruota-immagini.html">Ruota</a></li>
+      <li><a href="flip-immagini.html">Specchia</a></li>
+      <li><a href="crop-immagini.html">Ritaglia</a></li>
+      <li><a href="base64.html">Img → Base64</a></li>
+      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Ridimensiona Immagini</h1>
+    <p>Carica un'immagine e imposta una nuova larghezza o altezza.</p>
+  </header>
+
+  <main>
+    <div id="resize-area" class="upload-section" tabindex="0">
+      <p>Clicca per selezionare un'immagine</p>
+      <input type="file" id="resizeInput" accept="image/*">
+    </div>
+
+    <div id="resizeControls" style="display:none; text-align:center; margin-top:2rem;">
+      <label>
+        Larghezza (px): <input type="number" id="resizeWidth" min="1">
+      </label>
+      <br><br>
+      <label>
+        Altezza (px): <input type="number" id="resizeHeight" min="1">
+      </label>
+      <br><br>
+      <button class="convert-btn" id="resizeBtn">Ridimensiona</button>
+    </div>
+
+    <div id="resizeOutput" style="margin-top:2rem; text-align:center;"></div>
+  </main>
+
+  <footer>
+    <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
+  </footer>
+
+  <script>
+    const resizeInput = document.getElementById('resizeInput');
+    const resizeArea = document.getElementById('resize-area');
+    const resizeControls = document.getElementById('resizeControls');
+    const resizeBtn = document.getElementById('resizeBtn');
+    const resizeOutput = document.getElementById('resizeOutput');
+    let originalImage = new Image();
+
+    resizeArea.addEventListener('click', () => resizeInput.click());
+
+    resizeInput.addEventListener('change', () => {
+      const file = resizeInput.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        originalImage.src = reader.result;
+        resizeControls.style.display = 'block';
+        resizeOutput.innerHTML = `<p>Anteprima:</p><img src="${reader.result}" style="max-width:300px; border-radius:6px; border:1px solid #1db954;">`;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    resizeBtn.addEventListener('click', () => {
+      const width = parseInt(document.getElementById('resizeWidth').value);
+      const height = parseInt(document.getElementById('resizeHeight').value);
+
+      if (!width && !height) {
+        alert("Inserisci almeno una dimensione");
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      const aspectRatio = originalImage.width / originalImage.height;
+
+      if (width && !height) {
+        canvas.width = width;
+        canvas.height = Math.round(width / aspectRatio);
+      } else if (!width && height) {
+        canvas.height = height;
+        canvas.width = Math.round(height * aspectRatio);
+      } else {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        resizeOutput.innerHTML = `
+          <p>Immagine ridimensionata:</p>
+          <a href="${url}" download="immagine-ridimensionata.png">Scarica PNG</a><br>
+          <img src="${url}" style="max-width:300px; margin-top:1rem; border-radius:6px; border:1px solid #1db954;">
+        `;
+      }, 'image/png');
+    });
+  </script>
+</body>
+</html>
