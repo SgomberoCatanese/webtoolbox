@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Converti Immagini - WebToolbox.fun</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <div class="logo">🧰 WebToolbox.fun</div>
+    <ul>
+      <li><a href="index.html" class="active">Converti Immagini</a></li>
+      <li><a href="ridimensiona.html">Ridimensiona</a></li>
+      <li><a href="ruota-immagini.html">Ruota</a></li>
+      <li><a href="flip-immagini.html">Specchia</a></li>
+      <li><a href="crop-immagini.html">Ritaglia</a></li>
+      <li><a href="base64.html">Img → Base64</a></li>
+      <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Converti Immagini Online</h1>
+    <p>Trascina o carica immagini PNG, JPEG, WebP e convertile in altri formati in un attimo.</p>
+  </header>
+
+  <main>
+    <div id="drop-area" class="upload-section" tabindex="0">
+      <p>Trascina qui i file o clicca per selezionare</p>
+      <input type="file" id="fileElem" accept="image/png,image/jpeg,image/webp" multiple />
+    </div>
+
+    <label for="format-select" class="select-format">Formato di destinazione:</label>
+    <select id="format-select">
+      <option value="webp">WebP</option>
+      <option value="png">PNG</option>
+      <option value="jpeg">JPEG</option>
+    </select>
+
+    <button id="convertBtn" class="convert-btn" disabled>Converti</button>
+
+    <div id="output"></div>
+  </main>
+
+  <footer>
+    <p>Creato con ❤️ da Boss & MbareGPT – WebToolbox.fun</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
