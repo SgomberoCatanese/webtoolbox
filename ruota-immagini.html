@@ -3,7 +3,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ruota immagini online – WebToolbox.fun</title>
-  <meta name="description" content="Ruota immagini JPG e PNG online. Seleziona più file con rotazione personalizzata oppure ruota liberamente una sola immagine con mouse o touch.">
+  <meta name="description" content="Ruota immagini JPG e PNG online. Seleziona una o più immagini con rotazione personalizzata o preset. Scarica gratis le immagini ruotate.">
   <style>
     body { background: #121212; color: #eee; font-family: sans-serif; margin: 0; padding: 0; }
     nav { background: #1db954; padding: 1rem; display: flex; justify-content: space-between; flex-wrap: wrap; }
@@ -16,8 +16,6 @@
     .imgBox { background: #222; padding: 10px; border-radius: 8px; border: 2px solid #1db954; text-align: center; }
     .imgBox img { max-width: 150px; border-radius: 6px; display: block; margin: 0 auto 0.5rem; }
     .imgBox select, .imgBox input[type="number"] { margin-top: 0.3rem; padding: 6px; border-radius: 4px; border: none; background: #1db954; color: #121212; font-weight: bold; }
-    #singleMode { display: none; text-align: center; margin-top: 1rem; }
-    #singleCanvas { border-radius: 8px; background: white; max-width: 100%; }
     button { margin: 2rem auto 1rem; display: block; background: #1db954; color: #121212; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; }
     #output img { max-width: 100%; margin-top: 1rem; border-radius: 8px; border: 2px solid #1db954; }
   </style>
@@ -37,155 +35,94 @@
   </nav>
   <main>
     <h1>Ruota immagini online</h1>
-    <p>Seleziona una o più immagini. Una sola? Ruotala liberamente. Più? Scegli la rotazione per ognuna.</p>
+    <p>Carica una o più immagini e scegli l'angolo di rotazione per ciascuna. Puoi usare preset o inserire un valore personalizzato.</p>
     <input type="file" id="fileInput" accept="image/*" multiple>
     <div id="previewContainer"></div>
-    <div id="singleMode">
-      <canvas id="singleCanvas" width="0" height="0"></canvas>
-    </div>
     <button id="rotateBtn">Applica rotazioni</button>
     <div id="output"></div>
   </main>
   <script>
     const fileInput = document.getElementById('fileInput');
     const previewContainer = document.getElementById('previewContainer');
-    const singleMode = document.getElementById('singleMode');
-    const singleCanvas = document.getElementById('singleCanvas');
     const rotateBtn = document.getElementById('rotateBtn');
-    const output = document.getElementById('output');let files = [], angle = 0;
-let ctx = singleCanvas.getContext('2d');
-let currentImg = new Image();
+    const output = document.getElementById('output');let files = [];
 
 fileInput.addEventListener('change', () => {
   files = Array.from(fileInput.files);
   previewContainer.innerHTML = '';
   output.innerHTML = '';
-  singleMode.style.display = 'none';
 
-  if (files.length === 1) {
+  files.forEach((file, index) => {
     const reader = new FileReader();
     reader.onload = e => {
-      currentImg.onload = () => drawRotated(0);
-      currentImg.src = e.target.result;
-    }
-    reader.readAsDataURL(files[0]);
-    singleMode.style.display = 'block';
-  } else {
-    files.forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const box = document.createElement('div');
-        box.className = 'imgBox';
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        const select = document.createElement('select');
-        [0, 90, 180, 270].forEach(val => {
-          const option = document.createElement('option');
-          option.value = val;
-          option.textContent = val + '°';
-          select.appendChild(option);
-        });
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.placeholder = 'Gradi';
-        input.style.display = 'none';
-        const opt = document.createElement('option');
-        opt.value = 'custom'; opt.textContent = 'Personalizzato';
-        select.appendChild(opt);
-        select.onchange = () => {
-          input.style.display = select.value === 'custom' ? 'block' : 'none';
-        }
-        box.appendChild(img);
-        box.appendChild(select);
-        box.appendChild(input);
-        box.dataset.index = index;
-        previewContainer.appendChild(box);
+      const box = document.createElement('div');
+      box.className = 'imgBox';
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      const select = document.createElement('select');
+      [0, 90, 180, 270].forEach(val => {
+        const option = document.createElement('option');
+        option.value = val;
+        option.textContent = val + '°';
+        select.appendChild(option);
+      });
+      const customOpt = document.createElement('option');
+      customOpt.value = 'custom';
+      customOpt.textContent = 'Personalizzato';
+      select.appendChild(customOpt);
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.placeholder = 'Gradi';
+      input.style.display = 'none';
+      select.onchange = () => {
+        input.style.display = select.value === 'custom' ? 'block' : 'none';
       }
-      reader.readAsDataURL(file);
-    });
-  }
-});
-
-function drawRotated(deg) {
-  const rad = deg * Math.PI / 180;
-  const sin = Math.abs(Math.sin(rad)), cos = Math.abs(Math.cos(rad));
-  singleCanvas.width = currentImg.width * cos + currentImg.height * sin;
-  singleCanvas.height = currentImg.width * sin + currentImg.height * cos;
-  ctx.clearRect(0, 0, singleCanvas.width, singleCanvas.height);
-  ctx.save();
-  ctx.translate(singleCanvas.width/2, singleCanvas.height/2);
-  ctx.rotate(rad);
-  ctx.drawImage(currentImg, -currentImg.width/2, -currentImg.height/2);
-  ctx.restore();
-}
-
-let startX;
-singleCanvas.addEventListener('mousedown', e => {
-  startX = e.clientX;
-  const onMove = e => {
-    let delta = e.clientX - startX;
-    angle = (angle + delta/2) % 360;
-    drawRotated(angle);
-    startX = e.clientX;
-  }
-  const onUp = () => {
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
-  }
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup', onUp);
+      box.appendChild(img);
+      box.appendChild(select);
+      box.appendChild(input);
+      box.dataset.index = index;
+      previewContainer.appendChild(box);
+    }
+    reader.readAsDataURL(file);
+  });
 });
 
 rotateBtn.addEventListener('click', () => {
   output.innerHTML = '';
-  if (files.length === 1) {
-    singleCanvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const img = document.createElement('img');
-      img.src = url;
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'ruotata.png';
-      a.textContent = 'Scarica immagine';
-      output.appendChild(img);
-      output.appendChild(a);
-    });
-  } else {
-    document.querySelectorAll('.imgBox').forEach((box, i) => {
-      const file = files[i];
-      const select = box.querySelector('select');
-      const input = box.querySelector('input');
-      const deg = select.value === 'custom' ? parseInt(input.value || '0') : parseInt(select.value);
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const rad = deg * Math.PI / 180;
-          const sin = Math.abs(Math.sin(rad)), cos = Math.abs(Math.cos(rad));
-          canvas.width = img.width * cos + img.height * sin;
-          canvas.height = img.width * sin + img.height * cos;
-          ctx.translate(canvas.width/2, canvas.height/2);
-          ctx.rotate(rad);
-          ctx.drawImage(img, -img.width/2, -img.height/2);
-          canvas.toBlob(blob => {
-            const url = URL.createObjectURL(blob);
-            const outImg = document.createElement('img');
-            outImg.src = url;
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'rotated.png';
-            link.textContent = 'Scarica';
-            output.appendChild(outImg);
-            output.appendChild(link);
-          });
-        }
-        img.src = e.target.result;
+  document.querySelectorAll('.imgBox').forEach((box, i) => {
+    const file = files[i];
+    const select = box.querySelector('select');
+    const input = box.querySelector('input');
+    const deg = select.value === 'custom' ? parseInt(input.value || '0') : parseInt(select.value);
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const rad = deg * Math.PI / 180;
+        const sin = Math.abs(Math.sin(rad)), cos = Math.abs(Math.cos(rad));
+        canvas.width = img.width * cos + img.height * sin;
+        canvas.height = img.width * sin + img.height * cos;
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(rad);
+        ctx.drawImage(img, -img.width/2, -img.height/2);
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const outImg = document.createElement('img');
+          outImg.src = url;
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'rotated.png';
+          link.textContent = 'Scarica';
+          output.appendChild(outImg);
+          output.appendChild(link);
+        });
       }
-      reader.readAsDataURL(file);
-    });
-  }
+      img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  });
 });
 
   </script>
