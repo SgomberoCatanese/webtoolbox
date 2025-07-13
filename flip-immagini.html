@@ -3,21 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Specchia Immagini - WebToolbox.fun</title>
+<title>Specchia e Ruota Immagini Online – WebToolbox.fun</title>
+<meta name="description" content="Specchia immagini orizzontalmente, verticalmente, doppia e ruota di 90, 180, 270 gradi o personalizzato. Supporto multiplo, download singolo e ZIP." />
 <style>
   body {
     background: #121212;
     color: #eee;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0; padding: 0;
-    display: flex; flex-direction: column; min-height: 100vh;
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0 1rem;
   }
   nav {
-    background-color: #1db954;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    background: #1db954;
+    padding: 1rem;
+    display: flex; flex-wrap: wrap; justify-content: space-between;
   }
   nav .logo {
     font-weight: bold;
@@ -25,204 +23,339 @@
     color: #121212;
   }
   nav ul {
+    list-style: none;
     display: flex;
     gap: 1rem;
-    list-style: none;
     flex-wrap: wrap;
     margin: 0;
+    padding: 0;
   }
   nav a {
-    color: #121212;
     text-decoration: none;
+    color: #121212;
     font-weight: bold;
   }
   nav a.active {
     text-decoration: underline;
   }
   main {
-    max-width: 650px;
+    max-width: 900px;
     margin: 2rem auto;
-    padding: 0 1rem;
-    flex: 1;
+    padding-bottom: 4rem;
   }
-  h1 {
+  h1, p {
     text-align: center;
-    margin-bottom: 0.3rem;
   }
-  p.description {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #aaa;
-  }
-  input[type="file"] {
+  #upload {
     display: block;
-    margin: 0 auto 1.5rem;
-    cursor: pointer;
-    border-radius: 6px;
-    padding: 0.6rem 1.2rem;
-    border: none;
-    background-color: #1db954;
-    color: #121212;
-    font-weight: bold;
+    margin: 1rem auto;
+    max-width: 300px;
   }
-  #imageContainer {
-    text-align: center;
-    margin-top: 1rem;
-  }
-  #imageContainer img {
-    max-width: 100%;
+  .image-container {
+    margin: 1rem 0;
+    background: #222;
     border-radius: 8px;
-    border: 2px solid #1db954;
+    padding: 1rem;
   }
-  .btn-group {
-    text-align: center;
-    margin-top: 1rem;
+  .image-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .single-image {
+    background: #111;
+    border-radius: 8px;
+    padding: 0.5rem;
+    max-width: 280px;
+    flex-grow: 1;
+    box-sizing: border-box;
+  }
+  canvas {
+    width: 100%;
+    border-radius: 5px;
+    display: block;
+    margin-bottom: 0.5rem;
+    background: #000;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
+  select, input[type=number] {
+    width: 100%;
+    padding: 0.3rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
   }
   button {
-    background-color: #1db954;
+    background: #1db954;
     border: none;
     color: #121212;
-    padding: 0.7rem 1.5rem;
-    margin: 0 0.5rem;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  button:disabled {
-    background-color: #555;
-    cursor: not-allowed;
-  }
-  #downloadLink {
-    display: block;
-    margin: 1.5rem auto 0;
-    text-align: center;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
     font-weight: bold;
-    color: #1db954;
-    text-decoration: none;
+    cursor: pointer;
+    width: 100%;
   }
-  footer {
-    background-color: #1e1e1e;
+  .download-all-container {
     text-align: center;
-    padding: 1rem;
-    font-size: 0.9rem;
-    color: #aaa;
+    margin: 2rem 0 4rem;
+  }
+  .format-select {
+    max-width: 150px;
+    margin: 0 auto 1rem;
+  }
+  @media (max-width: 600px) {
+    .image-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+    .single-image {
+      max-width: 100%;
+    }
   }
 </style>
 </head>
 <body>
 <nav>
-  <div class="logo">🧰 WebToolbox.fun</div>
+  <div class="logo">WebToolbox.fun</div>
   <ul>
-    <li><a href="index.html">Converti Immagini</a></li>
+    <li><a href="index.html">Converti</a></li>
     <li><a href="ridimensiona.html">Ridimensiona</a></li>
     <li><a href="ruota-immagini.html">Ruota</a></li>
     <li><a href="flip-immagini.html" class="active">Specchia</a></li>
     <li><a href="crop-immagini.html">Ritaglia</a></li>
-    <li><a href="base64.html">Img → Base64</a></li>
-    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+    <li><a href="base64.html">Base64/ASCII</a></li>
+    <li><a href="scala-grigi.html">Filtri</a></li>
   </ul>
 </nav>
 
 <main>
-  <h1>Specchia Immagini</h1>
-  <p class="description">Carica un’immagine e specchiala orizzontalmente o verticalmente.</p>
-  <input type="file" id="inputImage" accept="image/*" />
-  <div id="imageContainer" style="display:none;">
-    <canvas id="canvas"></canvas>
+  <h1>Specchia e Ruota Immagini Online</h1>
+  <p>Carica più immagini, scegli per ognuna specchiatura e rotazione, scarica singolarmente o tutte in ZIP.</p>
+
+  <input type="file" id="upload" accept="image/*" multiple />
+
+  <div class="download-all-container">
+    <label for="allFormat">Formato download ZIP:</label>
+    <select id="allFormat" class="format-select" aria-label="Formato per download zip">
+      <option value="png">PNG</option>
+      <option value="jpeg">JPEG</option>
+    </select>
+    <button id="downloadAllBtn">Scarica Tutto in ZIP</button>
   </div>
-  <div class="btn-group" style="display:none;">
-    <button id="flipHBtn" disabled>Specchia Orizzontale</button>
-    <button id="flipVBtn" disabled>Specchia Verticale</button>
-  </div>
-  <a id="downloadLink" href="#" download="immagine-specchiata.png" style="display:none;">Scarica Immagine Specchiata</a>
+
+  <div class="image-wrapper" id="imageWrapper"></div>
 </main>
 
-<footer>
-  <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
-</footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
-  const inputImage = document.getElementById('inputImage');
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  const imageContainer = document.getElementById('imageContainer');
-  const flipHBtn = document.getElementById('flipHBtn');
-  const flipVBtn = document.getElementById('flipVBtn');
-  const btnGroup = flipHBtn.parentElement;
-  const downloadLink = document.getElementById('downloadLink');
+  const upload = document.getElementById('upload');
+  const imageWrapper = document.getElementById('imageWrapper');
+  const downloadAllBtn = document.getElementById('downloadAllBtn');
+  const allFormatSelect = document.getElementById('allFormat');
 
-  let img = new Image();
-  let currentImageData = null;
+  let imagesData = []; // {img, canvas, ctx, flipH, flipV, rotation, format, dataUrl}
 
-  inputImage.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file || !file.type.startsWith('image/')) return alert('Seleziona un file immagine valido.');
+  upload.addEventListener('change', () => {
+    imagesData = [];
+    imageWrapper.innerHTML = '';
+    if(!upload.files.length) return;
 
-    const url = URL.createObjectURL(file);
-    img.src = url;
+    Array.from(upload.files).forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const container = document.createElement('div');
+          container.className = 'single-image';
 
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+          // canvas
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
 
-      imageContainer.style.display = 'block';
-      btnGroup.style.display = 'block';
-      flipHBtn.disabled = false;
-      flipVBtn.disabled = false;
-      downloadLink.style.display = 'none';
-      currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    };
+          // controls
+          const flipHLabel = document.createElement('label');
+          flipHLabel.textContent = 'Specchia Orizzontale';
+          const flipHSelect = document.createElement('select');
+          ['No', 'Sì'].forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt === 'Sì' ? 'true' : 'false';
+            option.textContent = opt;
+            flipHSelect.appendChild(option);
+          });
+          flipHLabel.appendChild(flipHSelect);
+
+          const flipVLabel = document.createElement('label');
+          flipVLabel.textContent = 'Specchia Verticale';
+          const flipVSelect = document.createElement('select');
+          ['No', 'Sì'].forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt === 'Sì' ? 'true' : 'false';
+            option.textContent = opt;
+            flipVSelect.appendChild(option);
+          });
+          flipVLabel.appendChild(flipVSelect);
+
+          const rotationLabel = document.createElement('label');
+          rotationLabel.textContent = 'Rotazione';
+          const rotationSelect = document.createElement('select');
+          ['0', '90', '180', '270', 'Personalizzato'].forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.toLowerCase();
+            option.textContent = opt + '°';
+            rotationSelect.appendChild(option);
+          });
+          rotationLabel.appendChild(rotationSelect);
+
+          const rotationCustomInput = document.createElement('input');
+          rotationCustomInput.type = 'number';
+          rotationCustomInput.min = '0';
+          rotationCustomInput.max = '360';
+          rotationCustomInput.value = '0';
+          rotationCustomInput.style.display = 'none';
+          rotationCustomInput.style.marginBottom = '0.6rem';
+
+          rotationSelect.addEventListener('change', () => {
+            if (rotationSelect.value === 'personalizzato') {
+              rotationCustomInput.style.display = 'block';
+            } else {
+              rotationCustomInput.style.display = 'none';
+              rotationCustomInput.value = '0';
+            }
+            updateCanvas();
+          });
+
+          rotationCustomInput.addEventListener('input', () => {
+            updateCanvas();
+          });
+
+          // download button
+          const downloadBtn = document.createElement('button');
+          downloadBtn.textContent = 'Scarica Immagine';
+          downloadBtn.addEventListener('click', () => {
+            const fmt = formatSelect.value;
+            canvas.toBlob(blob => {
+              saveAs(blob, `immagine_${index+1}.${fmt}`);
+            }, `image/${fmt}`);
+          });
+
+          // format selector
+          const formatLabel = document.createElement('label');
+          formatLabel.textContent = 'Formato Download';
+          const formatSelect = document.createElement('select');
+          ['png', 'jpeg'].forEach(fmt => {
+            const option = document.createElement('option');
+            option.value = fmt;
+            option.textContent = fmt.toUpperCase();
+            formatSelect.appendChild(option);
+          });
+          formatLabel.appendChild(formatSelect);
+
+          // append controls
+          container.appendChild(canvas);
+          container.appendChild(flipHLabel);
+          container.appendChild(flipVLabel);
+          container.appendChild(rotationLabel);
+          container.appendChild(rotationCustomInput);
+          container.appendChild(formatLabel);
+          container.appendChild(downloadBtn);
+
+          imageWrapper.appendChild(container);
+
+          // store data for this image
+          const imageData = {
+            img,
+            canvas,
+            ctx,
+            flipH: false,
+            flipV: false,
+            rotation: 0,
+            format: 'png',
+            dataUrl: null
+          };
+          imagesData.push(imageData);
+
+          // update canvas drawing
+          function updateCanvas() {
+            let rot = 0;
+            if(rotationSelect.value === 'personalizzato') {
+              rot = Number(rotationCustomInput.value) || 0;
+            } else {
+              rot = Number(rotationSelect.value) || 0;
+            }
+            imageData.flipH = flipHSelect.value === 'true';
+            imageData.flipV = flipVSelect.value === 'true';
+            imageData.rotation = rot;
+            imageData.format = formatSelect.value;
+
+            // canvas dimension change for rotation 90 or 270
+            if(rot % 180 === 90 || rot % 180 === -90) {
+              imageData.canvas.width = imageData.img.height;
+              imageData.canvas.height = imageData.img.width;
+            } else {
+              imageData.canvas.width = imageData.img.width;
+              imageData.canvas.height = imageData.img.height;
+            }
+
+            // clear and apply transform
+            imageData.ctx.save();
+            imageData.ctx.clearRect(0, 0, imageData.canvas.width, imageData.canvas.height);
+            imageData.ctx.translate(imageData.canvas.width/2, imageData.canvas.height/2);
+            imageData.ctx.rotate(rot * Math.PI/180);
+            imageData.ctx.scale(imageData.flipH ? -1 : 1, imageData.flipV ? -1 : 1);
+            imageData.ctx.drawImage(imageData.img, -imageData.img.width/2, -imageData.img.height/2);
+            imageData.ctx.restore();
+
+            // update dataURL
+            imageData.dataUrl = imageData.canvas.toDataURL(`image/${imageData.format}`);
+          }
+
+          // listen controls
+          [flipHSelect, flipVSelect, rotationSelect, rotationCustomInput, formatSelect].forEach(ctrl => {
+            ctrl.addEventListener('change', updateCanvas);
+            ctrl.addEventListener('input', updateCanvas);
+          });
+
+          // init canvas draw
+          updateCanvas();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
   });
 
-  function updateCanvas(imageData) {
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
-    ctx.putImageData(imageData, 0, 0);
-  }
+  // download all ZIP
+  downloadAllBtn.addEventListener('click', async () => {
+    if(imagesData.length === 0) {
+      alert('Carica prima almeno un\'immagine, bro!');
+      return;
+    }
+    const zip = new JSZip();
+    const chosenFormat = allFormatSelect.value;
 
-  function flipHorizontal() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(img, 0, 0);
-    ctx.restore();
-
-    currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    showDownload();
-  }
-
-  function flipVertical() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
-    ctx.translate(0, canvas.height);
-    ctx.scale(1, -1);
-    ctx.drawImage(img, 0, 0);
-    ctx.restore();
-
-    currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    showDownload();
-  }
-
-  flipHBtn.addEventListener('click', () => {
-    flipHorizontal();
+    for(let i = 0; i < imagesData.length; i++) {
+      const imageData = imagesData[i];
+      // converto in blob e aggiungo
+      const blob = await new Promise(resolve => {
+        imageData.canvas.toBlob(resolve, `image/${chosenFormat}`);
+      });
+      zip.file(`immagine_${i+1}.${chosenFormat}`, blob);
+    }
+    const content = await zip.generateAsync({type:"blob"});
+    saveAs(content, `immagini_specchiate.zip`);
   });
-
-  flipVBtn.addEventListener('click', () => {
-    flipVertical();
-  });
-
-  function showDownload() {
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      downloadLink.href = url;
-      downloadLink.style.display = 'inline-block';
-    }, 'image/png');
-  }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </body>
 </html>
