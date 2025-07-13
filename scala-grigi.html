@@ -45,6 +45,7 @@
     <div class="controls">
       <label>Filtro:
         <select id="filterSelect">
+          <option value="brightness(100.1%)">Normale</option>
           <option value="none">Nessuno</option>
           <option value="grayscale(100%)">Scala Grigi</option>
           <option value="sepia(100%)">Seppia</option>
@@ -127,7 +128,7 @@
           ctx.putImageData(imageData, 0, 0);
         }
 
-        ctx.filter = 'none'; // resetta
+        ctx.filter = 'none'; // resetta filtro
       };
       tempImg.src = originalURL;
     }
@@ -137,7 +138,7 @@
     });
 
     applyBtn.addEventListener('click', () => {
-      filterSelect.value = 'none';
+      filterSelect.value = 'brightness(100.1%)'; // il "falso filtro" che forza l'applicazione
       applyFilters();
     });
 
