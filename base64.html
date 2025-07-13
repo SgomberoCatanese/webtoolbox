@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Img → Base64 - WebToolbox.fun</title>
+<title>Convertitore Immagini Base64 e ASCII – WebToolbox.fun</title>
+<meta name="description" content="Converti immagini in Base64 o ASCII art online. Carica la tua immagine, copia il codice Base64 o la versione ASCII facilmente." />
 <style>
   body {
     background: #121212;
     color: #eee;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0; padding: 0;
-    display: flex; flex-direction: column; min-height: 100vh;
+    font-family: monospace, monospace;
+    margin: 0;
+    padding: 0 1rem;
   }
   nav {
-    background-color: #1db954;
-    padding: 1rem 2rem;
+    background: #1db954;
+    padding: 1rem;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -25,112 +26,216 @@
     color: #121212;
   }
   nav ul {
+    list-style: none;
     display: flex;
     gap: 1rem;
-    list-style: none;
     flex-wrap: wrap;
     margin: 0;
+    padding: 0;
   }
   nav a {
-    color: #121212;
     text-decoration: none;
+    color: #121212;
     font-weight: bold;
-  }
-  nav a.active {
-    text-decoration: underline;
   }
   main {
-    max-width: 700px;
+    max-width: 900px;
     margin: 2rem auto;
-    padding: 0 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding-bottom: 4rem;
   }
-  h1 {
-    margin-bottom: 0.3rem;
-  }
-  p.description {
+  h1, p {
     text-align: center;
-    margin-bottom: 1.5rem;
-    color: #aaa;
   }
-  input[type="file"] {
-    margin-bottom: 1rem;
-    cursor: pointer;
-    border-radius: 6px;
-    padding: 0.6rem 1.2rem;
+  input[type=file], button {
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
     border: none;
-    background-color: #1db954;
+    background: #1db954;
     color: #121212;
     font-weight: bold;
-  }
-  #output {
+    cursor: pointer;
+    margin: 0.5rem 0;
+    display: block;
     width: 100%;
-    max-width: 680px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  textarea {
+    width: 100%;
+    max-width: 900px;
     height: 200px;
     background: #222;
-    color: #0f0;
-    font-family: monospace;
-    overflow: auto;
-    padding: 1rem;
+    color: #eee;
     border-radius: 8px;
-    user-select: all;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
-  footer {
-    background-color: #1e1e1e;
-    text-align: center;
+    border: none;
+    margin-top: 1rem;
+    font-family: monospace, monospace;
     padding: 1rem;
-    font-size: 0.9rem;
-    color: #aaa;
+    resize: vertical;
+  }
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .hidden {
+    display: none;
+  }
+  #asciiArt {
+    white-space: pre;
+    font-size: 7px;
+    line-height: 7px;
+    letter-spacing: 1px;
+  }
+  @media (max-width: 600px) {
+    textarea { height: 150px; }
+    #asciiArt { font-size: 5px; line-height: 5px; letter-spacing: 0.5px; }
   }
 </style>
 </head>
 <body>
 <nav>
-  <div class="logo">🧰 WebToolbox.fun</div>
+  <div class="logo">WebToolbox.fun</div>
   <ul>
-    <li><a href="index.html">Converti Immagini</a></li>
+    <li><a href="index.html">Converti</a></li>
     <li><a href="ridimensiona.html">Ridimensiona</a></li>
     <li><a href="ruota-immagini.html">Ruota</a></li>
     <li><a href="flip-immagini.html">Specchia</a></li>
     <li><a href="crop-immagini.html">Ritaglia</a></li>
-    <li><a href="base64.html" class="active">Img → Base64</a></li>
-    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
+    <li><a href="base64.html" class="active">Base64/ASCII</a></li>
+    <li><a href="scala-grigi.html">Filtri</a></li>
   </ul>
 </nav>
 
 <main>
-  <h1>Converti Immagine in Base64</h1>
-  <p class="description">Carica un'immagine e ottieni la sua stringa Base64 pronta da copiare.</p>
-  <input type="file" id="inputImage" accept="image/*" />
-  <pre id="output" readonly></pre>
+  <h1>Converti Immagini in Base64 e ASCII Art</h1>
+  <p>Carica un'immagine e ottieni il codice Base64 o la sua versione ASCII. Copia facilmente con i pulsanti.</p>
+
+  <input type="file" id="upload" accept="image/*" />
+
+  <div class="btn-group hidden" id="actionButtons">
+    <button id="toBase64Btn">Base64</button>
+    <button id="toAsciiBtn">Converti in ASCII</button>
+  </div>
+
+  <textarea id="output" readonly placeholder="Carica un'immagine per generare output..."></textarea>
+  <button id="copyBtn" class="hidden">Copia negli Appunti</button>
+
+  <pre id="asciiArt" class="hidden"></pre>
 </main>
 
-<footer>
-  <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
-</footer>
-
 <script>
-  const inputImage = document.getElementById('inputImage');
+  const upload = document.getElementById('upload');
+  const toBase64Btn = document.getElementById('toBase64Btn');
+  const toAsciiBtn = document.getElementById('toAsciiBtn');
   const output = document.getElementById('output');
+  const copyBtn = document.getElementById('copyBtn');
+  const asciiArt = document.getElementById('asciiArt');
+  const actionButtons = document.getElementById('actionButtons');
 
-  inputImage.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file || !file.type.startsWith('image/')) {
-      output.textContent = 'Seleziona un file immagine valido.';
-      return;
-    }
+  let currentBase64 = '';
+  let currentAscii = '';
 
+  upload.addEventListener('change', e => {
+    if (!e.target.files.length) return reset();
+    actionButtons.classList.remove('hidden');
+    output.value = '';
+    asciiArt.classList.add('hidden');
+    copyBtn.classList.add('hidden');
+    currentBase64 = '';
+    currentAscii = '';
+  });
+
+  toBase64Btn.addEventListener('click', () => {
+    const file = upload.files[0];
+    if (!file) return alert('Seleziona prima un\'immagine, bro!');
     const reader = new FileReader();
     reader.onload = () => {
-      output.textContent = reader.result;
+      currentBase64 = reader.result;
+      output.value = currentBase64;
+      output.classList.remove('hidden');
+      asciiArt.classList.add('hidden');
+      copyBtn.classList.remove('hidden');
+      copyBtn.textContent = 'Copia Base64';
     };
     reader.readAsDataURL(file);
   });
+
+  toAsciiBtn.addEventListener('click', () => {
+    const file = upload.files[0];
+    if (!file) return alert('Seleziona prima un\'immagine, bro!');
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const ascii = convertToAscii(img);
+        currentAscii = ascii;
+        asciiArt.textContent = ascii;
+        asciiArt.classList.remove('hidden');
+        output.value = '';
+        output.classList.add('hidden');
+        copyBtn.classList.remove('hidden');
+        copyBtn.textContent = 'Copia ASCII';
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  copyBtn.addEventListener('click', () => {
+    if (output.classList.contains('hidden')) {
+      navigator.clipboard.writeText(currentAscii).then(() => alert('ASCII copiato negli appunti!'));
+    } else {
+      navigator.clipboard.writeText(currentBase64).then(() => alert('Base64 copiato negli appunti!'));
+    }
+  });
+
+  function reset() {
+    actionButtons.classList.add('hidden');
+    output.value = '';
+    output.classList.remove('hidden');
+    asciiArt.classList.add('hidden');
+    copyBtn.classList.add('hidden');
+    currentBase64 = '';
+    currentAscii = '';
+  }
+
+  // ASCII conversion semplice
+  function convertToAscii(image) {
+    // riduci dimensioni per non appesantire
+    const w = 100;
+    const aspectRatio = image.height / image.width;
+    const h = Math.round(w * aspectRatio);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0, w, h);
+
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const pixels = imgData.data;
+    const chars = '@%#*+=-:. '; // scala da scuro a chiaro
+
+    let ascii = '';
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const offset = (y * w + x) * 4;
+        const r = pixels[offset];
+        const g = pixels[offset + 1];
+        const b = pixels[offset + 2];
+        // luminanza percepita
+        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        const charIndex = Math.floor((lum / 255) * (chars.length - 1));
+        ascii += chars[charIndex];
+      }
+      ascii += '\n';
+    }
+    return ascii;
+  }
 </script>
 </body>
 </html>
