@@ -18,7 +18,7 @@
     .controls label { display: flex; flex-direction: column; font-size: 0.9rem; text-align: center; }
     input[type=range] { width: 120px; }
     select, input[type=file], button { padding: 0.5rem; border-radius: 5px; border: none; background: #1db954; color: #121212; font-weight: bold; cursor: pointer; }
-    button { margin-top: 1rem; }
+    button { margin: 0.5rem; }
   </style>
 </head>
 <body>
@@ -69,6 +69,7 @@
       </label>
     </div>
 
+    <button id="applyBtn">Applica modifiche</button>
     <button id="downloadBtn">Scarica Immagine</button>
   </main>
 
@@ -83,9 +84,10 @@
     const blur = document.getElementById('blur');
     const temp = document.getElementById('temp');
     const downloadBtn = document.getElementById('downloadBtn');
+    const applyBtn = document.getElementById('applyBtn');
 
     let img = new Image();
-    let original = null;
+    let originalURL = null;
 
     upload.addEventListener('change', e => {
       const reader = new FileReader();
@@ -93,8 +95,7 @@
         img.onload = () => {
           canvas.width = img.width;
           canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          original = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          originalURL = event.target.result;
           applyFilters();
         };
         img.src = event.target.result;
@@ -103,30 +104,41 @@
     });
 
     function applyFilters() {
-      ctx.putImageData(original, 0, 0);
-      let filters = `
-        ${filterSelect.value}
-        brightness(${brightness.value}%)
-        contrast(${contrast.value}%)
-        saturate(${saturate.value}%)
-        blur(${blur.value}px)
-      `;
-      canvas.style.filter = filters;
+      if (!originalURL) return;
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.filter = `
+          ${filterSelect.value}
+          brightness(${brightness.value}%)
+          contrast(${contrast.value}%)
+          saturate(${saturate.value}%)
+          blur(${blur.value}px)
+        `;
+        ctx.drawImage(tempImg, 0, 0);
 
-      // Temperatura simulata: blu/caldo con overlay
-      if (temp.value !== '0') {
-        let overlay = ctx.createImageData(canvas.width, canvas.height);
-        for (let i = 0; i < overlay.data.length; i += 4) {
-          overlay.data[i] = temp.value > 0 ? temp.value : 0;       // R
-          overlay.data[i+2] = temp.value < 0 ? -temp.value : 0;    // B
-          overlay.data[i+3] = 10; // opacity
+        if (parseInt(temp.value) !== 0) {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          for (let i = 0; i < data.length; i += 4) {
+            if (temp.value > 0) data[i] = Math.min(255, data[i] + parseInt(temp.value));      // più rosso
+            if (temp.value < 0) data[i+2] = Math.min(255, data[i+2] + Math.abs(temp.value));  // più blu
+          }
+          ctx.putImageData(imageData, 0, 0);
         }
-        ctx.putImageData(overlay, 0, 0);
-      }
+
+        ctx.filter = 'none'; // resetta
+      };
+      tempImg.src = originalURL;
     }
 
     [filterSelect, brightness, contrast, saturate, blur, temp].forEach(input => {
       input.addEventListener('input', applyFilters);
+    });
+
+    applyBtn.addEventListener('click', () => {
+      filterSelect.value = 'none';
+      applyFilters();
     });
 
     downloadBtn.addEventListener('click', () => {
@@ -135,74 +147,6 @@
       link.href = canvas.toDataURL();
       link.click();
     });
-  const upload = document.getElementById('upload');
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  const filterSelect = document.getElementById('filterSelect');
-  const brightness = document.getElementById('brightness');
-  const contrast = document.getElementById('contrast');
-  const saturate = document.getElementById('saturate');
-  const blur = document.getElementById('blur');
-  const temp = document.getElementById('temp');
-  const downloadBtn = document.getElementById('downloadBtn');
-
-  let img = new Image();
-  let originalURL = null;
-
-  upload.addEventListener('change', e => {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        originalURL = event.target.result;
-        applyFilters();
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  });
-
-  function applyFilters() {
-    if (!originalURL) return;
-    const tempImg = new Image();
-    tempImg.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.filter = `
-        ${filterSelect.value}
-        brightness(${brightness.value}%)
-        contrast(${contrast.value}%)
-        saturate(${saturate.value}%)
-        blur(${blur.value}px)
-      `;
-      ctx.drawImage(tempImg, 0, 0);
-
-      // Temperatura = overlay simulato
-      if (parseInt(temp.value) !== 0) {
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          if (temp.value > 0) data[i] += parseInt(temp.value);     // più rosso
-          if (temp.value < 0) data[i+2] += Math.abs(temp.value);   // più blu
-        }
-        ctx.putImageData(imageData, 0, 0);
-      }
-
-      ctx.filter = 'none'; // resetta per evitare accumuli
-    };
-    tempImg.src = originalURL;
-  }
-
-  [filterSelect, brightness, contrast, saturate, blur, temp].forEach(input => {
-    input.addEventListener('input', applyFilters);
-  });
-
-  downloadBtn.addEventListener('click', () => {
-    const link = document.createElement('a');
-    link.download = 'filtrata.png';
-    link.href = canvas.toDataURL();
-    link.click();
-  });
-</script>
+  </script>
 </body>
 </html>
