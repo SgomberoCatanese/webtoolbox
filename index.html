@@ -377,6 +377,34 @@
       }
     });
   }
+  fetch('nav.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('navbar-placeholder').innerHTML = html;
+
+      // Evidenzia il link della pagina attuale
+      const currentPage = location.pathname.split('/').pop();
+      document.querySelectorAll('nav a').forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+          link.classList.add('active');
+        }
+      });
+
+      // Attiva il menu mobile
+      const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+      const navUl = document.querySelector('nav ul');
+      if (mobileMenuTrigger && navUl) {
+        mobileMenuTrigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navUl.classList.toggle('mobile-menu-active');
+        });
+        document.addEventListener('click', (e) => {
+          if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(e.target)) {
+            navUl.classList.remove('mobile-menu-active');
+          }
+        });
+      }
+    });
 </script>
 </body>
 </html>
