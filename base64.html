@@ -6,95 +6,179 @@
 <title>Convertitore Immagini Base64 e ASCII – WebToolbox.fun</title>
 <meta name="description" content="Converti immagini in Base64 o ASCII art online. Carica la tua immagine, copia il codice Base64 o la versione ASCII facilmente." />
 <style>
+  /*
+    Stile CSS aggiornato con estetica iOS
+    - Palette Dark Mode
+    - Font di sistema Apple
+    - Componenti UI moderni e puliti
+  */
+
+  /* Reset e Stili Globali */
   body {
-    background: #121212;
-    color: #eee;
-    font-family: monospace, monospace;
+    background: #000000; /* Sfondo nero puro per un contrasto elevato */
+    color: #F2F2F7; /* Testo primario off-white di iOS */
+    /* Font di sistema per un aspetto nativo su ogni piattaforma */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    padding: 0 1rem;
+    padding: 0;
   }
+
+  /* Navigazione Superiore */
   nav {
-    background: #1db954;
-    padding: 1rem;
+    /* Effetto vetro/traslucido tipico di iOS */
+    background: rgba(28, 28, 30, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 0.5px solid rgba(84, 84, 88, 0.65); /* Separatore sottile */
+    
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
+
   nav .logo {
-    font-weight: bold;
-    font-size: 1.4rem;
-    color: #121212;
+    font-weight: 600; /* Semibold */
+    font-size: 1.1rem;
+    color: #F2F2F7; /* Colore testo primario */
   }
+
   nav ul {
     list-style: none;
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
     margin: 0;
     padding: 0;
   }
+
   nav a {
     text-decoration: none;
-    color: #121212;
-    font-weight: bold;
+    color: #0A84FF; /* Blu standard di iOS per elementi interattivi */
+    font-weight: 500;
+    transition: opacity 0.2s ease-in-out;
   }
+
+  nav a:hover {
+    opacity: 0.7;
+  }
+
+  /* Contenuto Principale */
   main {
     max-width: 900px;
     margin: 2rem auto;
-    padding-bottom: 4rem;
+    padding: 0 1.5rem 4rem 1.5rem;
   }
-  h1, p {
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
     text-align: center;
+    margin-bottom: 0.5rem;
   }
-  input[type=file], button {
-    padding: 0.6rem 1rem;
-    border-radius: 5px;
-    border: none;
-    background: #1db954;
-    color: #121212;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 0.5rem 0;
-    display: block;
-    width: 100%;
-    max-width: 300px;
+  
+  p {
+    text-align: center;
+    color: #AEAEB2; /* Colore testo secondario di iOS */
+    margin-bottom: 2.5rem;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.5;
   }
+
+  /* Stile per i pulsanti */
+  button, input[type=file]::file-selector-button {
+    padding: 0.9rem 1.5rem;
+    border-radius: 50px; /* Stile a "pillola" */
+    border: none;
+    background: #0A84FF;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  button:hover, input[type=file]::file-selector-button:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+  
+  /* Nascondiamo l'input file di default per stilizzare solo il suo pulsante */
+  input[type=file] {
+    color: transparent;
+  }
+
+  /* Area di testo */
   textarea {
     width: 100%;
     max-width: 900px;
     height: 200px;
-    background: #222;
-    color: #eee;
-    border-radius: 8px;
-    border: none;
-    margin-top: 1rem;
+    background: #1C1C1E; /* Colore delle card/widget di iOS */
+    color: #F2F2F7;
+    border-radius: 12px;
+    border: 1px solid rgba(84, 84, 88, 0.65); /* Bordo sottile per definizione */
+    margin-top: 1.5rem;
+    /* Manteniamo il font monospace per coerenza con il contenuto (codice/arte) */
     font-family: monospace, monospace;
+    font-size: 1rem;
     padding: 1rem;
     resize: vertical;
   }
+
+  textarea:focus {
+    outline: none;
+    border-color: #0A84FF;
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+  }
+
+  /* Contenitore per pulsanti */
   .btn-group {
     display: flex;
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
+    align-items: center;
   }
+
   .hidden {
     display: none;
   }
+
+  /* Box per l'ASCII Art, stile "Widget" */
   #asciiArt {
+    background-color: #1C1C1E;
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-top: 2rem;
     white-space: pre;
+    text-align: center;
+    overflow-x: auto; /* Aggiunto per gestire arte molto larga */
     font-size: 7px;
     line-height: 7px;
     letter-spacing: 1px;
   }
+
+  /* Stili responsivi */
   @media (max-width: 600px) {
+    h1 { font-size: 2rem; }
     textarea { height: 150px; }
-    #asciiArt { font-size: 5px; line-height: 5px; letter-spacing: 0.5px; }
+    #asciiArt { 
+        font-size: 5px; 
+        line-height: 5px; 
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
   }
 </style>
+
 </head>
 <body>
 <nav>
