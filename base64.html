@@ -11,54 +11,50 @@
     - Palette Dark Mode
     - Font di sistema Apple
     - Componenti UI moderni e puliti
+    - Logica responsiva avanzata per mobile
   */
 
   /* Reset e Stili Globali */
   body {
-    background: #000000; /* Sfondo nero puro per un contrasto elevato */
-    color: #F2F2F7; /* Testo primario off-white di iOS */
-    /* Font di sistema per un aspetto nativo su ogni piattaforma */
+    background: #000000;
+    color: #F2F2F7;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
   }
 
-  /* Navigazione Superiore */
+  /* --- Navigazione --- */
   nav {
-    /* Effetto vetro/traslucido tipico di iOS */
     background: rgba(28, 28, 30, 0.75);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 0.5px solid rgba(84, 84, 88, 0.65); /* Separatore sottile */
-    
+    border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
     padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
   }
 
   nav .logo {
-    font-weight: 600; /* Semibold */
+    font-weight: 600;
     font-size: 1.1rem;
-    color: #F2F2F7; /* Colore testo primario */
+    color: #F2F2F7;
   }
 
   nav ul {
     list-style: none;
     display: flex;
     gap: 1.5rem;
-    flex-wrap: wrap;
     margin: 0;
     padding: 0;
   }
 
   nav a {
     text-decoration: none;
-    color: #0A84FF; /* Blu standard di iOS per elementi interattivi */
+    color: #0A84FF;
     font-weight: 500;
     transition: opacity 0.2s ease-in-out;
   }
@@ -67,7 +63,12 @@
     opacity: 0.7;
   }
 
-  /* Contenuto Principale */
+  /* Pulsante menu mobile (nascosto su desktop) */
+  #mobile-menu-trigger {
+    display: none;
+  }
+
+  /* --- Contenuto Principale --- */
   main {
     max-width: 900px;
     margin: 2rem auto;
@@ -83,7 +84,7 @@
   
   p {
     text-align: center;
-    color: #AEAEB2; /* Colore testo secondario di iOS */
+    color: #AEAEB2;
     margin-bottom: 2.5rem;
     max-width: 600px;
     margin-left: auto;
@@ -91,10 +92,10 @@
     line-height: 1.5;
   }
 
-  /* Stile per i pulsanti */
+  /* --- Componenti UI --- */
   button, input[type=file]::file-selector-button {
     padding: 0.9rem 1.5rem;
-    border-radius: 50px; /* Stile a "pillola" */
+    border-radius: 50px;
     border: none;
     background: #0A84FF;
     color: #FFFFFF;
@@ -110,22 +111,18 @@
     filter: brightness(1.1);
   }
   
-  /* Nascondiamo l'input file di default per stilizzare solo il suo pulsante */
   input[type=file] {
     color: transparent;
   }
 
-  /* Area di testo */
   textarea {
     width: 100%;
-    max-width: 900px;
     height: 200px;
-    background: #1C1C1E; /* Colore delle card/widget di iOS */
+    background: #1C1C1E;
     color: #F2F2F7;
     border-radius: 12px;
-    border: 1px solid rgba(84, 84, 88, 0.65); /* Bordo sottile per definizione */
+    border: 1px solid rgba(84, 84, 88, 0.65);
     margin-top: 1.5rem;
-    /* Manteniamo il font monospace per coerenza con il contenuto (codice/arte) */
     font-family: monospace, monospace;
     font-size: 1rem;
     padding: 1rem;
@@ -138,7 +135,6 @@
     box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
   }
 
-  /* Contenitore per pulsanti */
   .btn-group {
     display: flex;
     justify-content: center;
@@ -152,7 +148,6 @@
     display: none;
   }
 
-  /* Box per l'ASCII Art, stile "Widget" */
   #asciiArt {
     background-color: #1C1C1E;
     padding: 1.5rem;
@@ -160,15 +155,87 @@
     margin-top: 2rem;
     white-space: pre;
     text-align: center;
-    overflow-x: auto; /* Aggiunto per gestire arte molto larga */
+    overflow-x: auto;
     font-size: 7px;
     line-height: 7px;
     letter-spacing: 1px;
   }
 
-  /* Stili responsivi */
-  @media (max-width: 600px) {
+  /* ======================================= */
+  /* === STILI RESPONSIVI / VERSIONE MOBILE === */
+  /* ======================================= */
+  
+  /* Attivati solo su schermi più piccoli di 768px */
+  @media (max-width: 768px) {
+    
+    /* Nascondi la navigazione desktop */
+    nav ul {
+      display: none;
+      /* Stile del menu a comparsa quando attivo */
+      position: absolute;
+      top: 65px; /* Posizione sotto la navbar */
+      right: 1.5rem;
+      width: 250px;
+      background: rgba(44, 44, 46, 0.9); /* Effetto vetro più intenso */
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-radius: 14px;
+      border: 1px solid rgba(84, 84, 88, 0.65);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      padding: 0.5rem 0;
+      flex-direction: column;
+      gap: 0;
+      z-index: 100;
+    }
+    
+    /* Classe per mostrare il menu */
+    nav ul.mobile-menu-active {
+      display: flex;
+    }
+    
+    /* Stile dei link nel menu mobile */
+    nav ul li {
+      width: 100%;
+    }
+    
+    nav ul li a {
+      display: block;
+      padding: 0.9rem 1.25rem;
+      color: #F2F2F7; /* Testo bianco nel menu */
+      font-weight: 400;
+      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+    }
+    
+    nav ul li:last-child a {
+      border-bottom: none;
+    }
+
+    nav ul li a.active {
+      background-color: #0A84FF; /* Colore di selezione */
+      color: #FFFFFF;
+    }
+    
+    /* Mostra e stila il pulsante trigger del menu */
+    #mobile-menu-trigger {
+      display: block;
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+
+    #mobile-menu-trigger svg {
+      width: 24px;
+      height: 24px;
+      fill: #0A84FF;
+    }
+
+    /* Adatta il testo e gli spazi */
     h1 { font-size: 2rem; }
+    main { padding: 0 1rem 4rem 1rem; }
+  }
+  
+  @media (max-width: 600px) {
     textarea { height: 150px; }
     #asciiArt { 
         font-size: 5px; 
@@ -192,13 +259,25 @@
     <li><a href="base64.html" class="active">Base64/ASCII</a></li>
     <li><a href="scala-grigi.html">Filtri</a></li>
   </ul>
+  <button id="mobile-menu-trigger" aria-label="Apri menu">
+    <svg viewBox="0 0 100 80" width="40" height="40">
+      <circle cx="50" cy="10" r="8"/>
+      <circle cx="50" cy="40" r="8"/>
+      <circle cx="50" cy="70" r="8"/>
+    </svg>
+  </button>
 </nav>
 
 <main>
   <h1>Converti Immagini in Base64 e ASCII Art</h1>
   <p>Carica un'immagine e ottieni il codice Base64 o la sua versione ASCII. Copia facilmente con i pulsanti.</p>
 
-  <input type="file" id="upload" accept="image/*" />
+  <div class="btn-group">
+    <label for="upload" class="button-label">
+        <button onclick="document.getElementById('upload').click();" type="button">Carica Immagine</button>
+    </label>
+    <input type="file" id="upload" accept="image/*" class="hidden" />
+  </div>
 
   <div class="btn-group hidden" id="actionButtons">
     <button id="toBase64Btn">Base64</button>
@@ -206,12 +285,15 @@
   </div>
 
   <textarea id="output" readonly placeholder="Carica un'immagine per generare output..."></textarea>
-  <button id="copyBtn" class="hidden">Copia negli Appunti</button>
+  <div class="btn-group">
+      <button id="copyBtn" class="hidden">Copia negli Appunti</button>
+  </div>
 
   <pre id="asciiArt" class="hidden"></pre>
 </main>
 
 <script>
+  // Elementi del DOM
   const upload = document.getElementById('upload');
   const toBase64Btn = document.getElementById('toBase64Btn');
   const toAsciiBtn = document.getElementById('toAsciiBtn');
@@ -220,22 +302,21 @@
   const asciiArt = document.getElementById('asciiArt');
   const actionButtons = document.getElementById('actionButtons');
 
+  // Variabili di stato
   let currentBase64 = '';
   let currentAscii = '';
 
+  // Gestione upload
   upload.addEventListener('change', e => {
     if (!e.target.files.length) return reset();
     actionButtons.classList.remove('hidden');
-    output.value = '';
-    asciiArt.classList.add('hidden');
-    copyBtn.classList.add('hidden');
-    currentBase64 = '';
-    currentAscii = '';
+    resetOutputs();
   });
-
+  
+  // --- LOGICA DI CONVERSIONE ---
   toBase64Btn.addEventListener('click', () => {
     const file = upload.files[0];
-    if (!file) return alert('Seleziona prima un\'immagine, bro!');
+    if (!file) return alert('Seleziona prima un\'immagine!');
     const reader = new FileReader();
     reader.onload = () => {
       currentBase64 = reader.result;
@@ -250,7 +331,7 @@
 
   toAsciiBtn.addEventListener('click', () => {
     const file = upload.files[0];
-    if (!file) return alert('Seleziona prima un\'immagine, bro!');
+    if (!file) return alert('Seleziona prima un\'immagine!');
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
@@ -259,7 +340,6 @@
         currentAscii = ascii;
         asciiArt.textContent = ascii;
         asciiArt.classList.remove('hidden');
-        output.value = '';
         output.classList.add('hidden');
         copyBtn.classList.remove('hidden');
         copyBtn.textContent = 'Copia ASCII';
@@ -268,17 +348,25 @@
     };
     reader.readAsDataURL(file);
   });
-
+  
+  // Gestione copia
   copyBtn.addEventListener('click', () => {
-    if (output.classList.contains('hidden')) {
-      navigator.clipboard.writeText(currentAscii).then(() => alert('ASCII copiato negli appunti!'));
-    } else {
-      navigator.clipboard.writeText(currentBase64).then(() => alert('Base64 copiato negli appunti!'));
-    }
+    const isAsciiVisible = !asciiArt.classList.contains('hidden');
+    const textToCopy = isAsciiVisible ? currentAscii : currentBase64;
+    const type = isAsciiVisible ? 'ASCII' : 'Base64';
+    
+    if (!textToCopy) return;
+    
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      alert(`${type} copiato negli appunti!`);
+    }).catch(err => {
+      console.error('Errore durante la copia: ', err);
+      alert(`Impossibile copiare il testo. Controlla i permessi del browser.`);
+    });
   });
 
-  function reset() {
-    actionButtons.classList.add('hidden');
+  // Funzioni di utilità
+  function resetOutputs() {
     output.value = '';
     output.classList.remove('hidden');
     asciiArt.classList.add('hidden');
@@ -287,12 +375,16 @@
     currentAscii = '';
   }
 
-  // ASCII conversion semplice
+  function reset() {
+    actionButtons.classList.add('hidden');
+    resetOutputs();
+  }
+
+  // Funzione di conversione ASCII
   function convertToAscii(image) {
-    // riduci dimensioni per non appesantire
-    const w = 100;
+    const w = 120; // Aumentata leggermente la larghezza per più dettaglio
     const aspectRatio = image.height / image.width;
-    const h = Math.round(w * aspectRatio);
+    const h = Math.round((w * aspectRatio) * 0.55); // Correzione aspect ratio per i font
 
     const canvas = document.createElement('canvas');
     canvas.width = w;
@@ -302,24 +394,42 @@
 
     const imgData = ctx.getImageData(0, 0, w, h);
     const pixels = imgData.data;
-    const chars = '@%#*+=-:. '; // scala da scuro a chiaro
-
+    const chars = '`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'; // Scala di grigi più dettagliata
+    
     let ascii = '';
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const offset = (y * w + x) * 4;
-        const r = pixels[offset];
-        const g = pixels[offset + 1];
-        const b = pixels[offset + 2];
-        // luminanza percepita
-        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        const lum = 0.2126 * pixels[offset] + 0.7152 * pixels[offset + 1] + 0.0722 * pixels[offset + 2];
         const charIndex = Math.floor((lum / 255) * (chars.length - 1));
-        ascii += chars[charIndex];
+        ascii += chars[chars.length - 1 - charIndex];
       }
       ascii += '\n';
     }
     return ascii;
   }
+
+  /* ======================================= */
+  /* === LOGICA PER MENU MOBILE === */
+  /* ======================================= */
+  const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+  const navUl = document.querySelector('nav ul');
+
+  if (mobileMenuTrigger && navUl) {
+    mobileMenuTrigger.addEventListener('click', (event) => {
+      // Ferma la propagazione per non far chiudere subito il menu dal listener sul documento
+      event.stopPropagation();
+      navUl.classList.toggle('mobile-menu-active');
+    });
+
+    // Chiudi il menu se si clicca fuori
+    document.addEventListener('click', (event) => {
+      if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
+        navUl.classList.remove('mobile-menu-active');
+      }
+    });
+  }
+
 </script>
 </body>
 </html>
