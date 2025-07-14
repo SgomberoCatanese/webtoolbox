@@ -1,4 +1,11 @@
-/* Reset */
+/*
+  Stile CSS modificato per replicare l'estetica di iOS.
+  - Font di sistema Apple
+  - Palette colori Dark Mode di iOS
+  - Componenti UI con angoli arrotondati e layout pulito
+*/
+
+/* Reset e Stili Globali */
 * {
   margin: 0;
   padding: 0;
@@ -6,69 +13,97 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
-  color: #eee;
+  /* Utilizza il font di sistema di Apple/macOS per un aspetto nativo. */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #000000; /* Sfondo nero puro per schermi OLED, tipico di iOS */
+  color: #F2F2F7; /* Colore testo primario di iOS (leggermente off-white) */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+/* Navigazione Superiore */
 nav {
-  background-color: #1db954;
+  /* Effetto vetro/traslucido tipico di iOS */
+  background-color: rgba(28, 28, 30, 0.75); /* Grigio scuro traslucido */
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 0.5px solid rgba(84, 84, 88, 0.65); /* Separatore sottile */
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 nav .logo {
-  font-weight: bold;
-  font-size: 1.4rem;
-  color: #121212;
+  font-weight: 600; /* Semibold, come i titoli di iOS */
+  font-size: 1.1rem; /* Dimensione standard per i titoli della nav */
+  color: #F2F2F7;
 }
 
 nav ul {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem; /* Maggiore spaziatura */
   list-style: none;
   flex-wrap: wrap;
 }
 
 nav a {
   text-decoration: none;
-  color: #121212;
-  font-weight: bold;
+  color: #0A84FF; /* Blu standard di iOS per link e azioni */
+  font-weight: 500; /* Peso medio per i link */
+  font-size: 1.05rem;
+  transition: opacity 0.2s ease-in-out;
+}
+
+nav a:hover {
+  opacity: 0.7;
 }
 
 nav a.active {
-  text-decoration: underline;
+  color: #F2F2F7; /* L'elemento attivo diventa bianco, come una tab selezionata */
+  font-weight: 600;
 }
 
+/* Header */
 header {
-  padding: 2rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
 }
 
+header h1 {
+    font-size: 2.5rem; /* Titolo grande e d'impatto */
+    font-weight: 700;
+}
+
+/* Contenuto Principale */
 main {
   flex: 1;
-  padding: 2rem;
+  padding: 1rem 1.5rem;
   max-width: 600px;
   margin: 0 auto;
+  width: 100%;
 }
 
+/* Sezione Upload - Stile "Card" di iOS */
 .upload-section {
-  border: 3px dashed #555;
-  padding: 2rem;
+  background-color: #1C1C1E; /* Colore delle card/widget di iOS */
+  border: none; /* Rimuoviamo il bordo tratteggiato */
+  padding: 2.5rem;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 20px; /* Angoli molto arrotondati, tipici delle card */
   cursor: pointer;
-  transition: border-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.upload-section.hover {
-  border-color: #1db954;
+.upload-section:hover, .upload-section.hover {
+  background-color: #2C2C2E; /* Leggero cambio di colore al passaggio del mouse */
+  transform: scale(1.02); /* Effetto di ingrandimento sottile */
 }
 
 input[type="file"] {
@@ -77,49 +112,74 @@ input[type="file"] {
 
 .select-format {
   display: block;
-  margin: 2rem 0 0.5rem;
+  margin: 2.5rem 0 0.5rem;
+  color: #AEAEB2; /* Colore testo secondario */
+  font-weight: 500;
+  text-align: left;
 }
 
+/* Menu a tendina */
 select {
-  padding: 0.5rem;
-  border-radius: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background-color: #2C2C2E; /* Sfondo dei campi di input di iOS */
+  color: #F2F2F7;
+  padding: 0.9rem 1rem;
+  border-radius: 12px; /* Angoli arrotondati */
   border: none;
   font-size: 1rem;
+  font-family: inherit;
 }
 
+/* Pulsante di Conversione */
 .convert-btn {
-  margin-top: 1.5rem;
-  background: #1db954;
+  margin-top: 2rem;
+  background: #0A84FF; /* Blu primario per le azioni */
   border: none;
-  color: #121212;
-  padding: 0.7rem 1.5rem;
+  color: #FFFFFF;
+  padding: 1rem 2rem;
   cursor: pointer;
-  border-radius: 6px;
-  font-weight: 700;
+  border-radius: 50px; /* Stile a "pillola" */
+  font-weight: 600; /* Semibold */
   font-size: 1.1rem;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  width: 100%; /* Larghezza piena per un look moderno */
+}
+
+.convert-btn:hover {
+    filter: brightness(1.15);
 }
 
 .convert-btn:disabled {
-  background: #555;
+  background: #2C2C2E; /* Colore per i pulsanti disattivati */
+  color: #5A5A5D;
   cursor: not-allowed;
+  transform: scale(1);
+  filter: brightness(1);
 }
 
+/* Sezione Output */
 #output {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   text-align: center;
 }
 
 #output img {
   max-width: 100%;
-  border: 1px solid #1db954;
-  border-radius: 6px;
+  border: none; /* Rimuoviamo il bordo verde */
+  border-radius: 12px; /* Angoli arrotondati per coerenza */
   margin-top: 1rem;
 }
 
+/* Footer */
 footer {
   text-align: center;
-  padding: 1rem;
-  background-color: #1e1e1e;
-  font-size: 0.9rem;
+  padding: 1.5rem 1rem;
+  background-color: rgba(28, 28, 30, 0.75); /* Stesso stile della navbar */
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  color: #8E8E93; /* Colore testo terziario/didascalie di iOS */
+  font-size: 0.85rem;
 }
+
