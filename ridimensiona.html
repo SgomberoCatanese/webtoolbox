@@ -6,130 +6,255 @@
   <title>Ridimensiona immagini online gratis – WebToolbox.fun</title>
   <meta name="description" content="Cambia dimensioni alle immagini JPG, PNG facilmente e online. Mantieni proporzioni, carica più file e scarica subito." />
   <style>
+    /*
+      Stile CSS con estetica iOS e logica mobile avanzata
+    */
+
+    /* Reset e Stili Globali */
     body {
-      background: #121212;
-      color: #eee;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000000;
+      color: #F2F2F7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0; padding: 0;
       display: flex; flex-direction: column; min-height: 100vh;
     }
+    
+    /* --- Navigazione --- */
     nav {
-      background-color: #1db954;
-      padding: 1rem 2rem;
+      background: rgba(28, 28, 30, 0.75);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+      padding: 1rem 1.5rem;
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
+
     nav .logo {
-      font-weight: bold;
-      font-size: 1.4rem;
-      color: #121212;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #F2F2F7;
     }
+
     nav ul {
       display: flex;
-      gap: 1rem;
+      gap: 1.5rem;
       list-style: none;
       flex-wrap: wrap;
       margin: 0;
     }
+
     nav a {
-      color: #121212;
+      color: #0A84FF;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 500;
     }
+
     nav a.active {
-      text-decoration: underline;
+      color: #F2F2F7;
+      font-weight: 600;
     }
+    
+    #mobile-menu-trigger {
+      display: none;
+    }
+
+    /* --- Contenuto Principale --- */
     main {
       max-width: 800px;
       margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
       flex: 1;
+      width: 100%;
+      box-sizing: border-box;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      font-weight: 700;
     }
+
     p.description {
       text-align: center;
-      margin-bottom: 1.5rem;
-      color: #aaa;
+      margin-bottom: 2.5rem;
+      color: #AEAEB2;
+      line-height: 1.5;
     }
+    
+    /* --- Elementi UI e Form --- */
     #banner {
-      background-color: #1db954;
-      color: #121212;
-      padding: 0.8rem 1rem;
-      border-radius: 6px;
+      background-color: #0A84FF;
+      color: #FFFFFF;
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
       text-align: center;
-      font-weight: 700;
-      margin-bottom: 1rem;
+      font-weight: 600;
+      margin: 2rem 0;
       display: none;
     }
-    input[type="file"], select, input[type="number"] {
+    
+    /* Stile campi di input e select */
+    select, input[type="number"] {
       display: block;
-      margin: 0.5rem auto 1rem;
+      margin: 0.5rem auto 1.5rem auto;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid #3a3a3c;
+      font-weight: 400;
       cursor: pointer;
-      border-radius: 6px;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      background-color: #1db954;
-      color: #121212;
-      font-weight: bold;
-      max-width: 240px;
-      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      background-color: #2C2C2E;
+      color: #F2F2F7;
+      font-family: inherit;
+      font-size: 1rem;
+      text-align: left;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    label {
-      display: block;
-      margin: 0 auto 0.2rem;
-      font-weight: bold;
-      text-align: center;
+    
+    input[type="number"] { text-align: left; }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #0A84FF;
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
     }
+    
+    /* Stile pulsanti */
     button {
       display: block;
-      margin: 1rem auto 2rem;
-      padding: 0.7rem 1.5rem;
-      background-color: #1db954;
+      margin: 2rem auto;
+      padding: 0.9rem 1.5rem;
+      background-color: #0A84FF;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: 50px;
+      font-weight: 600;
       cursor: pointer;
-      color: #121212;
-      max-width: 180px;
+      color: #FFFFFF;
+      max-width: 240px;
+      width: 100%;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s ease-in-out;
     }
+
+    button:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    
+    input[type="file"] { display: none; }
+    .upload-label button {
+        max-width: 320px;
+        margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      margin: 1.5rem auto 0.5rem;
+      font-weight: 500;
+      color: #AEAEB2;
+      text-align: center;
+      max-width: 320px;
+    }
+    
+    /* Contenitori Preview e Risultati */
     #previewContainer {
       display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 10px;
-      padding: 10px 0;
-      border-radius: 8px;
-      border: 2px solid #1db954;
-      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 1rem;
+      border-radius: 20px;
+      border: none;
+      background-color: #1C1C1E;
+      margin: 2rem 0;
       justify-content: center;
+      min-height: 100px;
     }
+    
     #previewContainer img {
       max-height: 120px;
-      border-radius: 6px;
+      border-radius: 12px;
       object-fit: contain;
-      cursor: default;
     }
+    
     #resultContainer {
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
     }
+    
     #resultContainer img {
       max-width: 100%;
-      border-radius: 8px;
-      border: 2px solid #1db954;
-      margin-bottom: 0.5rem;
+      border-radius: 20px;
+      background-color: #1C1C1E;
+      padding: 0.5rem;
     }
+    
     #resultContainer a {
-      display: block;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      color: #1db954;
+      font-weight: 500;
+      color: #0A84FF;
       text-decoration: none;
       cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    /* ============================ */
+    /* === STILI VERSIONE MOBILE === */
+    /* ============================ */
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 65px;
+        right: 1.5rem;
+        width: 250px;
+        background: rgba(44, 44, 46, 0.9);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-radius: 14px;
+        border: 1px solid rgba(84, 84, 88, 0.65);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        padding: 0.5rem 0;
+        flex-direction: column;
+        gap: 0;
+        z-index: 100;
+      }
+      
+      nav ul.mobile-menu-active { display: flex; }
+      
+      nav ul li { width: 100%; }
+      nav ul li a {
+        display: block;
+        padding: 0.9rem 1.25rem;
+        color: #F2F2F7;
+        font-weight: 400;
+        border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+      }
+      nav ul li:last-child a { border-bottom: none; }
+      nav ul li a.active { background-color: #0A84FF; color: #FFFFFF; }
+      
+      #mobile-menu-trigger {
+        display: block;
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+      #mobile-menu-trigger svg { width: 24px; height: 24px; fill: #0A84FF; }
+
+      h1 { font-size: 2rem; }
+      main { padding: 0 1rem; }
     }
   </style>
 </head>
@@ -145,19 +270,27 @@
     <li><a href="base64.html">Img → Base64</a></li>
     <li><a href="scala-grigi.html">Scala di Grigi</a></li>
   </ul>
+  <button id="mobile-menu-trigger" aria-label="Apri menu">
+    <svg viewBox="0 0 100 80" width="40" height="40">
+      <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
+    </svg>
+  </button>
 </nav>
 
 <main>
   <h1>Ridimensiona immagini online gratis</h1>
-  <p class="description">Carica immagini JPG o PNG, scegli dimensioni personalizzate o standard e scarica subito le immagini ridimensionate.</p>
+  <p class="description">Carica immagini JPG o PNG, scegli le dimensioni e scarica subito le immagini ridimensionate.</p>
 
   <div id="banner"></div>
 
+  <div class="upload-label">
+    <button onclick="document.getElementById('inputFiles').click()" type="button">Seleziona Immagini</button>
+  </div>
   <input type="file" id="inputFiles" accept="image/png, image/jpeg" multiple />
 
-  <label for="standardSizes">Dimensioni standard:</label>
+  <label for="standardSizes">Dimensioni standard</label>
   <select id="standardSizes" aria-label="Seleziona dimensioni standard">
-    <option value="">-- Nessuna --</option>
+    <option value="">-- Seleziona o inserisci manualmente --</option>
     <option value="1920x1080">1920 x 1080 (Full HD)</option>
     <option value="1280x720">1280 x 720 (HD)</option>
     <option value="1024x768">1024 x 768 (XGA)</option>
@@ -166,10 +299,10 @@
     <option value="320x240">320 x 240 (QVGA)</option>
   </select>
 
-  <label for="widthInput">Larghezza (px):</label>
+  <label for="widthInput">Larghezza (px)</label>
   <input type="number" id="widthInput" min="1" placeholder="Es. 800" aria-label="Larghezza in pixel" />
 
-  <label for="heightInput">Altezza (px):</label>
+  <label for="heightInput">Altezza (px)</label>
   <input type="number" id="heightInput" min="1" placeholder="Es. 600" aria-label="Altezza in pixel" />
 
   <button id="resizeBtn">Ridimensiona</button>
@@ -180,6 +313,7 @@
 </main>
 
 <script>
+  // Script esistente
   const inputFiles = document.getElementById('inputFiles');
   const standardSizes = document.getElementById('standardSizes');
   const widthInput = document.getElementById('widthInput');
@@ -188,10 +322,8 @@
   const previewContainer = document.getElementById('previewContainer');
   const resultContainer = document.getElementById('resultContainer');
   const banner = document.getElementById('banner');
-
   let loadedFiles = [];
 
-  // Sincronizza dimensioni standard con input personalizzati
   standardSizes.addEventListener('change', () => {
     const val = standardSizes.value;
     if (!val) return;
@@ -200,21 +332,16 @@
     heightInput.value = h;
   });
 
-  // Se si modificano manualmente input larghezza o altezza, resetta dimensioni standard
-  widthInput.addEventListener('input', () => {
-    standardSizes.value = '';
-  });
-  heightInput.addEventListener('input', () => {
-    standardSizes.value = '';
-  });
+  widthInput.addEventListener('input', () => { standardSizes.value = ''; });
+  heightInput.addEventListener('input', () => { standardSizes.value = ''; });
 
   inputFiles.addEventListener('change', e => {
     loadedFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
     previewContainer.innerHTML = '';
     resultContainer.innerHTML = '';
-    banner.style.display = loadedFiles.length ? 'block' : 'none';
     if (loadedFiles.length) {
       banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}.`;
+      banner.style.display = 'block';
       loadedFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = ev => {
@@ -241,9 +368,7 @@
       alert('Inserisci larghezza e altezza validi.');
       return;
     }
-
     resultContainer.innerHTML = '';
-
     loadedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = e => {
@@ -253,26 +378,23 @@
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
-          // Per evitare distorsioni, ridimensiona mantenendo proporzioni?
-          // Qui forziamo dimensioni esatte, distorcendo se serve.
           ctx.drawImage(img, 0, 0, width, height);
-
           canvas.toBlob(blob => {
             const url = URL.createObjectURL(blob);
+            const imageContainer = document.createElement('div');
+
             const imageElem = document.createElement('img');
             imageElem.src = url;
             imageElem.alt = 'Immagine ridimensionata';
-            resultContainer.appendChild(imageElem);
+            imageContainer.appendChild(imageElem);
 
             const link = document.createElement('a');
             link.href = url;
-            link.download = file.name.replace(/\.[^/.]+$/, '') + '.png';
+            link.download = file.name.replace(/\.[^/.]+$/, '') + `_${width}x${height}.png`;
             link.textContent = 'Scarica ' + link.download;
-            link.style.color = '#1db954';
-            link.style.fontWeight = 'bold';
-            link.style.display = 'block';
-            link.style.marginBottom = '1rem';
-            resultContainer.appendChild(link);
+            imageContainer.appendChild(link);
+            
+            resultContainer.appendChild(imageContainer);
           }, 'image/png');
         };
         img.src = e.target.result;
@@ -280,6 +402,23 @@
       reader.readAsDataURL(file);
     });
   });
+
+  // --- LOGICA PER MENU MOBILE ---
+  const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+  const navUl = document.querySelector('nav ul');
+
+  if (mobileMenuTrigger && navUl) {
+    mobileMenuTrigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      navUl.classList.toggle('mobile-menu-active');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
+        navUl.classList.remove('mobile-menu-active');
+      }
+    });
+  }
 </script>
 </body>
 </html>
