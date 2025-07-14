@@ -6,138 +6,249 @@
   <title>Converti immagini in tanti formati online – WebToolbox.fun</title>
   <meta name="description" content="Converti immagini PNG, JPG, WebP, GIF, BMP online gratis in WebP, JPEG, PNG, BMP, TIFF. Supporta conversione multipla e preview." />
   <style>
+    /*
+      Stile CSS con estetica iOS e logica mobile avanzata
+    */
+
+    /* Reset e Stili Globali */
     body {
-      background: #121212;
-      color: #eee;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000000;
+      color: #F2F2F7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0; padding: 0;
       display: flex; flex-direction: column; min-height: 100vh;
     }
+    
+    /* --- Navigazione --- */
     nav {
-      background-color: #1db954;
-      padding: 1rem 2rem;
+      background: rgba(28, 28, 30, 0.75);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+      padding: 1rem 1.5rem;
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
+
     nav .logo {
-      font-weight: bold;
-      font-size: 1.4rem;
-      color: #121212;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #F2F2F7;
     }
+
     nav ul {
       display: flex;
-      gap: 1rem;
+      gap: 1.5rem;
       list-style: none;
       flex-wrap: wrap;
       margin: 0;
     }
+
     nav a {
-      color: #121212;
+      color: #0A84FF;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 500;
     }
+
     nav a.active {
-      text-decoration: underline;
+      color: #F2F2F7;
+      font-weight: 600;
     }
+    
+    #mobile-menu-trigger {
+      display: none;
+    }
+
+    /* --- Contenuto Principale --- */
     main {
       max-width: 800px;
       margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
       flex: 1;
+      width: 100%;
+      box-sizing: border-box;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      font-weight: 700;
     }
+
     p.description {
       text-align: center;
-      margin-bottom: 1.5rem;
-      color: #aaa;
+      margin-bottom: 2.5rem;
+      color: #AEAEB2;
+      line-height: 1.5;
     }
+    
+    /* --- Elementi UI e Form --- */
     #banner {
-      background-color: #1db954;
-      color: #121212;
-      padding: 0.8rem 1rem;
-      border-radius: 6px;
+      background-color: #0A84FF;
+      color: #FFFFFF;
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
       text-align: center;
-      font-weight: 700;
-      margin-bottom: 1rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
       display: none;
     }
+    
+    /* Stile del pulsante di upload file */
     input[type="file"] {
-      display: block;
-      margin: 0 auto 1rem;
-      cursor: pointer;
-      border-radius: 6px;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      background-color: #1db954;
-      color: #121212;
-      font-weight: bold;
+      display: none; /* Nascondiamo l'input di default */
     }
+    
+    /* Etichetta per l'input file, stilizzata come un pulsante */
+    .upload-label button {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto 1.5rem auto;
+    }
+
     label {
       display: block;
-      margin: 0 auto 0.5rem;
+      margin: 2rem auto 0.5rem;
       text-align: center;
-      font-weight: bold;
+      font-weight: 500;
+      color: #AEAEB2;
     }
+    
     select {
       display: block;
       margin: 0 auto 1.5rem;
-      padding: 0.5rem;
-      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
       border: none;
-      font-weight: bold;
+      font-weight: 500;
       cursor: pointer;
-      max-width: 220px;
+      max-width: 300px;
+      width: 100%;
+      background-color: #2C2C2E;
+      color: #F2F2F7;
+      font-family: inherit;
+      font-size: 1rem;
+      -webkit-appearance: none;
+      appearance: none;
     }
+    
     button {
       display: block;
-      margin: 0 auto 1rem;
-      padding: 0.7rem 1.5rem;
-      background-color: #1db954;
+      margin: 0 auto 1rem auto;
+      padding: 0.9rem 1.5rem;
+      background-color: #0A84FF;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: 50px;
+      font-weight: 600;
       cursor: pointer;
-      color: #121212;
-      max-width: 180px;
+      color: #FFFFFF;
+      max-width: 220px;
+      width: 100%;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s ease-in-out;
     }
+
+    button:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    
+    /* Contenitori Preview e Risultati */
     #previewContainer {
       display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 10px;
-      padding: 10px 0;
-      border-radius: 8px;
-      border: 2px solid #1db954;
-      margin-bottom: 1rem;
+      flex-wrap: wrap; /* Meglio wrap per tanti file */
+      gap: 15px;
+      padding: 1rem;
+      border-radius: 20px;
+      border: none;
+      background-color: #1C1C1E;
+      margin: 2rem 0;
       justify-content: center;
+      min-height: 100px;
     }
+    
     #previewContainer img {
       max-height: 120px;
-      border-radius: 6px;
+      border-radius: 12px;
       object-fit: contain;
-      cursor: default;
     }
+    
     #resultContainer {
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
     }
+    
     #resultContainer img {
       max-width: 100%;
-      border-radius: 8px;
-      border: 2px solid #1db954;
-      margin-bottom: 0.5rem;
+      border-radius: 20px;
+      background-color: #1C1C1E;
+      padding: 0.5rem;
     }
+    
     #resultContainer a {
-      display: block;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      color: #1db954;
+      font-weight: 500;
+      color: #0A84FF;
       text-decoration: none;
       cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    /* ============================ */
+    /* === STILI VERSIONE MOBILE === */
+    /* ============================ */
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 65px;
+        right: 1.5rem;
+        width: 250px;
+        background: rgba(44, 44, 46, 0.9);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-radius: 14px;
+        border: 1px solid rgba(84, 84, 88, 0.65);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        padding: 0.5rem 0;
+        flex-direction: column;
+        gap: 0;
+        z-index: 100;
+      }
+      
+      nav ul.mobile-menu-active { display: flex; }
+      
+      nav ul li { width: 100%; }
+      nav ul li a {
+        display: block;
+        padding: 0.9rem 1.25rem;
+        color: #F2F2F7;
+        font-weight: 400;
+        border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+      }
+      nav ul li:last-child a { border-bottom: none; }
+      nav ul li a.active { background-color: #0A84FF; color: #FFFFFF; }
+      
+      #mobile-menu-trigger {
+        display: block;
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+      #mobile-menu-trigger svg { width: 24px; height: 24px; fill: #0A84FF; }
+
+      h1 { font-size: 2rem; }
+      main { padding: 0 1rem; }
     }
   </style>
 </head>
@@ -153,15 +264,23 @@
     <li><a href="base64.html">Img → Base64</a></li>
     <li><a href="scala-grigi.html">Scala di Grigi</a></li>
   </ul>
+  <button id="mobile-menu-trigger" aria-label="Apri menu">
+    <svg viewBox="0 0 100 80" width="40" height="40">
+      <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
+    </svg>
+  </button>
 </nav>
 
 <main>
-  <h1>Converti immagini in tanti formati online</h1>
-  <p class="description">Converti immagini PNG, JPG, WebP, GIF, BMP online gratis in WebP, JPEG, PNG, BMP, TIFF. Supporta conversione multipla e preview.</p>
+  <h1>Converti immagini online</h1>
+  <p class="description">Converti le tue immagini in WebP, JPEG, PNG, e altri formati. Supporta la conversione di più file contemporaneamente.</p>
 
   <div id="banner"></div>
 
-  <input type="file" id="inputFiles" accept="image/png, image/jpeg, image/webp, image/gif, image/bmp" multiple />
+  <label for="inputFiles" class="upload-label">
+    <button onclick="document.getElementById('inputFiles').click()" type="button">Seleziona Immagini</button>
+  </label>
+  <input type="file" id="inputFiles" accept="image/*" multiple />
 
   <label for="outputFormat">Formato di destinazione:</label>
   <select id="outputFormat" aria-label="Seleziona formato di destinazione">
@@ -180,13 +299,13 @@
 </main>
 
 <script>
+  // Script esistente
   const inputFiles = document.getElementById('inputFiles');
   const outputFormat = document.getElementById('outputFormat');
   const convertBtn = document.getElementById('convertBtn');
   const previewContainer = document.getElementById('previewContainer');
   const resultContainer = document.getElementById('resultContainer');
   const banner = document.getElementById('banner');
-
   let loadedFiles = [];
 
   inputFiles.addEventListener('change', e => {
@@ -195,7 +314,7 @@
     resultContainer.innerHTML = '';
     banner.style.display = loadedFiles.length ? 'block' : 'none';
     if (loadedFiles.length) {
-      banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}. Formato di destinazione: ${outputFormat.value.toUpperCase()}`;
+      banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}.`;
       loadedFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = ev => {
@@ -209,18 +328,12 @@
     }
   });
 
-  outputFormat.addEventListener('change', () => {
-    if (loadedFiles.length) {
-      banner.textContent = `Hai caricato ${loadedFiles.length} immagine${loadedFiles.length > 1 ? 'i' : ''}. Formato di destinazione: ${outputFormat.value.toUpperCase()}`;
-    }
-  });
-
   convertBtn.addEventListener('click', () => {
     if (!loadedFiles.length) {
       alert('Seleziona almeno un file immagine.');
       return;
     }
-    resultContainer.innerHTML = '';
+    resultContainer.innerHTML = 'Conversione in corso...';
     loadedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = e => {
@@ -232,52 +345,55 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
 
-          let mimeType = 'image/webp';
-          let ext = 'webp';
-          switch (outputFormat.value) {
-            case 'jpeg':
-              mimeType = 'image/jpeg';
-              ext = 'jpg';
-              break;
-            case 'png':
-              mimeType = 'image/png';
-              ext = 'png';
-              break;
-            case 'bmp':
-              mimeType = 'image/bmp';
-              ext = 'bmp';
-              break;
-            case 'tiff':
-              // TIFF non è supportato da canvas.toBlob, lo salviamo come PNG per ora
-              mimeType = 'image/png';
-              ext = 'png';
-              alert('TIFF non è supportato direttamente, verrà salvato come PNG.');
-              break;
-          }
+          let mimeType = 'image/webp'; let ext = 'webp';
+          const format = outputFormat.value;
+          if (format === 'jpeg') { mimeType = 'image/jpeg'; ext = 'jpg'; }
+          else if (format === 'png') { mimeType = 'image/png'; ext = 'png'; }
+          else if (format === 'bmp') { mimeType = 'image/bmp'; ext = 'bmp'; }
+          else if (format === 'tiff') { mimeType = 'image/png'; ext = 'png'; alert('TIFF non è supportato, verrà salvato come PNG.'); }
 
           canvas.toBlob(blob => {
+            if (resultContainer.innerHTML === 'Conversione in corso...') resultContainer.innerHTML = '';
+            
             const url = URL.createObjectURL(blob);
+            const imageContainer = document.createElement('div');
+            
             const imageElem = document.createElement('img');
             imageElem.src = url;
             imageElem.alt = 'Immagine convertita';
-            resultContainer.appendChild(imageElem);
+            imageContainer.appendChild(imageElem);
 
             const link = document.createElement('a');
             link.href = url;
             link.download = file.name.replace(/\.[^/.]+$/, '') + '.' + ext;
             link.textContent = 'Scarica ' + link.download;
-            link.style.color = '#1db954';
-            link.style.fontWeight = 'bold';
-            link.style.display = 'block';
-            link.style.marginBottom = '1rem';
-            resultContainer.appendChild(link);
-          }, mimeType);
+            imageContainer.appendChild(link);
+            
+            resultContainer.appendChild(imageContainer);
+          }, mimeType, 0.9); // 0.9 quality for jpeg/webp
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     });
   });
+
+  // --- LOGICA PER MENU MOBILE ---
+  const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+  const navUl = document.querySelector('nav ul');
+
+  if (mobileMenuTrigger && navUl) {
+    mobileMenuTrigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      navUl.classList.toggle('mobile-menu-active');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
+        navUl.classList.remove('mobile-menu-active');
+      }
+    });
+  }
 </script>
 </body>
 </html>
