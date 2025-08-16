@@ -253,12 +253,30 @@
   </style>
 </head>
 <body>
-<div id="navbar-placeholder"></div>
-<main>
-  <h1>Converti immagini online</h1>
-  <p class="description">Converti le tue immagini in WebP, JPEG, PNG, e altri formati. Supporta la conversione di più file contemporaneamente.</p>
+<nav>
+  <div class="logo">🧰 WebToolbox.fun</div>
+  <ul>
+    <li><a href="index.html">Converti</a></li>
+    <li><a href="ridimensiona.html">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html">Ruota</a></li>
+    <li><a href="flip-immagini.html">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html">Base64</a></li>
+    <li><a href="scala-grigi.html">Filtri</a></li>
+    <li><a href="share.html" class="active">Condividi</a></li>
+  </ul>
 
-  <div id="banner"></div>
+  <div class="nav-controls">
+    <select id="langSelector" class="lang-selector" title="Lingua">
+      <option value="it">🇮🇹 IT</option>
+      <option value="en">🇬🇧 EN</option>
+      <option value="fr">🇫🇷 FR</option>
+      <option value="de">🇩🇪 DE</option>
+      <option value="es">🇪🇸 ES</option>
+    </select>
+    <button id="themeToggle" class="theme-toggle">🌙</button>
+  </div>
+</nav>
 
   <label for="inputFiles" class="upload-label">
     <button onclick="document.getElementById('inputFiles').click()" type="button">Seleziona Immagini</button>
