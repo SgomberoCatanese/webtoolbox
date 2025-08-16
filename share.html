@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cronoos • Share</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <style>
+    /* ==============================================================
+       THEME VARIABLES
+    ============================================================== */
+    :root {
+      --bg-color: #f2f2f7;
+      --text-color: #1c1c1e;
+      --muted-color: #8e8e93;
+      --card-bg: #ffffff;
+      --border-color: #d1d1d6;
+      --accent-color: #007aff;
+      --danger-color: #ff3b30;
+      --success-color: #34c759;
+      --warning-color: #ffcc00;
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 10px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 20px rgba(0,0,0,0.15);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #000000;
+      --text-color: #f2f2f7;
+      --muted-color: #98989f;
+      --card-bg: #1c1c1e;
+      --border-color: #2c2c2e;
+      --accent-color: #0a84ff;
+      --danger-color: #ff453a;
+      --success-color: #30d158;
+      --warning-color: #ffd60a;
+      --shadow-sm: 0 2px 4px rgba(255,255,255,0.05);
+      --shadow-md: 0 4px 10px rgba(255,255,255,0.1);
+      --shadow-lg: 0 8px 20px rgba(255,255,255,0.15);
+    }
+
+    /* ==============================================================
+       GLOBAL RESET
+    ============================================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--accent-color);
+      transition: color 0.2s;
+    }
+    a:hover { color: var(--text-color); }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    input, select, textarea {
+      font: inherit;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      width: 100%;
+      background: transparent;
+      color: var(--text-color);
+      transition: border 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+
+    /* ==============================================================
+       NAVBAR
+    ============================================================== */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      z-index: 1000;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--accent-color);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    .nav-links a {
+      font-weight: 500;
+      color: var(--text-color);
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+    }
+
+    .nav-links a:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-select, .theme-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      color: var(--text-color);
+      font-size: 14px;
+    }
+
+    .theme-btn:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    /* ==============================================================
+       MAIN LAYOUT
+    ============================================================== */
+    main {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      transition: background 0.3s ease, border 0.3s ease;
+    }
+
+    .card h2, .card h3 {
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .btn {
+      background: var(--accent-color);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ==============================================================
+       NAVBAR IOS STYLE
+  ============================================================== -->
+  <header>
+    <nav>
+      <div class="nav-left">
+        <span class="brand">Cronoos</span>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="share.html" class="active">Share</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <select id="langSelect" class="lang-select">
+          <option value="it">🇮🇹 ITA</option>
+          <option value="en">🇬🇧 ENG</option>
+          <option value="fr">🇫🇷 FRA</option>
+          <option value="es">🇪🇸 ESP</option>
+          <option value="de">🇩🇪 GER</option>
+        </select>
+        <button id="themeToggle" class="theme-btn">🌙</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ==============================================================
+       MAIN BODY STRUCTURE
+  ============================================================== -->
+  <main>
+    <section class="card" id="sendSection">
+      <h2 data-i18n="send_title">Invia file</h2>
+      <p data-i18n="send_desc">Carica un file e condividilo con un codice, un QR o un link.</p>
+
+      <div class="row" style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+        <label for="fileInput" class="btn secondary" id="chooseBtn">📁 <span data-i18n="choose_file">Scegli file</span></label>
+        <input type="file" id="fileInput" style="display:none">
+        <button class="btn" id="createSessionBtn" disabled>🔗 <span data-i18n="p2p_btn">Crea sessione P2P</span></button>
+        <button class="btn secondary" id="uploadServerBtn" disabled>⬆️ <span data-i18n="server_btn">Upload su server</span></button>
+      </div>
+
+      <div id="fileMeta" style="margin-top:12px; display:none" class="mono"></div>
+
+      <div style="margin-top:12px">
+        <label data-i18n="password_label">Password (opzionale)</label>
+        <input id="password" type="password" placeholder="••••••">
+      </div>
+
+      <div id="shareBox" style="margin-top:16px; display:none" class="card"></div>
+      <div id="qrcodeBox" style="display:none; margin-top:16px"><canvas id="qrcode"></canvas></div>
+      <progress id="progress" value="0" max="100" style="display:none; margin-top:16px; width:100%"></progress>
+    </section>
+
+    <section class="card" id="receiveSection">
+      <h3 data-i18n="receive_title">Ricevi file</h3>
+      <p data-i18n="receive_desc">Inserisci il codice o scansiona il QR per scaricare.</p>
+
+      <div class="row" style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+        <input id="codeInput" placeholder="Codice / ID file">
+        <button class="btn" id="joinBtn">📥 <span data-i18n="receive_btn">Ricevi</span></button>
+      </div>
+
+      <div id="receiveInfo" style="margin-top:12px"></div>
+      <div id="downloadBox" style="margin-top:12px"></div>
+    </section>
+  </main>
+<script>
+/* ==============================================================
+   LINGUE - DIZIONARI
+============================================================== */
+const translations = {
+  it: {
+    send_title: "Invia file",
+    send_desc: "Carica un file e condividilo con un codice, un QR o un link.",
+    choose_file: "Scegli file",
+    p2p_btn: "Crea sessione P2P",
+    server_btn: "Upload su server",
+    password_label: "Password (opzionale)",
+    receive_title: "Ricevi file",
+    receive_desc: "Inserisci il codice o scansiona il QR per scaricare.",
+    receive_btn: "Ricevi"
+  },
+  en: {
+    send_title: "Send file",
+    send_desc: "Upload a file and share it with a code, QR or link.",
+    choose_file: "Choose file",
+    p2p_btn: "Create P2P session",
+    server_btn: "Upload to server",
+    password_label: "Password (optional)",
+    receive_title: "Receive file",
+    receive_desc: "Enter the code or scan the QR to download.",
+    receive_btn: "Receive"
+  },
+  fr: {
+    send_title: "Envoyer un fichier",
+    send_desc: "Téléchargez un fichier et partagez-le avec un code, un QR ou un lien.",
+    choose_file: "Choisir un fichier",
+    p2p_btn: "Créer une session P2P",
+    server_btn: "Télécharger sur le serveur",
+    password_label: "Mot de passe (facultatif)",
+    receive_title: "Recevoir un fichier",
+    receive_desc: "Entrez le code ou scannez le QR pour télécharger.",
+    receive_btn: "Recevoir"
+  },
+  es: {
+    send_title: "Enviar archivo",
+    send_desc: "Sube un archivo y compártelo con un código, QR o enlace.",
+    choose_file: "Elegir archivo",
+    p2p_btn: "Crear sesión P2P",
+    server_btn: "Subir al servidor",
+    password_label: "Contraseña (opcional)",
+    receive_title: "Recibir archivo",
+    receive_desc: "Introduce el código o escanea el QR para descargar.",
+    receive_btn: "Recibir"
+  },
+  de: {
+    send_title: "Datei senden",
+    send_desc: "Lade eine Datei hoch und teile sie mit einem Code, QR oder Link.",
+    choose_file: "Datei auswählen",
+    p2p_btn: "P2P-Sitzung erstellen",
+    server_btn: "Auf Server hochladen",
+    password_label: "Passwort (optional)",
+    receive_title: "Datei empfangen",
+    receive_desc: "Geben Sie den Code ein oder scannen Sie den QR, um herunterzuladen.",
+    receive_btn: "Empfangen"
+  }
+};
+
+/* ==============================================================
+   FUNZIONE CAMBIO LINGUA
+============================================================== */
+const langSelect = document.getElementById("langSelect");
+
+function applyTranslations(lang) {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (translations[lang] && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+}
+
+// Applica lingua iniziale
+applyTranslations("it");
+
+langSelect.addEventListener("change", () => {
+  const lang = langSelect.value;
+  applyTranslations(lang);
+});
+
+/* ==============================================================
+   TOGGLE TEMA
+============================================================== */
+const themeToggle = document.getElementById("themeToggle");
+const root = document.documentElement;
+
+function setTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+  themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+}
+
+// Carica tema salvato
+const savedTheme = localStorage.getItem("theme") || "light";
+setTheme(savedTheme);
+
+themeToggle.addEventListener("click", () => {
+  const current = root.getAttribute("data-theme");
+  const next = current === "light" ? "dark" : "light";
+  setTheme(next);
+});
+</script>
+<script>
+/* ==============================================================
+   FILE SHARING LOGIC
+============================================================== */
+
+const fileInput = document.getElementById("fileInput");
+const fileMeta = document.getElementById("fileMeta");
+const createSessionBtn = document.getElementById("createSessionBtn");
+const uploadServerBtn = document.getElementById("uploadServerBtn");
+const shareBox = document.getElementById("shareBox");
+const qrcodeBox = document.getElementById("qrcodeBox");
+const qrcodeCanvas = document.getElementById("qrcode");
+const progressBar = document.getElementById("progress");
+const passwordInput = document.getElementById("password");
+const joinBtn = document.getElementById("joinBtn");
+const codeInput = document.getElementById("codeInput");
+const receiveInfo = document.getElementById("receiveInfo");
+const downloadBox = document.getElementById("downloadBox");
+
+// Stato globale
+let selectedFile = null;
+let uniqueCode = null;
+
+/* ==============================================================
+   FILE SCELTO
+============================================================== */
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length > 0) {
+    selectedFile = fileInput.files[0];
+    fileMeta.style.display = "block";
+    fileMeta.innerHTML = `
+      <strong>${selectedFile.name}</strong> <br>
+      ${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+    `;
+    createSessionBtn.disabled = false;
+    uploadServerBtn.disabled = false;
+  }
+});
+
+/* ==============================================================
+   GENERAZIONE CODICE UNIVOCO
+============================================================== */
+function generateCode() {
+  const random = Math.random().toString(36).substring(2, 10);
+  return random.toUpperCase();
+}
+
+/* ==============================================================
+   CREA SESSIONE (P2P SIMULATA)
+============================================================== */
+createSessionBtn.addEventListener("click", () => {
+  if (!selectedFile) return;
+
+  uniqueCode = generateCode();
+  const url = `${window.location.origin}/share.html?code=${uniqueCode}`;
+  const pass = passwordInput.value;
+
+  shareBox.style.display = "block";
+  shareBox.innerHTML = `
+    <h4>Condivisione creata ✅</h4>
+    <p><strong>Codice:</strong> ${uniqueCode}</p>
+    ${pass ? `<p><strong>Password:</strong> ${pass}</p>` : ""}
+    <p><strong>Link:</strong> 
+      <input type="text" value="${url}" readonly style="width:100%; margin-top:6px;">
+    </p>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn" onclick="copyToClipboard('${uniqueCode}')">📋 Copia codice</button>
+      <button class="btn" onclick="copyToClipboard('${url}')">📋 Copia link</button>
+    </div>
+  `;
+
+  // Genera QR
+  qrcodeBox.style.display = "block";
+  QRCode.toCanvas(qrcodeCanvas, url, { width: 200 }, function (error) {
+    if (error) console.error(error);
+  });
+});
+
+/* ==============================================================
+   UPLOAD SU SERVER (richiede backend)
+============================================================== */
+uploadServerBtn.addEventListener("click", async () => {
+  if (!selectedFile) return;
+  progressBar.style.display = "block";
+
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+  formData.append("password", passwordInput.value);
+
+  try {
+    const response = await fetch("/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) throw new Error("Errore upload");
+
+    const result = await response.json();
+    const fileUrl = `${window.location.origin}/download/${result.fileId}`;
+
+    shareBox.style.display = "block";
+    shareBox.innerHTML = `
+      <h4>Upload completato ✅</h4>
+      <p><strong>Codice:</strong> ${result.fileId}</p>
+      ${result.password ? `<p><strong>Password:</strong> ${result.password}</p>` : ""}
+      <p><strong>Link diretto:</strong> 
+        <input type="text" value="${fileUrl}" readonly style="width:100%; margin-top:6px;">
+      </p>
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button class="btn" onclick="copyToClipboard('${result.fileId}')">📋 Copia codice</button>
+        <button class="btn" onclick="copyToClipboard('${fileUrl}')">📋 Copia link</button>
+      </div>
+    `;
+
+    // QR code
+    qrcodeBox.style.display = "block";
+    QRCode.toCanvas(qrcodeCanvas, fileUrl, { width: 200 }, function (error) {
+      if (error) console.error(error);
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Errore durante upload");
+  } finally {
+    progressBar.style.display = "none";
+  }
+});
+
+/* ==============================================================
+   RICEVI FILE (codice o QR)
+============================================================== */
+joinBtn.addEventListener("click", async () => {
+  const code = codeInput.value.trim();
+  if (!code) return;
+
+  // Qui ipotizziamo backend che gestisce i file
+  try {
+    const res = await fetch(`/download/${code}`);
+    if (!res.ok) throw new Error("File non trovato");
+
+    // Prova a capire se risposta è JSON o file
+    const contentType = res.headers.get("Content-Type");
+    if (contentType.includes("application/json")) {
+      const data = await res.json();
+      receiveInfo.innerHTML = `<p>Info file: ${data.filename} (${(data.size / (1024*1024)).toFixed(2)} MB)</p>`;
+      if (data.password) {
+        const pass = prompt("Inserisci password:");
+        if (pass !== data.password) {
+          alert("Password errata!");
+          return;
+        }
+      }
+      // link download
+      downloadBox.innerHTML = `<a class="btn" href="/files/${data.filename}" download>⬇️ Scarica</a>`;
+    } else {
+      // Risposta diretta file
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      downloadBox.innerHTML = `<a class="btn" href="${url}" download>⬇️ Scarica</a>`;
+    }
+  } catch (err) {
+    alert("Errore ricezione file");
+  }
+});
+
+/* ==============================================================
+   UTILITY
+============================================================== */
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copiato!");
+  });
+}
+</script>
+<style>
+/* ==============================================================
+   RESPONSIVE DESIGN
+============================================================== */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .btn, .lang-select, .theme-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  main {
+    padding: 0 10px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  main {
+    padding: 0 20px;
+  }
+}
+
+@media (min-width: 1201px) {
+  main {
+    padding: 0 40px;
+  }
+}
+
+/* ==============================================================
+   ANIMAZIONI IOS STYLE
+============================================================== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideIn 0.6s ease forwards;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.btn {
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+</style>
+
+<!-- ==============================================================
+   FOOTER
+============================================================== -->
+<footer style="margin-top:40px; padding:20px; text-align:center; font-size:14px; color:var(--muted-color);">
+  <p>&copy; 2025 Cronoos • <span data-i18n="footer_rights">Tutti i diritti riservati.</span></p>
+  <p><a href="privacy.html" data-i18n="footer_privacy">Privacy</a> • <a href="terms.html" data-i18n="footer_terms">Termini</a></p>
+</footer>
+
+</body>
+</html>
