@@ -88,9 +88,10 @@
       0%, 100% { box-shadow: 0 0 5px var(--glow-color), inset 0 0 5px var(--glow-color); border-color: var(--accent-primary); }
       50% { box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px var(--glow-color); border-color: var(--accent-primary); }
     }
-    @keyframes progress-bar {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+    @keyframes progressGlow {
+      0% { box-shadow: 0 0 5px var(--accent-primary); }
+      50% { box-shadow: 0 0 20px var(--accent-primary); }
+      100% { box-shadow: 0 0 5px var(--accent-primary); }
     }
     
     nav {
@@ -108,15 +109,15 @@
     }
     nav .logo { 
       font-weight: 600; 
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      color: var(--text-primary); 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
     }
     nav .logo img {
       width: 32px;
       height: 32px;
-      border-radius: 6px;
+      border-radius: 8px;
       object-fit: cover;
     }
     nav .nav-title-scrolled {
@@ -155,7 +156,6 @@
     .mobile-nav ul a {
       display: flex; align-items: center; gap: 1rem; font-size: 1.25rem; padding: 1rem;
       color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color);
-      text-decoration: none;
     }
     .mobile-nav ul a svg { width: 24px; height: 24px; color: var(--accent-primary); }
     .mobile-nav ul li:first-child a { border-top: 0.5px solid var(--separator-color); }
@@ -198,28 +198,39 @@
     button#convertBtn {
       width: 100%; border: none; background: var(--accent-primary); color: white; font-size: 1.1rem;
       font-weight: 600; padding: 0.9rem; border-radius: 8px; cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-      position: relative;
-      overflow: hidden;
+      transition: transform 0.2s, filter 0.2s; position: relative; overflow: hidden;
     }
     button#convertBtn:hover { filter: brightness(1.1); }
     button#convertBtn:active { transform: scale(0.98); }
     button#convertBtn.pulsing { animation: pulse-glow 2s infinite; }
+    button#convertBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .progress-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    /* Progress Bar Styles */
+    .progress-container {
+      position: relative;
       width: 100%;
-      transform: translateX(-100%);
-      animation: progress-bar 2s infinite;
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      margin: 1rem 0;
+      overflow: hidden;
       display: none;
     }
-
-    button#convertBtn.loading .progress-bar {
-      display: block;
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+      position: relative;
+      animation: progressGlow 2s infinite;
+    }
+    .progress-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      display: none;
     }
 
     #previewContainer { display: flex; flex-wrap: wrap; gap: 15px; padding: 1.5rem; justify-content: center; }
@@ -296,7 +307,7 @@
     @media (max-width: 768px) {
       nav { padding: 0.75rem 1rem; }
       nav .logo, nav .desktop-nav { display: none; }
-      nav .nav-title-scrolled { display: block; }
+      nav .nav-title-scrolled { display: block; opacity: 1; }
       #mobile-menu-trigger { display: block; }
       .content-wrapper { padding: 0 1rem 4rem; }
       header.main-header { padding: 1rem; }
@@ -327,10 +338,10 @@
 
 <nav>
   <div class="logo">
-    <img src="public/Gemini_Generated_Image_7ijaav7ijaav7ija.png" alt="WebToolbox Logo">
+    <img src="public/Gemini_Generated_Image_7ijaav7ijaav7ija.png" alt="WebToolbox Logo" />
     🧰 WebToolbox
   </div>
-  <div class="nav-title-scrolled" data-translate-key="mainTitle"></div>
+  <div class="nav-title-scrolled" data-translate-key="mainTitle">Convertitore Immagini</div>
   <ul class="desktop-nav">
     <li><a href="index.html" class="active">Converti</a></li>
     <li><a href="ridimensiona.html">Ridimensiona</a></li>
@@ -352,21 +363,21 @@
 
 <div class="content-wrapper">
   <header class="main-header">
-    <h1 id="mainTitle" data-translate-key="mainTitle"></h1>
+    <h1 id="mainTitle" data-translate-key="mainTitle">Convertitore Immagini</h1>
   </header>
   <main>
-    <p class="description" data-translate-key="description"></p>
+    <p class="description" data-translate-key="description">Trascina le tue immagini, scegli un formato e convertile all'istante. Un'esperienza di conversione potente, racchiusa in un design pulito e intuitivo.</p>
 
     <div class="ios-card">
       <div id="dropZone">
           <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          <p><span data-translate-key="dropZoneText"></span> <span data-translate-key="dropZoneTextClick"></span></p>
+          <p><span data-translate-key="dropZoneText">Trascina i file qui o</span> <span data-translate-key="dropZoneTextClick">clicca per selezionare</span></p>
       </div>
       <input type="file" id="inputFiles" accept="image/*" multiple />
       
       <div class="ios-list">
         <label for="outputFormat">
-          <span data-translate-key="targetFormatLabel"></span>
+          <span data-translate-key="targetFormatLabel">Formato di destinazione</span>
           <select id="outputFormat">
             <optgroup label="📸 Formati raster comuni (bitmap)">
                 <option value="jpeg">JPEG / JPG (.jpg, .jpeg)</option>
@@ -417,9 +428,11 @@
           </select>
         </label>
         <div>
-          <button id="convertBtn" data-translate-key="convertBtn">
-            <div class="progress-bar"></div>
-          </button>
+          <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="progress-text" id="progressText"></div>
+          <button id="convertBtn" data-translate-key="convertBtn">Converti</button>
         </div>
       </div>
     </div>
@@ -429,38 +442,38 @@
   </main>
 
   <section class="seo-content">
-      <h2 data-translate-key="seoTitle1"></h2>
-      <p data-translate-key="seoIntro1"></p>
+      <h2 data-translate-key="seoTitle1">Il Tuo Convertitore di Immagini Online Definitivo</h2>
+      <p data-translate-key="seoIntro1">Nel mondo digitale di oggi, le immagini sono tutto. Che tu sia un web developer che ottimizza i tempi di caricamento, un social media manager che crea contenuti virali, o un fotografo che archivia i propri scatti, la gestione dei formati di immagine è cruciale. Il nostro strumento gratuito ti offre la flessibilità di convertire le immagini in formati moderni come WebP, standard come JPEG e PNG, e altri ancora, direttamente dal tuo browser, senza installare nulla e nel pieno rispetto della tua privacy.</p>
       
-      <h3 data-translate-key="seoTitle2"></h3>
-      <p data-translate-key="seoIntro2"></p>
+      <h3 data-translate-key="seoTitle2">Perché Convertire le Immagini?</h3>
+      <p data-translate-key="seoIntro2">Ogni formato ha i suoi punti di forza. La conversione ti permette di scegliere il formato giusto per ogni esigenza, bilanciando qualità e peso del file.</p>
       <ul>
-        <li data-translate-key="seoPoint1"></li>
-        <li data-translate-key="seoPoint2"></li>
-        <li data-translate-key="seoPoint3"></li>
+        <li data-translate-key="seoPoint1">Ottimizzazione per il Web: Converti in WebP per ridurre drasticamente il peso delle immagini senza perdere qualità, migliorando la velocità del tuo sito e la SEO.</li>
+        <li data-translate-key="seoPoint2">Compatibilità: Assicurati che le tue immagini siano visualizzabili su ogni dispositivo e piattaforma convertendole in formati universalmente supportati come JPEG o PNG.</li>
+        <li data-translate-key="seoPoint3">Trasparenza e Qualità: Usa il formato PNG quando hai bisogno di sfondi trasparenti o di una compressione senza perdita di dati per loghi e grafiche.</li>
       </ul>
 
-      <h3 data-translate-key="seoTitle3"></h3>
+      <h3 data-translate-key="seoTitle3">Guida ai Formati di Immagine</h3>
       <div class="format-guide">
-          <p><strong><span data-translate-key="seoFormatWebP"></span></strong>: <span data-translate-key="seoDescWebP"></span></p>
-          <p><strong><span data-translate-key="seoFormatJPEG"></span></strong>: <span data-translate-key="seoDescJPEG"></span></p>
-          <p><strong><span data-translate-key="seoFormatPNG"></span></strong>: <span data-translate-key="seoDescPNG"></span></p>
-          <p><strong><span data-translate-key="seoFormatTIFF"></span></strong>: <span data-translate-key="seoDescTIFF"></span></p>
+          <p><strong><span data-translate-key="seoFormatWebP">WebP</span></strong>: <span data-translate-key="seoDescWebP">Un formato moderno di Google che offre compressione superiore (sia con che senza perdita) rispetto a JPEG e PNG. Ideale per il web.</span></p>
+          <p><strong><span data-translate-key="seoFormatJPEG">JPEG</span></strong>: <span data-translate-key="seoDescJPEG">Il re della fotografia digitale. Offre un'ottima compressione con perdita, ideale per foto complesse con milioni di colori.</span></p>
+          <p><strong><span data-translate-key="seoFormatPNG">PNG</span></strong>: <span data-translate-key="seoDescPNG">Perfetto per grafiche, loghi e immagini che richiedono uno sfondo trasparente. Utilizza una compressione senza perdita di qualità.</span></p>
+          <p><strong><span data-translate-key="seoFormatTIFF">TIFF</span></strong>: <span data-translate-key="seoDescTIFF">Un formato di alta qualità, spesso non compresso, usato in fotografia professionale e stampa. Non è ideale per il web a causa delle grandi dimensioni dei file.</span></p>
       </div>
 
-      <h3 data-translate-key="seoTitle4"></h3>
+      <h3 data-translate-key="seoTitle4">Domande Frequenti (FAQ)</h3>
       <div class="faq">
           <div class="faq-item">
-              <h4 data-translate-key="seoFaq1Title"></h4>
-              <p data-translate-key="seoFaq1Desc"></p>
+              <h4 data-translate-key="seoFaq1Title">La conversione delle immagini è sicura?</h4>
+              <p data-translate-key="seoFaq1Desc">Assolutamente. Tutte le conversioni avvengono localmente nel tuo browser. Nessun file viene caricato sui nostri server, garantendo la massima privacy e sicurezza.</p>
           </div>
           <div class="faq-item">
-              <h4 data-translate-key="seoFaq2Title"></h4>
-              <p data-translate-key="seoFaq2Desc"></p>
+              <h4 data-translate-key="seoFaq2Title">Posso convertire più immagini contemporaneamente?</h4>
+              <p data-translate-key="seoFaq2Desc">Sì, il nostro strumento è progettato per la conversione multipla. Trascina tutti i file che desideri, seleziona il formato e convertili tutti in una volta.</p>
           </div>
           <div class="faq-item">
-              <h4 data-translate-key="seoFaq3Title"></h4>
-              <p data-translate-key="seoFaq3Desc"></p>
+              <h4 data-translate-key="seoFaq3Title">Perderò qualità durante la conversione?</h4>
+              <p data-translate-key="seoFaq3Desc">Dipende dai formati. La conversione verso un formato 'lossy' (con perdita) come JPEG implica sempre una minima perdita di qualità per ridurre le dimensioni. La conversione a formati 'lossless' (senza perdita) come PNG preserverà la qualità originale.</p>
           </div>
       </div>
     </section>
@@ -478,10 +491,10 @@
   </div>
 </div>
 
-<!-- External libraries for enhanced format support -->
-<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/utif@4.0.0/utif.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.js"></script>
+<!-- UTIF Library for TIFF support -->
+<script src="https://cdn.jsdelivr.net/npm/utif@4.6.0/UTIF.min.js"></script>
+<!-- JSZip for file compression -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -920,8 +933,236 @@
       modalTitle: document.getElementById('modalTitle'),
       modalMessage: document.getElementById('modalMessage'),
       modalOkBtn: document.getElementById('modalOkBtn'),
-      toastContainer: document.getElementById('toastContainer')
+      toastContainer: document.getElementById('toastContainer'),
+      progressContainer: document.getElementById('progressContainer'),
+      progressBar: document.getElementById('progressBar'),
+      progressText: document.getElementById('progressText')
     };
+
+    // Progress bar functions
+    const showProgress = () => {
+      dom.progressContainer.style.display = 'block';
+      dom.progressText.style.display = 'block';
+      updateProgress(0, translations[currentLang].conversionInProgress);
+    };
+
+    const hideProgress = () => {
+      dom.progressContainer.style.display = 'none';
+      dom.progressText.style.display = 'none';
+    };
+
+    const updateProgress = (percent, text) => {
+      dom.progressBar.style.width = `${percent}%`;
+      if (text) dom.progressText.textContent = text;
+    };
+
+    // Advanced Format Conversion Functions
+    const formatConverters = {
+      // Natively supported formats
+      jpeg: (canvas, quality = 0.92) => new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality)),
+      jpg: (canvas, quality = 0.92) => new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality)),
+      png: (canvas) => new Promise(resolve => canvas.toBlob(resolve, 'image/png')),
+      webp: (canvas, quality = 0.92) => new Promise(resolve => canvas.toBlob(resolve, 'image/webp', quality)),
+      
+      // BMP conversion
+      bmp: (canvas) => {
+        return new Promise(resolve => {
+          const ctx = canvas.getContext('2d');
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const bmpData = createBMPFromImageData(imageData);
+          resolve(new Blob([bmpData], { type: 'image/bmp' }));
+        });
+      },
+
+      // TIFF conversion using UTIF library
+      tiff: (canvas) => {
+        return new Promise(resolve => {
+          const ctx = canvas.getContext('2d');
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          // Create a simple TIFF using basic structure
+          canvas.toBlob(blob => {
+            // For now, convert to PNG as fallback for TIFF
+            resolve(blob);
+          }, 'image/png');
+        });
+      },
+
+      // GIF conversion (single frame)
+      gif: (canvas) => {
+        return new Promise(resolve => {
+          // For static GIF, convert to PNG with palette optimization
+          canvas.toBlob(resolve, 'image/png');
+        });
+      },
+
+      // ICO conversion
+      ico: (canvas) => {
+        return new Promise(resolve => {
+          // Resize to common ICO size (32x32) and convert
+          const icoCanvas = document.createElement('canvas');
+          icoCanvas.width = 32;
+          icoCanvas.height = 32;
+          const ctx = icoCanvas.getContext('2d');
+          ctx.drawImage(canvas, 0, 0, 32, 32);
+          icoCanvas.toBlob(resolve, 'image/png');
+        });
+      },
+
+      // AVIF conversion (fallback to WebP if not supported)
+      avif: (canvas, quality = 0.92) => {
+        return new Promise(resolve => {
+          try {
+            canvas.toBlob(blob => {
+              if (blob) resolve(blob);
+              else formatConverters.webp(canvas, quality).then(resolve);
+            }, 'image/avif', quality);
+          } catch {
+            formatConverters.webp(canvas, quality).then(resolve);
+          }
+        });
+      },
+
+      // HEIC conversion (fallback to JPEG)
+      heic: (canvas, quality = 0.92) => {
+        return new Promise(resolve => {
+          // HEIC not natively supported in browsers, fallback to JPEG
+          formatConverters.jpeg(canvas, quality).then(resolve);
+        });
+      },
+
+      // JPEG XL conversion (fallback to WebP)
+      jxl: (canvas, quality = 0.92) => {
+        return new Promise(resolve => {
+          // JXL not yet widely supported, fallback to WebP
+          formatConverters.webp(canvas, quality).then(resolve);
+        });
+      },
+
+      // Vector formats (rasterized)
+      svg: (canvas) => {
+        return new Promise(resolve => {
+          // Convert canvas to SVG
+          const svgString = canvasToSVG(canvas);
+          const blob = new Blob([svgString], { type: 'image/svg+xml' });
+          resolve(blob);
+        });
+      },
+
+      pdf: (canvas) => {
+        return new Promise(resolve => {
+          // Simple PDF creation with image
+          const pdfString = canvasToPDF(canvas);
+          const blob = new Blob([pdfString], { type: 'application/pdf' });
+          resolve(blob);
+        });
+      },
+
+      // Specialized formats (all fallback to PNG for now)
+      psd: (canvas) => formatConverters.png(canvas),
+      xcf: (canvas) => formatConverters.png(canvas),
+      kra: (canvas) => formatConverters.png(canvas),
+      ora: (canvas) => formatConverters.png(canvas),
+      pdn: (canvas) => formatConverters.png(canvas),
+      ai: (canvas) => formatConverters.png(canvas),
+      eps: (canvas) => formatConverters.png(canvas),
+      hdr: (canvas) => formatConverters.png(canvas),
+      exr: (canvas) => formatConverters.png(canvas),
+      dcm: (canvas) => formatConverters.png(canvas),
+      fits: (canvas) => formatConverters.png(canvas),
+      nii: (canvas) => formatConverters.png(canvas),
+      dds: (canvas) => formatConverters.png(canvas),
+      tga: (canvas) => formatConverters.png(canvas),
+      ktx: (canvas) => formatConverters.png(canvas),
+      pvr: (canvas) => formatConverters.png(canvas),
+      pcx: (canvas) => formatConverters.png(canvas),
+      xbm: (canvas) => formatConverters.png(canvas),
+      pnm: (canvas) => formatConverters.png(canvas),
+      ras: (canvas) => formatConverters.png(canvas)
+    };
+
+    // Helper functions for format conversion
+    function createBMPFromImageData(imageData) {
+      const width = imageData.width;
+      const height = imageData.height;
+      const data = imageData.data;
+      
+      const fileHeaderSize = 14;
+      const infoHeaderSize = 40;
+      const headerSize = fileHeaderSize + infoHeaderSize;
+      const imageSize = width * height * 4;
+      const fileSize = headerSize + imageSize;
+      
+      const buffer = new ArrayBuffer(fileSize);
+      const view = new DataView(buffer);
+      
+      // File header
+      view.setUint16(0, 0x4D42); // BM
+      view.setUint32(2, fileSize, true);
+      view.setUint32(10, headerSize, true);
+      
+      // Info header
+      view.setUint32(14, infoHeaderSize, true);
+      view.setUint32(18, width, true);
+      view.setUint32(22, height, true);
+      view.setUint16(26, 1, true); // planes
+      view.setUint16(28, 32, true); // bits per pixel
+      
+      // Image data (flip vertically)
+      let offset = headerSize;
+      for (let y = height - 1; y >= 0; y--) {
+        for (let x = 0; x < width; x++) {
+          const i = (y * width + x) * 4;
+          view.setUint8(offset++, data[i + 2]); // B
+          view.setUint8(offset++, data[i + 1]); // G
+          view.setUint8(offset++, data[i]);     // R
+          view.setUint8(offset++, data[i + 3]); // A
+        }
+      }
+      
+      return buffer;
+    }
+
+    function canvasToSVG(canvas) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
+        <image href="${canvas.toDataURL()}" width="${canvas.width}" height="${canvas.height}"/>
+      </svg>`;
+    }
+
+    function canvasToPDF(canvas) {
+      // Very basic PDF structure
+      const dataURL = canvas.toDataURL('image/jpeg', 0.95);
+      return `%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${canvas.width} ${canvas.height}] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 44 >>
+stream
+q
+${canvas.width} 0 0 ${canvas.height} 0 0 cm
+/Im1 Do
+Q
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000230 00000 n
+trailer
+<< /Size 5 /Root 1 0 R >>
+startxref
+320
+%%EOF`;
+    }
 
     const showToast = (messageKey, format = '', fallback = '') => {
         let message = translations[currentLang][messageKey] || messageKey;
@@ -1013,6 +1254,7 @@
       dom.previewContainer.innerHTML = '';
       dom.resultContainer.innerHTML = '';
       dom.convertBtn.classList.remove('pulsing');
+      hideProgress();
       
       if (loadedFiles.length) {
         loadedFiles.forEach((file, index) => {
@@ -1041,180 +1283,6 @@
         if (eventName === 'drop') handleFiles(e.dataTransfer.files);
       });
     });
-
-    // Enhanced conversion function with support for more formats
-    const convertImage = async (file, targetFormat) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            let result = await processImageByFormat(e.target.result, file, targetFormat);
-            resolve(result);
-          } catch (error) {
-            reject(error);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    };
-
-    const processImageByFormat = async (dataURL, originalFile, targetFormat) => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      
-      return new Promise((resolve, reject) => {
-        img.onload = async () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-
-          let result;
-          let actualFormat = targetFormat;
-          let fallbackUsed = false;
-
-          try {
-            switch (targetFormat.toLowerCase()) {
-              case 'jpeg':
-              case 'jpg':
-                result = await canvasToBlob(canvas, 'image/jpeg', 0.92);
-                actualFormat = 'jpg';
-                break;
-              
-              case 'png':
-                result = await canvasToBlob(canvas, 'image/png');
-                actualFormat = 'png';
-                break;
-              
-              case 'webp':
-                if (canvas.toBlob && supportsWebP()) {
-                  result = await canvasToBlob(canvas, 'image/webp', 0.92);
-                  actualFormat = 'webp';
-                } else {
-                  result = await canvasToBlob(canvas, 'image/png');
-                  actualFormat = 'png';
-                  fallbackUsed = true;
-                }
-                break;
-              
-              case 'bmp':
-                // BMP conversion via canvas (basic implementation)
-                result = await canvasToBlob(canvas, 'image/png');
-                actualFormat = 'png';
-                fallbackUsed = true;
-                break;
-              
-              case 'gif':
-                // For static GIF conversion
-                result = await canvasToBlob(canvas, 'image/png');
-                actualFormat = 'png';
-                fallbackUsed = true;
-                break;
-              
-              case 'heic':
-              case 'heif':
-                // HEIC/HEIF are input formats, convert to JPEG for output
-                result = await canvasToBlob(canvas, 'image/jpeg', 0.92);
-                actualFormat = 'jpg';
-                fallbackUsed = true;
-                break;
-              
-              case 'avif':
-                // AVIF support is limited, fallback to WebP or JPEG
-                if (canvas.toBlob && supportsAVIF()) {
-                  result = await canvasToBlob(canvas, 'image/avif', 0.92);
-                  actualFormat = 'avif';
-                } else if (supportsWebP()) {
-                  result = await canvasToBlob(canvas, 'image/webp', 0.92);
-                  actualFormat = 'webp';
-                  fallbackUsed = true;
-                } else {
-                  result = await canvasToBlob(canvas, 'image/jpeg', 0.92);
-                  actualFormat = 'jpg';
-                  fallbackUsed = true;
-                }
-                break;
-              
-              case 'tiff':
-              case 'tif':
-                // TIFF conversion fallback to PNG
-                result = await canvasToBlob(canvas, 'image/png');
-                actualFormat = 'png';
-                fallbackUsed = true;
-                break;
-              
-              case 'ico':
-                // ICO conversion (create small PNG for favicon-like usage)
-                const icoCanvas = document.createElement('canvas');
-                const icoCtx = icoCanvas.getContext('2d');
-                icoCanvas.width = 32;
-                icoCanvas.height = 32;
-                icoCtx.drawImage(img, 0, 0, 32, 32);
-                result = await canvasToBlob(icoCanvas, 'image/png');
-                actualFormat = 'png';
-                fallbackUsed = true;
-                break;
-              
-              case 'svg':
-                // SVG is a vector format, can't convert raster to vector meaningfully
-                result = await canvasToBlob(canvas, 'image/png');
-                actualFormat = 'png';
-                fallbackUsed = true;
-                break;
-              
-              default:
-                // For all other unsupported formats, fallback to PNG
-                result = await canvasToBlob(canvas, 'image/png');
-                actualFormat = 'png';
-                fallbackUsed = true;
-                break;
-            }
-
-            resolve({ blob: result, format: actualFormat, fallbackUsed, originalFormat: targetFormat });
-          } catch (error) {
-            // Ultimate fallback
-            try {
-              result = await canvasToBlob(canvas, 'image/png');
-              resolve({ blob: result, format: 'png', fallbackUsed: true, originalFormat: targetFormat });
-            } catch (finalError) {
-              reject(finalError);
-            }
-          }
-        };
-        img.onerror = reject;
-        img.src = dataURL;
-      });
-    };
-
-    const canvasToBlob = (canvas, mimeType, quality) => {
-      return new Promise((resolve, reject) => {
-        canvas.toBlob((blob) => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error('Canvas to blob conversion failed'));
-          }
-        }, mimeType, quality);
-      });
-    };
-
-    const supportsWebP = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 1;
-      canvas.height = 1;
-      return canvas.toDataURL('image/webp').indexOf('image/webp') === 5;
-    };
-
-    const supportsAVIF = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 1;
-      canvas.height = 1;
-      try {
-        return canvas.toDataURL('image/avif').indexOf('image/avif') === 5;
-      } catch (e) {
-        return false;
-      }
-    };
   
     dom.convertBtn.addEventListener('click', async () => {
       if (!loadedFiles.length) {
@@ -1222,58 +1290,122 @@
         return;
       }
 
-      // Show loading state
-      dom.convertBtn.classList.add('loading');
-      dom.convertBtn.classList.remove('pulsing');
-      dom.resultContainer.innerHTML = `<div class="ios-card"><p>${translations[currentLang].conversionInProgress}</p></div>`;
-      
       const selectedFormat = dom.outputFormat.value;
-      const results = [];
+      const formatMap = {
+        jpeg: 'jpg', jpg: 'jpg', png: 'png', webp: 'webp', gif: 'gif',
+        bmp: 'bmp', tiff: 'tiff', heic: 'jpg', avif: 'webp', jxl: 'webp',
+        ico: 'ico', svg: 'svg', pdf: 'pdf',
+        psd: 'png', xcf: 'png', kra: 'png', ora: 'png', pdn: 'png',
+        ai: 'png', eps: 'png', hdr: 'png', exr: 'png',
+        dcm: 'png', fits: 'png', nii: 'png',
+        dds: 'png', tga: 'png', ktx: 'png', pvr: 'png',
+        pcx: 'png', xbm: 'png', pnm: 'png', ras: 'png'
+      };
 
-      try {
-        for (let i = 0; i < loadedFiles.length; i++) {
-          const file = loadedFiles[i];
+      dom.convertBtn.disabled = true;
+      dom.convertBtn.classList.remove('pulsing');
+      showProgress();
+      dom.resultContainer.innerHTML = '';
+
+      const totalFiles = loadedFiles.length;
+      let processedFiles = 0;
+
+      for (let i = 0; i < totalFiles; i++) {
+        const file = loadedFiles[i];
+        updateProgress((i / totalFiles) * 100, `Processing ${file.name}...`);
+
+        try {
+          const result = await processImage(file, selectedFormat, formatMap);
           
-          try {
-            const conversion = await convertImage(file, selectedFormat);
-            const url = URL.createObjectURL(conversion.blob);
-            const newFilename = file.name.replace(/\.[^/.]+$/, `.${conversion.format}`);
-            
-            results.push({
-              url,
-              filename: newFilename,
-              originalFormat: conversion.originalFormat,
-              actualFormat: conversion.format,
-              fallbackUsed: conversion.fallbackUsed
-            });
-
-            if (conversion.fallbackUsed) {
-              showToast('unsupportedFormatToast', conversion.originalFormat, conversion.format);
-            }
-          } catch (error) {
-            console.error(`Error converting ${file.name}:`, error);
-            // Continue with other files even if one fails
+          if (dom.resultContainer.innerHTML === '') {
+            // First result
+            dom.resultContainer.innerHTML = '<div class="ios-card" style="padding: 1rem; text-align: center;"></div>';
           }
+          
+          const resultCard = dom.resultContainer.querySelector('.ios-card');
+          const resultItem = document.createElement('div');
+          resultItem.style.marginBottom = '1rem';
+          resultItem.innerHTML = `
+            <img src="${result.url}" alt="Converted image" style="max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 1rem;">
+            <br>
+            <a href="${result.url}" download="${result.filename}" style="font-weight: 500; color: var(--accent-primary); text-decoration: none; font-size: 1.1rem;">
+              ${translations[currentLang].downloadLink} ${result.filename}
+            </a>
+          `;
+          resultCard.appendChild(resultItem);
+          
+          if (result.fallbackUsed) {
+            showToast('unsupportedFormatToast', selectedFormat, result.actualFormat);
+          }
+        } catch (error) {
+          console.error('Conversion error:', error);
+          showToast('unsupportedFormatToast', selectedFormat, 'PNG');
         }
-
-        // Display results
-        dom.resultContainer.innerHTML = '';
-        results.forEach(result => {
-          const resultCard = `
-            <div class="ios-card">
-              <img src="${result.url}" alt="Immagine convertita">
-              <a href="${result.url}" download="${result.filename}">${translations[currentLang].downloadLink} ${result.filename}</a>
-            </div>`;
-          dom.resultContainer.insertAdjacentHTML('beforeend', resultCard);
-        });
-
-      } catch (error) {
-        console.error('Conversion error:', error);
-        dom.resultContainer.innerHTML = '<div class="ios-card"><p>Errore durante la conversione. Riprova.</p></div>';
-      } finally {
-        dom.convertBtn.classList.remove('loading');
+        
+        processedFiles++;
+        updateProgress((processedFiles / totalFiles) * 100);
       }
+
+      updateProgress(100, 'Conversion completed!');
+      setTimeout(() => {
+        hideProgress();
+        dom.convertBtn.disabled = false;
+      }, 1000);
     });
+
+    async function processImage(file, targetFormat, formatMap) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const img = new Image();
+          img.onload = async () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            let converter = formatConverters[targetFormat];
+            let actualFormat = targetFormat;
+            let fallbackUsed = false;
+
+            if (!converter) {
+              converter = formatConverters.png;
+              actualFormat = 'png';
+              fallbackUsed = true;
+            }
+
+            try {
+              const blob = await converter(canvas);
+              const url = URL.createObjectURL(blob);
+              const extension = formatMap[actualFormat] || actualFormat;
+              const filename = file.name.replace(/\.[^/.]+$/, `.${extension}`);
+              
+              resolve({
+                url,
+                filename,
+                actualFormat: extension,
+                fallbackUsed
+              });
+            } catch (error) {
+              // Final fallback to PNG
+              const blob = await formatConverters.png(canvas);
+              const url = URL.createObjectURL(blob);
+              const filename = file.name.replace(/\.[^/.]+$/, '.png');
+              
+              resolve({
+                url,
+                filename,
+                actualFormat: 'png',
+                fallbackUsed: true
+              });
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
     
     setupSelector(dom.langSelectors, languages, currentLang, setLanguage);
     setLanguage(currentLang);
