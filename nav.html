@@ -1,5 +1,48 @@
 <nav>
-  <div class="logo">🧰 WebToolbox.fun</div>
+  <div class="logo">
+    <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
+    🧰 WebToolbox
+  </div>
+
+  <div class="nav-title-scrolled" id="navTitleScrolled">WebToolbox</div>
+
+  <ul class="desktop-nav">
+    <li><a href="index.html">Converti</a></li>
+    <li><a href="ridimensiona.html">Ridimensiona</a></li>
+    <li><a href="ruota-immagini.html">Ruota</a></li>
+    <li><a href="flip-immagini.html">Specchia</a></li>
+    <li><a href="crop-immagini.html">Ritaglia</a></li>
+    <li><a href="base64.html">Base64</a></li>
+    <li><a href="scala-grigi.html">Filtri</a></li>
+    <li><a href="share.html">Condividi</a></li>
+  </ul>
+
+  <div class="nav-controls">
+    <select id="themeSelector" title="Seleziona Tema">
+      <option value="dark">Scuro</option>
+      <option value="light">Chiaro</option>
+      <option value="midnight">Midnight</option>
+      <option value="slate">Slate</option>
+    </select>
+  </div>
+
+  <button id="mobile-menu-trigger" title="Apri Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  </button>
+</nav>
+
+<div class="mobile-nav" id="mobileMenu">
+  <button id="mobile-menu-close" title="Chiudi Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  </button>
+
   <ul>
     <li><a href="index.html">Converti</a></li>
     <li><a href="ridimensiona.html">Ridimensiona</a></li>
@@ -8,10 +51,314 @@
     <li><a href="crop-immagini.html">Ritaglia</a></li>
     <li><a href="base64.html">Base64</a></li>
     <li><a href="scala-grigi.html">Filtri</a></li>
+    <li><a href="share.html">Condividi</a></li>
   </ul>
-  <button id="mobile-menu-trigger" aria-label="Apri menu">
-    <svg viewBox="0 0 100 80" width="40" height="40">
-      <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
-    </svg>
-  </button>
-</nav>
+
+  <div class="nav-controls">
+    <select id="themeSelectorMobile" title="Seleziona Tema">
+      <option value="dark">Scuro</option>
+      <option value="light">Chiaro</option>
+      <option value="midnight">Midnight</option>
+      <option value="slate">Slate</option>
+    </select>
+  </div>
+</div>
+<style>
+  /* =================================== */
+/* nav.css                */
+/* Stili per la navigazione avanzata */
+/* =================================== */
+
+/* Definizioni dei temi (variabili CSS) */
+:root { /* Default Dark Theme */
+  --bg-primary: #1C1C1E;
+  --bg-secondary: #2C2C2E;
+  --bg-tertiary: #3A3A3C;
+  --text-primary: #FFFFFF;
+  --text-secondary: #EBEBF599;
+  --accent-primary: #0A84FF;
+  --separator-color: #38383A;
+  --nav-bg: rgba(28, 28, 30, 0.65); /* Sfondo per effetto vetro */
+}
+
+[data-theme="light"] {
+  --bg-primary: #F2F2F7;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #E5E5EA;
+  --text-primary: #000000;
+  --text-secondary: #3C3C4399;
+  --accent-primary: #007AFF;
+  --separator-color: #C6C6C8;
+  --nav-bg: rgba(249, 249, 249, 0.65); /* Sfondo per effetto vetro */
+}
+
+[data-theme="midnight"] {
+  --bg-primary: #000000;
+  --bg-secondary: #1D1D1F;
+  --bg-tertiary: #2C2C2E;
+  --text-primary: #FFFFFF;
+  --accent-primary: #0A84FF;
+  --nav-bg: rgba(10, 10, 10, 0.6); /* Sfondo per effetto vetro */
+}
+
+[data-theme="slate"] {
+  --bg-primary: #29313E;
+  --bg-secondary: #354152;
+  --bg-tertiary: #495867;
+  --text-primary: #F7F7F7;
+  --accent-primary: #F9A03F;
+  --separator-color: #495867;
+  --nav-bg: rgba(25, 32, 41, 0.65); /* Sfondo per effetto vetro */
+}
+
+/* Stile per il body quando il menu mobile è aperto */
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* --- Barra di Navigazione Desktop --- */
+nav {
+  width: 100%;
+  background: var(--nav-bg);
+  backdrop-filter: blur(32px) saturate(180%); /* Effetto vetro accentuato */
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-bottom: 0.5px solid var(--separator-color);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+nav .logo {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+nav .logo img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.nav-title-scrolled {
+  display: none; /* Visibile solo su mobile */
+  font-weight: 600;
+  color: var(--text-primary);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+nav .desktop-nav {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+nav a:hover {
+  color: var(--text-primary);
+}
+
+nav a.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Stile per i selettori (tema/lingua) */
+.nav-controls select {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+
+/* --- Menu Mobile --- */
+#mobile-menu-trigger,
+#mobile-menu-close {
+  display: none; /* Nascosti di default */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--accent-primary);
+  z-index: 110;
+}
+
+#mobile-menu-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+}
+
+#mobile-menu-trigger svg,
+#mobile-menu-close svg {
+  width: 28px;
+  height: 28px;
+}
+
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-secondary);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 6rem 1.5rem 2rem;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-sizing: border-box;
+}
+
+.mobile-nav.active {
+  transform: translateX(0);
+}
+
+.mobile-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.mobile-nav ul a {
+  display: block;
+  font-size: 1.25rem;
+  padding: 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--separator-color);
+}
+
+.mobile-nav .nav-controls {
+  margin-top: auto;
+  justify-content: center;
+}
+
+
+/* --- Stili Responsivi --- */
+@media (max-width: 768px) {
+  nav {
+    padding: 0.75rem 1rem;
+  }
+  nav .logo,
+  nav .desktop-nav,
+  nav .nav-controls {
+    display: none;
+  }
+  .nav-title-scrolled {
+    display: block;
+  }
+  #mobile-menu-trigger {
+    display: block;
+  }
+}
+</style>
+<script>
+  /* =================================== */
+/* nav.js                  */
+/* Logica per la navigazione avanzata  */
+/* =================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  // --- Elementi del DOM ---
+  const body = document.body;
+  const mobileMenu = document.getElementById("mobileMenu");
+  const mobileTrigger = document.getElementById("mobile-menu-trigger");
+  const mobileClose = document.getElementById("mobile-menu-close");
+  const themeSelector = document.getElementById("themeSelector");
+  const themeSelectorMobile = document.getElementById("themeSelectorMobile");
+  const navTitleScrolled = document.getElementById("navTitleScrolled");
+
+  // --- Gestione Menu Mobile ---
+  if (mobileTrigger) {
+    mobileTrigger.addEventListener("click", () => {
+      if (mobileMenu) mobileMenu.classList.add("active");
+      body.classList.add("no-scroll");
+    });
+  }
+
+  if (mobileClose) {
+    mobileClose.addEventListener("click", () => {
+      if (mobileMenu) mobileMenu.classList.remove("active");
+      body.classList.remove("no-scroll");
+    });
+  }
+
+  // --- Gestione Tema ---
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    // Sincronizza i due selettori
+    if (themeSelector) themeSelector.value = theme;
+    if (themeSelectorMobile) themeSelectorMobile.value = theme;
+  }
+
+  if (themeSelector) {
+    themeSelector.addEventListener("change", (e) => applyTheme(e.target.value));
+  }
+  if (themeSelectorMobile) {
+    themeSelectorMobile.addEventListener("change", (e) => applyTheme(e.target.value));
+  }
+
+  // Carica il tema salvato all'avvio
+  const savedTheme = localStorage.getItem("theme") || "dark"; // 'dark' è il default
+  applyTheme(savedTheme);
+
+
+  // --- Logica Aggiuntiva (Opzionale) ---
+
+  // Imposta il titolo della nav bar mobile in base al titolo della pagina
+  if (navTitleScrolled) {
+    navTitleScrolled.textContent = document.title.split('–')[0].trim();
+  }
+
+  // Imposta il link attivo in base all'URL della pagina corrente
+  const currentPage = window.location.pathname.split("/").pop();
+  if (currentPage) {
+    const activeLink = document.querySelector(`.desktop-nav a[href$="${currentPage}"]`);
+    const activeMobileLink = document.querySelector(`.mobile-nav a[href$="${currentPage}"]`);
+    if (activeLink) {
+      activeLink.classList.add('active');
+    }
+    if(activeMobileLink) {
+        activeMobileLink.classList.add('active');
+    }
+  }
+
+});
+</script>
