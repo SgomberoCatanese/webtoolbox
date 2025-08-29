@@ -1,268 +1,254 @@
-<!DOCTYPE html><html lang="it">
+<!DOCTYPE html>
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruota immagini online – WebToolbox.fun</title>
-  <meta name="description" content="Ruota immagini JPG e PNG online. Seleziona una o più immagini con rotazione personalizzata o preset. Scarica gratis le immagini ruotate.">
-  <style>
-    /*
-      Stile CSS con estetica iOS e logica mobile avanzata
-    */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruota immagini online – WebToolbox.fun</title>
+    <meta name="description" content="Ruota immagini JPG e PNG online. Seleziona una o più immagini con rotazione personalizzata o preset. Scarica gratis le immagini ruotate.">
+    <style>
+      /* CSS v5.0 - Integrated with Rotate page */
+      :root { /* Default Dark Theme */
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF599;
+        --accent-primary: #0A84FF;
+        --separator-color: #38383A;
+        --nav-bg: rgba(28, 28, 30, 0.8);
+      }
+      [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --text-primary: #000000;
+        --text-secondary: #3C3C4399;
+        --accent-primary: #007AFF;
+        --separator-color: #C6C6C8;
+        --nav-bg: rgba(249, 249, 249, 0.8);
+      }
+      [data-theme="midnight"] {
+        --bg-primary: #000000;
+        --bg-secondary: #1D1D1F;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --accent-primary: #0A84FF;
+        --nav-bg: rgba(0, 0, 0, 0.75);
+      }
+      [data-theme="slate"] {
+        --bg-primary: #29313E;
+        --bg-secondary: #354152;
+        --bg-tertiary: #495867;
+        --text-primary: #F7F7F7;
+        --accent-primary: #F9A03F;
+        --separator-color: #495867;
+        --nav-bg: rgba(25, 32, 41, 0.8);
+      }
 
-    /* Reset e Stili Globali */
-    body {
-      background: #000000;
-      color: #F2F2F7;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0; padding: 0;
-      display: flex; flex-direction: column; min-height: 100vh;
-    }
-    
-    /* --- Navigazione --- */
-    nav {
-      background: rgba(28, 28, 30, 0.75);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
+      /* Base and Global Styles */
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0; padding: 0;
+        display: flex; flex-direction: column; min-height: 100vh;
+      }
+      body.no-scroll { overflow: hidden; }
 
-    nav .logo {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #F2F2F7;
-    }
-
-    nav ul {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
-      flex-wrap: wrap;
-      margin: 0;
-    }
-
-    nav a {
-      color: #0A84FF;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    nav a.active {
-      color: #F2F2F7;
-      font-weight: 600;
-    }
-    
-    #mobile-menu-trigger {
-      display: none;
-    }
-
-    /* --- Contenuto Principale --- */
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1.5rem 4rem 1.5rem;
-      width: 100%;
-      box-sizing: border-box;
-      text-align: center;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 0.5rem;
-      font-size: 2.5rem;
-      font-weight: 700;
-    }
-
-    p {
-      text-align: center;
-      margin-bottom: 2.5rem;
-      color: #AEAEB2;
-      line-height: 1.5;
-    }
-    
-    /* --- Stile dei Componenti UI --- */
-    input[type="file"] {
-      display: none;
-    }
-
-    main button {
-      background: #0A84FF;
-      border: none;
-      color: #FFFFFF;
-      padding: 0.9rem 1.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      max-width: 300px;
-      font-size: 1rem;
-      font-family: inherit;
-      transition: all 0.2s ease-in-out;
-      margin: 1rem auto;
-    }
-
-    main button:hover {
-      transform: scale(1.05);
-      filter: brightness(1.1);
-    }
-
-    #previewContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      justify-content: center;
-      margin-top: 2rem;
-    }
-    
-    /* Card per ogni immagine */
-    .imgBox {
-      background: #1C1C1E;
-      padding: 1rem;
-      border-radius: 20px;
-      border: none;
-      text-align: left;
-      width: 280px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .imgBox img {
-      width: 100%;
-      height: 150px;
-      object-fit: contain;
-      border-radius: 12px;
-      display: block;
-      margin: 0 auto 0.5rem;
-      background-color: #000;
-    }
-
-    .imgBox select, .imgBox input[type="number"] {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      border-radius: 12px;
-      border: 1px solid #3a3a3c;
-      background-color: #2C2C2E;
-      color: #F2F2F7;
-      font-family: inherit;
-      font-size: 0.9rem;
-      box-sizing: border-box;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-    
-    /* Output */
-    #output {
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid #3a3a3c;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    
-    #output img {
-      max-width: 100%;
-      border-radius: 12px;
-      border: none;
-      background-color: #1c1c1e;
-      padding: 0.5rem;
-    }
-    #output a {
-      color: #0A84FF;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    /* === STILI VERSIONE MOBILE === */
-    @media (max-width: 768px) {
-      nav ul {
-        display: none;
-        position: absolute;
-        top: 65px;
-        right: 1.5rem;
-        width: 250px;
-        background: rgba(44, 44, 46, 0.9);
+      /* Navigation Bar */
+      nav {
+        width: 100%;
+        background: var(--nav-bg);
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
-        border-radius: 14px;
-        border: 1px solid rgba(84, 84, 88, 0.65);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        padding: 0.5rem 0;
-        flex-direction: column;
-        gap: 0;
-        z-index: 100;
+        border-bottom: 0.5px solid var(--separator-color);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky; top: 0; z-index: 20;
       }
+      nav .logo { font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+      nav .logo img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
+      .nav-title-scrolled { display: none; font-weight: 600; }
+      nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+      nav a:hover { color: var(--text-primary); }
+      nav a.active { color: var(--text-primary); font-weight: 600; }
+      .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
       
-      nav ul.mobile-menu-active { display: flex; }
-      
-      nav ul li { width: 100%; }
-      nav ul li a {
-        display: block;
-        padding: 0.9rem 1.25rem;
-        color: #F2F2F7;
-        font-weight: 400;
-        border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+      /* Mobile Menu */
+      #mobile-menu-trigger, #mobile-menu-close {
+        display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--accent-primary); z-index: 110;
       }
-      nav ul li:last-child a { border-bottom: none; }
-      nav ul li a.active { background-color: #0A84FF; color: #FFFFFF; }
-      
-      #mobile-menu-trigger {
-        display: block;
-        background: none;
-        border: none;
-        padding: 0.5rem;
-        cursor: pointer;
-      }
-      #mobile-menu-trigger svg { width: 24px; height: 24px; fill: #0A84FF; }
+      #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+      #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
 
-      h1 { font-size: 2rem; }
-      main { padding: 0 1rem 4rem 1rem; }
-      .imgBox { width: 100%; box-sizing: border-box; }
-    }
-  </style>
+      .mobile-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-secondary);
+        z-index: 100; display: flex; flex-direction: column;
+        padding: 6rem 1.5rem 2rem;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .mobile-nav.active { transform: translateX(0); }
+      .mobile-nav ul { list-style: none; padding: 0; margin: 0; }
+      .mobile-nav ul a { display: block; font-size: 1.25rem; padding: 1rem; color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color); }
+      .mobile-nav .nav-controls { margin-top: auto; justify-content: center; }
+
+      /* Main Content */
+      main { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem 4rem; width: 100%; text-align: center; }
+      h1 { text-align: center; margin-bottom: 0.5rem; font-size: 2.5rem; font-weight: 700; }
+      p { text-align: center; margin-bottom: 2.5rem; color: var(--text-secondary); line-height: 1.5; }
+      input[type="file"] { display: none; }
+      main button {
+        background: var(--accent-primary); border: none; color: #FFFFFF; padding: 0.9rem 1.5rem; border-radius: 50px;
+        font-weight: 600; cursor: pointer; width: 100%; max-width: 300px; font-size: 1rem;
+        font-family: inherit; transition: all 0.2s ease-in-out; margin: 1rem auto;
+      }
+      main button:hover { transform: scale(1.05); filter: brightness(1.1); }
+      select {
+        padding: 0.5rem 0.8rem; border-radius: 8px; border: none; font-weight: 500; cursor: pointer;
+        background-color: var(--bg-tertiary); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;
+        -webkit-appearance: none; appearance: none;
+      }
+
+      /* Image Preview and Controls */
+      #previewContainer { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem; }
+      .imgBox {
+        background: var(--bg-secondary); padding: 1rem; border-radius: 20px; text-align: left;
+        width: 280px; display: flex; flex-direction: column; gap: 0.75rem;
+      }
+      .imgBox img {
+        width: 100%; height: 150px; object-fit: contain; border-radius: 12px; display: block;
+        margin: 0 auto 0.5rem; background-color: var(--bg-primary);
+      }
+      .imgBox select, .imgBox input[type="number"] {
+        width: 100%; padding: 0.7rem 1rem; border-radius: 12px; border: 1px solid var(--separator-color);
+        background-color: var(--bg-tertiary); color: var(--text-primary); font-family: inherit;
+        font-size: 0.9rem; -webkit-appearance: none; appearance: none;
+      }
+      
+      /* Output Section */
+      #output {
+        margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--separator-color);
+        display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+      }
+      #output img { max-width: 100%; border-radius: 12px; background-color: var(--bg-secondary); padding: 0.5rem; }
+      #output a { color: var(--accent-primary); text-decoration: none; font-weight: 500; }
+      
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        nav { padding: 0.75rem 1rem; }
+        nav .logo, nav .desktop-nav { display: none; }
+        .nav-title-scrolled { display: block; }
+        #mobile-menu-trigger { display: block; }
+        h1 { font-size: 2rem; }
+        main { padding: 0 1rem 4rem; }
+        .imgBox { width: 100%; }
+      }
+    </style>
 </head>
 <body>
-  <nav>
-    <div class="logo">🧰 WebToolbox.fun</div>
-    <ul>
-      <li><a href="index.html">Converti</a></li>
-      <li><a href="ridimensiona.html">Ridimensiona</a></li>
-      <li><a href="ruota-immagini.html" class="active">Ruota</a></li>
-      <li><a href="flip-immagini.html">Specchia</a></li>
-      <li><a href="crop-immagini.html">Ritaglia</a></li>
-      <li><a href="base64.html">Base64</a></li>
-      <li><a href="scala-grigi.html">Grigi</a></li>
-    </ul>
-    <button id="mobile-menu-trigger" aria-label="Apri menu">
-        <svg viewBox="0 0 100 80" width="40" height="40">
-          <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
+    <nav>
+      <div class="logo">
+        <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
+        🧰 WebToolbox
+      </div>
+      <div class="nav-title-scrolled">Ruota Immagini</div>
+      <ul class="desktop-nav">
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html" class="active">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+      <div class="nav-controls">
+        <select id="themeSelector" title="Seleziona Tema">
+          <option value="dark">Scuro</option> <option value="light">Chiaro</option> <option value="midnight">Midnight</option> <option value="slate">Slate</option>
+        </select>
+      </div>
+      <button id="mobile-menu-trigger" title="Apri Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
         </svg>
-    </button>
-  </nav>
-  <main>
-    <h1>Ruota immagini online</h1>
-    <p>Carica una o più immagini e scegli l'angolo di rotazione per ciascuna. Puoi usare preset o inserire un valore personalizzato.</p>
-    
-    <button onclick="document.getElementById('fileInput').click()" type="button">Seleziona Immagini</button>
-    <input type="file" id="fileInput" accept="image/*" multiple>
+      </button>
+    </nav>
+    <div class="mobile-nav" id="mobileMenu">
+      <button id="mobile-menu-close" title="Chiudi Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <ul>
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html" class="active">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+      <div class="nav-controls">
+        <select id="themeSelectorMobile" title="Seleziona Tema">
+          <option value="dark">Scuro</option> <option value="light">Chiaro</option> <option value="midnight">Midnight</option> <option value="slate">Slate</option>
+        </select>
+      </div>
+    </div>
+    <main>
+        <h1>Ruota immagini online</h1>
+        <p>Carica una o più immagini e scegli l'angolo di rotazione per ciascuna. Puoi usare preset o inserire un valore personalizzato.</p>
+        
+        <button onclick="document.getElementById('fileInput').click()" type="button">Seleziona Immagini</button>
+        <input type="file" id="fileInput" accept="image/*" multiple>
 
-    <div id="previewContainer"></div>
+        <div id="previewContainer"></div>
 
-    <button id="rotateBtn">Applica e Scarica</button>
+        <button id="rotateBtn">Applica e Scarica</button>
 
-    <div id="output"></div>
-  </main>
-  
-  <script>
-    // Script esistente (logica invariata)
+        <div id="output"></div>
+    </main>
+    <script>
+     document.addEventListener("DOMContentLoaded", () => {
+    // --- Navigation and Theme Logic ---
+    const body = document.body;
+    const mobileMenu = document.getElementById("mobileMenu");
+    const mobileTrigger = document.getElementById("mobile-menu-trigger");
+    const mobileClose = document.getElementById("mobile-menu-close");
+    const themeSelector = document.getElementById("themeSelector");
+    const themeSelectorMobile = document.getElementById("themeSelectorMobile");
+
+    mobileTrigger.addEventListener("click", () => {
+        mobileMenu.classList.add("active");
+        body.classList.add("no-scroll");
+    });
+
+    mobileClose.addEventListener("click", () => {
+        mobileMenu.classList.remove("active");
+        body.classList.remove("no-scroll");
+    });
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        if (themeSelector) themeSelector.value = theme;
+        if (themeSelectorMobile) themeSelectorMobile.value = theme;
+    }
+
+    if (themeSelector) themeSelector.addEventListener("change", (e) => applyTheme(e.target.value));
+    if (themeSelectorMobile) themeSelectorMobile.addEventListener("change", (e) => applyTheme(e.target.value));
+
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    applyTheme(savedTheme);
+
+    // --- Image Rotation App Logic ---
     const fileInput = document.getElementById('fileInput');
     const previewContainer = document.getElementById('previewContainer');
     const rotateBtn = document.getElementById('rotateBtn');
@@ -270,118 +256,109 @@
     let files = [];
 
     fileInput.addEventListener('change', () => {
-      files = Array.from(fileInput.files);
-      previewContainer.innerHTML = '';
-      output.innerHTML = '';
+        files = Array.from(fileInput.files);
+        previewContainer.innerHTML = '';
+        output.innerHTML = '';
 
-      files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const box = document.createElement('div');
-          box.className = 'imgBox';
-          
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          
-          const select = document.createElement('select');
-          [0, 90, 180, 270].forEach(val => {
-            const option = document.createElement('option');
-            option.value = val;
-            option.textContent = val + '°';
-            select.appendChild(option);
-          });
-          const customOpt = document.createElement('option');
-          customOpt.value = 'custom';
-          customOpt.textContent = 'Personalizzato';
-          select.appendChild(customOpt);
-          
-          const input = document.createElement('input');
-          input.type = 'number';
-          input.placeholder = 'Gradi (es. 45)';
-          input.style.display = 'none';
-          
-          select.onchange = () => {
-            input.style.display = select.value === 'custom' ? 'block' : 'none';
-          }
-          
-          box.appendChild(img);
-          box.appendChild(select);
-          box.appendChild(input);
-          box.dataset.index = index;
-          previewContainer.appendChild(box);
-        }
-        reader.readAsDataURL(file);
-      });
+        files.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const box = document.createElement('div');
+                box.className = 'imgBox';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+
+                const select = document.createElement('select');
+                [0, 90, 180, 270].forEach(val => {
+                    const option = document.createElement('option');
+                    option.value = val;
+                    option.textContent = val + '°';
+                    select.appendChild(option);
+                });
+                const customOpt = document.createElement('option');
+                customOpt.value = 'custom';
+                customOpt.textContent = 'Personalizzato';
+                select.appendChild(customOpt);
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = 'Gradi (es. 45)';
+                input.style.display = 'none';
+
+                select.onchange = () => {
+                    input.style.display = select.value === 'custom' ? 'block' : 'none';
+                }
+
+                box.appendChild(img);
+                box.appendChild(select);
+                box.appendChild(input);
+                previewContainer.appendChild(box);
+            }
+            reader.readAsDataURL(file);
+        });
     });
 
     rotateBtn.addEventListener('click', () => {
-      output.innerHTML = '';
-      if (files.length === 0) {
-        alert("Per favore, carica almeno un'immagine.");
-        return;
-      }
-      
-      document.querySelectorAll('.imgBox').forEach((box, i) => {
-        const file = files[i];
-        if (!file) return;
+        output.innerHTML = '';
+        if (files.length === 0) {
+            alert("Per favore, carica almeno un'immagine.");
+            return;
+        }
 
-        const select = box.querySelector('select');
-        const input = box.querySelector('input');
-        const deg = select.value === 'custom' ? parseInt(input.value || '0') : parseInt(select.value);
+        const previewBoxes = document.querySelectorAll('.imgBox');
         
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const rad = deg * Math.PI / 180;
-            const sin = Math.abs(Math.sin(rad)), cos = Math.abs(Math.cos(rad));
-            canvas.width = img.width * cos + img.height * sin;
-            canvas.height = img.width * sin + img.height * cos;
-            
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.rotate(rad);
-            ctx.drawImage(img, -img.width / 2, -img.height / 2);
-            
-            canvas.toBlob(blob => {
-              const url = URL.createObjectURL(blob);
-              const outImg = document.createElement('img');
-              outImg.src = url;
-              
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `ruotata_${file.name}`;
-              link.textContent = 'Scarica ' + file.name;
+        previewBoxes.forEach((box, i) => {
+            const file = files[i];
+            if (!file) return;
 
-              const resultBox = document.createElement('div');
-              resultBox.appendChild(outImg);
-              resultBox.appendChild(link);
-              output.appendChild(resultBox);
-            });
-          }
-          img.src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-      });
+            const select = box.querySelector('select');
+            const input = box.querySelector('input');
+            const deg = select.value === 'custom' ? parseInt(input.value || '0', 10) : parseInt(select.value, 10);
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const rad = deg * Math.PI / 180;
+                    const sin = Math.abs(Math.sin(rad));
+                    const cos = Math.abs(Math.cos(rad));
+                    
+                    const newWidth = img.width * cos + img.height * sin;
+                    const newHeight = img.width * sin + img.height * cos;
+
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    
+                    ctx.translate(newWidth / 2, newHeight / 2);
+                    ctx.rotate(rad);
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+                    canvas.toBlob(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const outImg = document.createElement('img');
+                        outImg.src = url;
+
+                        const link = document.createElement('a');
+                        link.href = url;
+                        const originalFileName = file.name.split('.').slice(0, -1).join('.');
+                        link.download = `${originalFileName}-ruotata.png`;
+                        link.textContent = `Scarica ${file.name}`;
+
+                        const resultBox = document.createElement('div');
+                        resultBox.appendChild(outImg);
+                        resultBox.appendChild(link);
+                        output.appendChild(resultBox);
+                    }, 'image/png');
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
     });
-  </script>
-  <script>
-    // --- LOGICA PER MENU MOBILE ---
-    const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
-    const navUl = document.querySelector('nav ul');
-
-    if (mobileMenuTrigger && navUl) {
-      mobileMenuTrigger.addEventListener('click', (event) => {
-        event.stopPropagation();
-        navUl.classList.toggle('mobile-menu-active');
-      });
-      document.addEventListener('click', (event) => {
-        if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
-          navUl.classList.remove('mobile-menu-active');
-        }
-      });
-    }
-  </script>
+});
+    </script>
 </body>
 </html>
