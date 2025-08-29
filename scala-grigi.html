@@ -1,403 +1,441 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor Filtri Immagini – WebToolbox.fun</title>
-  <meta name="description" content="Applica scala di grigi, seppia, inverti e altri filtri. Regola luminosità, contrasto, saturazione, temperatura e scarica l'immagine." />
-  <style>
-    /*
-      Stile CSS con estetica iOS e logica mobile avanzata
-    */
+    <meta charset="UTF-g">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Filtri Immagini – WebToolbox.fun</title>
+    <meta name="description" content="Applica scala di grigi, seppia, inverti e altri filtri. Regola luminosità, contrasto, saturazione, temperatura e scarica l'immagine." />
+    <style>
+      /* CSS v5.0 - Integrated with Filters page */
+      :root { /* Default Dark Theme */
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF599;
+        --accent-primary: #0A84FF;
+        --separator-color: #38383A;
+        --nav-bg: rgba(28, 28, 30, 0.8);
+      }
+      [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --text-primary: #000000;
+        --text-secondary: #3C3C4399;
+        --accent-primary: #007AFF;
+        --separator-color: #C6C6C8;
+        --nav-bg: rgba(249, 249, 249, 0.8);
+      }
+      [data-theme="midnight"] {
+        --bg-primary: #000000;
+        --bg-secondary: #1D1D1F;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --accent-primary: #0A84FF;
+        --nav-bg: rgba(0, 0, 0, 0.75);
+      }
+      [data-theme="slate"] {
+        --bg-primary: #29313E;
+        --bg-secondary: #354152;
+        --bg-tertiary: #495867;
+        --text-primary: #F7F7F7;
+        --accent-primary: #F9A03F;
+        --separator-color: #495867;
+        --nav-bg: rgba(25, 32, 41, 0.8);
+      }
 
-    /* Reset e Stili Globali */
-    body {
-      background: #000000;
-      color: #F2F2F7;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0; padding: 0;
-      display: flex; flex-direction: column; min-height: 100vh;
-    }
-    
-    /* --- Navigazione --- */
-    nav {
-      background: rgba(28, 28, 30, 0.75);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
+      /* Base and Global Styles */
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0; padding: 0;
+        display: flex; flex-direction: column; min-height: 100vh;
+      }
+      body.no-scroll { overflow: hidden; }
 
-    nav .logo {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #F2F2F7;
-    }
-
-    nav ul {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
-      flex-wrap: wrap;
-      margin: 0;
-    }
-
-    nav a {
-      color: #0A84FF;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    nav a.active {
-      color: #F2F2F7;
-      font-weight: 600;
-    }
-    
-    #mobile-menu-trigger {
-      display: none;
-    }
-
-    /* --- Contenuto Principale --- */
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1.5rem 4rem 1.5rem;
-      width: 100%;
-      box-sizing: border-box;
-      text-align: center;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 0.5rem;
-      font-size: 2.5rem;
-      font-weight: 700;
-    }
-
-    p {
-      text-align: center;
-      margin-bottom: 2.5rem;
-      color: #AEAEB2;
-      line-height: 1.5;
-    }
-    
-    /* --- Elementi UI e Form --- */
-    input[type="file"] {
-      display: none;
-    }
-
-    canvas {
-      max-width: 100%;
-      border-radius: 20px;
-      margin: 1rem auto;
-      display: block;
-      background-color: #1c1c1e;
-    }
-    
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      justify-content: center;
-      margin: 2rem 0;
-      padding: 2rem;
-      background-color: #1c1c1e;
-      border-radius: 20px;
-    }
-    
-    .controls label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.9rem;
-      color: #AEAEB2;
-      font-weight: 500;
-      width: 140px;
-    }
-    
-    main select {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      border-radius: 12px;
-      border: 1px solid #3a3a3c;
-      background-color: #2C2C2E;
-      color: #F2F2F7;
-      font-family: inherit;
-      font-size: 0.9rem;
-      box-sizing: border-box;
-      -webkit-appearance: none;
-      appearance: none;
-      text-align: center;
-    }
-
-    main button {
-      background: #0A84FF;
-      border: none;
-      color: #FFFFFF;
-      padding: 0.9rem 1.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      max-width: 250px;
-      font-size: 1rem;
-      font-family: inherit;
-      transition: all 0.2s ease-in-out;
-      margin: 0.5rem;
-    }
-
-    main button:hover {
-      transform: scale(1.05);
-      filter: brightness(1.1);
-    }
-    
-    /* Stile per gli slider (input range) */
-    input[type=range] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 8px;
-      background: #3a3a3c;
-      border-radius: 5px;
-      outline: none;
-      margin: 0;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 24px;
-      height: 24px;
-      background: #fff;
-      cursor: pointer;
-      border-radius: 50%;
-      border: 1px solid #e5e5e5;
-    }
-    input[type=range]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
-      background: #fff;
-      cursor: pointer;
-      border-radius: 50%;
-      border: 1px solid #e5e5e5;
-    }
-    
-    /* === STILI VERSIONE MOBILE === */
-    @media (max-width: 768px) {
-      nav ul {
-        display: none;
-        position: absolute;
-        top: 65px;
-        right: 1.5rem;
-        width: 250px;
-        background: rgba(44, 44, 46, 0.9);
+      /* Navigation Bar */
+      nav {
+        width: 100%;
+        background: var(--nav-bg);
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
-        border-radius: 14px;
-        border: 1px solid rgba(84, 84, 88, 0.65);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        padding: 0.5rem 0;
-        flex-direction: column;
-        gap: 0;
-        z-index: 100;
+        border-bottom: 0.5px solid var(--separator-color);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky; top: 0; z-index: 20;
       }
+      nav .logo { font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+      nav .logo img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
+      .nav-title-scrolled { display: none; font-weight: 600; }
+      nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+      nav a:hover { color: var(--text-primary); }
+      nav a.active { color: var(--text-primary); font-weight: 600; }
+      .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
       
-      nav ul.mobile-menu-active { display: flex; }
-      
-      nav ul li { width: 100%; }
-      nav ul li a {
-        display: block;
-        padding: 0.9rem 1.25rem;
-        color: #F2F2F7;
-        font-weight: 400;
-        border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
+      /* Mobile Menu */
+      #mobile-menu-trigger, #mobile-menu-close {
+        display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--accent-primary); z-index: 110;
       }
-      nav ul li:last-child a { border-bottom: none; }
-      nav ul li a.active { background-color: #0A84FF; color: #FFFFFF; }
-      
-      #mobile-menu-trigger {
-        display: block;
-        background: none;
-        border: none;
-        padding: 0.5rem;
-        cursor: pointer;
-      }
-      #mobile-menu-trigger svg { width: 24px; height: 24px; fill: #0A84FF; }
+      #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+      #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
 
-      h1 { font-size: 2rem; }
-      main { padding: 0 1rem 4rem 1rem; }
-      .controls { padding: 1.5rem 1rem; }
-      .controls label { width: calc(50% - 1rem); }
-    }
-  </style>
+      .mobile-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-secondary);
+        z-index: 100; display: flex; flex-direction: column;
+        padding: 6rem 1.5rem 2rem;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .mobile-nav.active { transform: translateX(0); }
+      .mobile-nav ul { list-style: none; padding: 0; margin: 0; }
+      .mobile-nav ul a { display: block; font-size: 1.25rem; padding: 1rem; color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color); }
+      .mobile-nav .nav-controls { margin-top: auto; justify-content: center; }
+
+      /* Main Content */
+      main { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem 4rem; width: 100%; text-align: center; }
+      h1 { text-align: center; margin-bottom: 0.5rem; font-size: 2.5rem; font-weight: 700; }
+      p { text-align: center; margin-bottom: 2.5rem; color: var(--text-secondary); line-height: 1.5; }
+      input[type="file"] { display: none; }
+      canvas {
+        max-width: 100%;
+        border-radius: 20px;
+        margin: 1rem auto;
+        display: block;
+        background-color: var(--bg-secondary);
+      }
+      
+      /* Controls Container */
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+        margin: 2rem 0;
+        padding: 2rem;
+        background-color: var(--bg-secondary);
+        border-radius: 20px;
+      }
+      .controls label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        width: 140px;
+      }
+      main select {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--separator-color);
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.9rem;
+        -webkit-appearance: none;
+        appearance: none;
+        text-align: center;
+      }
+      main button {
+        background: var(--accent-primary);
+        border: none;
+        color: #FFFFFF;
+        padding: 0.9rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        max-width: 250px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.2s ease-in-out;
+        margin: 0.5rem;
+      }
+      main button:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
+      select#themeSelector {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      /* Range Slider Styles */
+      input[type=range] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        background: var(--bg-tertiary);
+        border-radius: 5px;
+        outline: none;
+        margin: 0;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        background: var(--text-primary);
+        cursor: pointer;
+        border-radius: 50%;
+        border: 1px solid var(--separator-color);
+      }
+      input[type=range]::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        background: var(--text-primary);
+        cursor: pointer;
+        border-radius: 50%;
+        border: 1px solid var(--separator-color);
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        nav { padding: 0.75rem 1rem; }
+        nav .logo, nav .desktop-nav { display: none; }
+        .nav-title-scrolled { display: block; }
+        #mobile-menu-trigger { display: block; }
+
+        h1 { font-size: 2rem; }
+        main { padding: 0 1rem 4rem; }
+        .controls { padding: 1.5rem 1rem; }
+        .controls label { width: calc(50% - 1rem); }
+      }
+    </style>
 </head>
 <body>
-  <nav>
-    <div class="logo">🧰 WebToolbox.fun</div>
-    <ul>
-      <li><a href="index.html">Converti</a></li>
-      <li><a href="ridimensiona.html">Ridimensiona</a></li>
-      <li><a href="ruota-immagini.html">Ruota</a></li>
-      <li><a href="flip-immagini.html">Specchia</a></li>
-      <li><a href="crop-immagini.html">Ritaglia</a></li>
-      <li><a href="base64.html">Base64</a></li>
-      <li><a href="scala-grigi.html" class="active">Filtri</a></li>
-    </ul>
-    <button id="mobile-menu-trigger" aria-label="Apri menu">
-        <svg viewBox="0 0 100 80" width="40" height="40">
-          <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
-        </svg>
-    </button>
-  </nav>
-
-  <main>
-    <h1>Editor Filtri e Colori</h1>
-    <p>Carica una foto e applica filtri: scala grigi, seppia, inverti... oppure modifica luminosità, contrasto e altro.</p>
-
-    <button onclick="document.getElementById('upload').click()" type="button">Seleziona Immagine</button>
-    <input type="file" accept="image/*" id="upload" />
-    
-    <canvas id="canvas"></canvas>
-
-    <div class="controls">
-      <label>Filtro:
-        <select id="filterSelect">
-          <option value="none">Nessuno</option>
-          <option value="grayscale(100%)">Scala Grigi</option>
-          <option value="sepia(100%)">Seppia</option>
-          <option value="invert(100%)">Inverti</option>
-          <option value="hue-rotate(90deg)">Rotazione Tonalità</option>
+    <nav>
+      <div class="logo">
+        <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
+        🧰 WebToolbox
+      </div>
+      <div class="nav-title-scrolled">Editor Filtri</div>
+      <ul class="desktop-nav">
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html" class="active">Filtri</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+      <div class="nav-controls">
+        <select id="themeSelector" title="Seleziona Tema">
+          <option value="dark">Scuro</option> <option value="light">Chiaro</option> <option value="midnight">Midnight</option> <option value="slate">Slate</option>
         </select>
-      </label>
-      <label>Luminosità
-        <input type="range" min="0" max="200" value="100" id="brightness" />
-      </label>
-      <label>Contrasto
-        <input type="range" min="0" max="200" value="100" id="contrast" />
-      </label>
-      <label>Saturazione
-        <input type="range" min="0" max="300" value="100" id="saturate" />
-      </label>
-      <label>Blur
-        <input type="range" min="0" max="10" value="0" id="blur" />
-      </label>
-      <label>Temperatura
-        <input type="range" min="-100" max="100" value="0" id="temp" />
-      </label>
+      </div>
+      <button id="mobile-menu-trigger" title="Apri Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
+    <div class="mobile-nav" id="mobileMenu">
+      <button id="mobile-menu-close" title="Chiudi Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <ul>
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html" class="active">Filtri</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+      <div class="nav-controls">
+        <select id="themeSelectorMobile" title="Seleziona Tema">
+          <option value="dark">Scuro</option> <option value="light">Chiaro</option> <option value="midnight">Midnight</option> <option value="slate">Slate</option>
+        </select>
+      </div>
     </div>
-    
-    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-        <button id="resetBtn">Resetta Filtri</button>
-        <button id="downloadBtn">Scarica Immagine</button>
-    </div>
-  </main>
 
-  <script>
-    const upload = document.getElementById('upload');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const filterSelect = document.getElementById('filterSelect');
-    const brightness = document.getElementById('brightness');
-    const contrast = document.getElementById('contrast');
-    const saturate = document.getElementById('saturate');
-    const blur = document.getElementById('blur');
-    const temp = document.getElementById('temp');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const resetBtn = document.getElementById('resetBtn');
+    <main>
+        <h1>Editor Filtri e Colori</h1>
+        <p>Carica una foto e applica filtri: scala grigi, seppia, inverti... oppure modifica luminosità, contrasto e altro.</p>
 
-    let img = new Image();
-    
-    upload.addEventListener('change', e => {
-      if (!e.target.files.length) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          resetFilters(); // Applica i filtri di default all'immagine caricata
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    });
+        <button onclick="document.getElementById('upload').click()" type="button">Seleziona Immagine</button>
+        <input type="file" accept="image/*" id="upload" />
+        
+        <canvas id="canvas"></canvas>
 
-    function applyFilters() {
-      if (!img.src) return;
-      
-      let filterString = `
-        brightness(${brightness.value}%)
-        contrast(${contrast.value}%)
-        saturate(${saturate.value}%)
-        blur(${blur.value}px)
-        ${filterSelect.value !== 'none' ? filterSelect.value : ''}
-      `;
-      
-      ctx.filter = filterString.trim();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+        <div class="controls">
+            <label>Filtro:
+                <select id="filterSelect">
+                    <option value="none">Nessuno</option>
+                    <option value="grayscale(100%)">Scala Grigi</option>
+                    <option value="sepia(100%)">Seppia</option>
+                    <option value="invert(100%)">Inverti</option>
+                    <option value="hue-rotate(90deg)">Rotazione Tonalità</option>
+                </select>
+            </label>
+            <label>Luminosità
+                <input type="range" min="0" max="200" value="100" id="brightness" />
+            </label>
+            <label>Contrasto
+                <input type="range" min="0" max="200" value="100" id="contrast" />
+            </label>
+            <label>Saturazione
+                <input type="range" min="0" max="300" value="100" id="saturate" />
+            </label>
+            <label>Blur
+                <input type="range" min="0" max="10" value="0" id="blur" />
+            </label>
+            <label>Temperatura
+                <input type="range" min="-100" max="100" value="0" id="temp" />
+            </label>
+        </div>
+        
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <button id="resetBtn">Resetta Filtri</button>
+            <button id="downloadBtn">Scarica Immagine</button>
+        </div>
+    </main>
 
-      // La manipolazione della temperatura deve avvenire dopo il disegno
-      if (parseInt(temp.value) !== 0) {
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        const tempValue = parseInt(temp.value);
-        for (let i = 0; i < data.length; i += 4) {
-          if (tempValue > 0) data[i] = Math.min(255, data[i] + tempValue * 1.5); // Warm
-          if (tempValue < 0) data[i+2] = Math.min(255, data[i+2] - tempValue * 1.5); // Cool
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- Navigation and Theme Logic ---
+        const body = document.body;
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileTrigger = document.getElementById("mobile-menu-trigger");
+        const mobileClose = document.getElementById("mobile-menu-close");
+        const themeSelector = document.getElementById("themeSelector");
+        const themeSelectorMobile = document.getElementById("themeSelectorMobile");
+
+        mobileTrigger.addEventListener("click", () => {
+            mobileMenu.classList.add("active");
+            body.classList.add("no-scroll");
+        });
+
+        mobileClose.addEventListener("click", () => {
+            mobileMenu.classList.remove("active");
+            body.classList.remove("no-scroll");
+        });
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            if (themeSelector) themeSelector.value = theme;
+            if (themeSelectorMobile) themeSelectorMobile.value = theme;
         }
-        ctx.putImageData(imageData, 0, 0);
-      }
-    }
 
-    function resetFilters() {
-        filterSelect.value = 'none';
-        brightness.value = 100;
-        contrast.value = 100;
-        saturate.value = 100;
-        blur.value = 0;
-        temp.value = 0;
-        applyFilters();
-    }
-    
-    [filterSelect, brightness, contrast, saturate, blur, temp].forEach(input => {
-      input.addEventListener('input', applyFilters);
-    });
+        if (themeSelector) themeSelector.addEventListener("change", (e) => applyTheme(e.target.value));
+        if (themeSelectorMobile) themeSelectorMobile.addEventListener("change", (e) => applyTheme(e.target.value));
 
-    resetBtn.addEventListener('click', resetFilters);
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(savedTheme);
 
-    downloadBtn.addEventListener('click', () => {
-      if (!img.src) {
-        alert("Carica prima un'immagine!");
-        return;
-      }
-      const link = document.createElement('a');
-      link.download = 'immagine-filtrata.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  </script>
-  <script>
-    // --- LOGICA PER MENU MOBILE ---
-    const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
-    const navUl = document.querySelector('nav ul');
+        // --- Image Filters App Logic ---
+        const upload = document.getElementById('upload');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const filterSelect = document.getElementById('filterSelect');
+        const brightness = document.getElementById('brightness');
+        const contrast = document.getElementById('contrast');
+        const saturate = document.getElementById('saturate');
+        const blur = document.getElementById('blur');
+        const temp = document.getElementById('temp');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
 
-    if (mobileMenuTrigger && navUl) {
-      mobileMenuTrigger.addEventListener('click', (event) => {
-        event.stopPropagation();
-        navUl.classList.toggle('mobile-menu-active');
-      });
-      document.addEventListener('click', (event) => {
-        if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
-          navUl.classList.remove('mobile-menu-active');
+        let img = new Image();
+        
+        upload.addEventListener('change', e => {
+            if (!e.target.files.length) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                img.onload = () => {
+                    // Set canvas size to match image
+                    const MAX_WIDTH = 800;
+                    const scale = Math.min(1, MAX_WIDTH / img.width);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    resetFilters(); // Reset and draw the new image
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        function applyFilters() {
+            if (!img.src) return;
+            
+            let filterString = `
+                brightness(${brightness.value}%)
+                contrast(${contrast.value}%)
+                saturate(${saturate.value}%)
+                blur(${blur.value}px)
+                ${filterSelect.value !== 'none' ? filterSelect.value : ''}
+            `;
+            
+            // Clear canvas before redrawing
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.filter = filterString.trim();
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // The temperature manipulation must happen *after* drawing, as it modifies pixel data directly
+            const tempValue = parseInt(temp.value, 10);
+            if (tempValue !== 0) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                const adjustment = tempValue * 1.5;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    // Add warmth (increase red)
+                    if (adjustment > 0) data[i] = Math.min(255, data[i] + adjustment);
+                    // Add coolness (increase blue)
+                    if (adjustment < 0) data[i + 2] = Math.min(255, data[i + 2] - adjustment);
+                }
+                ctx.putImageData(imageData, 0, 0);
+            }
         }
-      });
-    }
-  </script>
+
+        function resetFilters() {
+            filterSelect.value = 'none';
+            brightness.value = 100;
+            contrast.value = 100;
+            saturate.value = 100;
+            blur.value = 0;
+            temp.value = 0;
+            applyFilters();
+        }
+        
+        [filterSelect, brightness, contrast, saturate, blur, temp].forEach(input => {
+            input.addEventListener('input', applyFilters);
+        });
+
+        resetBtn.addEventListener('click', resetFilters);
+
+        downloadBtn.addEventListener('click', () => {
+            if (!img.src) {
+                alert("Carica prima un'immagine!");
+                return;
+            }
+            const link = document.createElement('a');
+            const originalFileName = upload.files.length > 0 ? upload.files[0].name.split('.').slice(0, -1).join('.') : 'immagine';
+            link.download = `${originalFileName}-filtrata.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    });
+    </script>
 </body>
 </html>
