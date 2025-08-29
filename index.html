@@ -338,7 +338,7 @@
 
 <nav>
   <div class="logo">
-    <img src="public/Gemini_Generated_Image_7ijaav7ijaav7ija.png" alt="WebToolbox Logo" />
+    <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
     🧰 WebToolbox
   </div>
   <div class="nav-title-scrolled" data-translate-key="mainTitle">Convertitore Immagini</div>
@@ -379,53 +379,12 @@
         <label for="outputFormat">
           <span data-translate-key="targetFormatLabel">Formato di destinazione</span>
           <select id="outputFormat">
-            <optgroup label="📸 Formati raster comuni (bitmap)">
-                <option value="jpeg">JPEG / JPG (.jpg, .jpeg)</option>
-                <option value="png">PNG (.png)</option>
-                <option value="webp">WebP (.webp)</option>
-                <option value="gif">GIF (.gif)</option>
-                <option value="bmp">BMP (.bmp)</option>
-                <option value="tiff">TIFF / TIF (.tiff, .tif)</option>
-                <option value="heic">HEIF / HEIC (.heic)</option>
-                <option value="avif">AVIF (.avif)</option>
-                <option value="jxl">JPEG XL (.jxl)</option>
-                <option value="ico">ICO (.ico)</option>
-            </optgroup>
-            <optgroup label="🖌️ Formati di editing / nativi">
-                <option value="psd">PSD (.psd, .psb) - Adobe Photoshop</option>
-                <option value="xcf">XCF (.xcf) - GIMP</option>
-                <option value="kra">KRA (.kra) - Krita</option>
-                <option value="ora">ORA (.ora) - OpenRaster</option>
-                <option value="pdn">PDN (.pdn) - Paint.NET</option>
-            </optgroup>
-            <optgroup label="✏️ Formati vettoriali">
-                <option value="svg">SVG (.svg)</option>
-                <option value="ai">AI (.ai) - Adobe Illustrator</option>
-                <option value="eps">EPS (.eps)</option>
-                <option value="pdf">PDF (.pdf)</option>
-            </optgroup>
-            <optgroup label="🌌 Formati HDR / speciali">
-                <option value="hdr">HDR / Radiance (.hdr)</option>
-                <option value="exr">EXR (.exr) - OpenEXR</option>
-            </optgroup>
-            <optgroup label="🧪 Formati scientifici / medicali">
-                <option value="dcm">DICOM (.dcm)</option>
-                <option value="fits">FITS (.fits)</option>
-                <option value="nii">NIfTI (.nii)</option>
-            </optgroup>
-            <optgroup label="🎮 Formati per videogiochi / texture">
-                <option value="dds">DDS (.dds)</option>
-                <option value="tga">TGA (.tga)</option>
-                <option value="ktx">KTX (.ktx)</option>
-                <option value="pvr">PVR (.pvr)</option>
-            </optgroup>
-            <optgroup label="🎨 Formati raster meno comuni / legacy">
-                <option value="pcx">PCX (.pcx)</option>
-                <option value="xbm">XBM (.xbm)</option>
-                <option value="pnm">PNM (.pnm, .ppm, .pgm, .pbm)</option>
-                <option value="ras">RAS (.ras)</option>
-            </optgroup>
-          </select>
+    <option value="jpeg">JPEG (.jpg, .jpeg)</option>
+    <option value="png">PNG (.png)</option>
+    <option value="webp">WebP (.webp)</option>
+    <option value="bmp">BMP (.bmp)</option>
+</select>
+
         </label>
         <div>
           <div class="progress-container" id="progressContainer">
@@ -497,920 +456,335 @@
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    let loadedFiles = [];
-    let currentLang = localStorage.getItem('language') || 'it';
-    let currentTheme = localStorage.getItem('theme') || 'dark';
+// script.js — versione "solo formati reali", pronta all'uso
+document.addEventListener('DOMContentLoaded', () => {
+  // --- DOM ---
+  const dom = {
+    input: document.getElementById('inputFiles'),
+    outputFormat: document.getElementById('outputFormat'),
+    convertBtn: document.getElementById('convertBtn'),
+    dropZone: document.getElementById('dropZone'),
+    preview: document.getElementById('previewContainer'),
+    result: document.getElementById('resultContainer'),
+    progressWrap: document.getElementById('progressContainer'),
+    progressBar: document.getElementById('progressBar'),
+    progressText: document.getElementById('progressText'),
+    modal: document.getElementById('customModal'),
+    modalTitle: document.getElementById('modalTitle'),
+    modalMessage: document.getElementById('modalMessage'),
+    modalOk: document.getElementById('modalOkBtn'),
+    toastContainer: document.getElementById('toastContainer')
+  };
 
-    const translations = {
-      it: {
-        pageTitle: "Convertitore Immagini Pro – WebToolbox.fun",
-        metaDescription: "Converti immagini con un'interfaccia avanzata ispirata a iOS. Supporta drag-and-drop, 12 lingue, temi multipli e animazioni fluide.",
-        mainTitle: "Convertitore Immagini",
-        description: "Trascina le tue immagini, scegli un formato e convertile all'istante. Un'esperienza di conversione potente, racchiusa in un design pulito e intuitivo.",
-        navConvert: "Converti", navResize: "Ridimensiona", navCrop: "Ritaglia", navRotate: "Ruota", navFilters: "Filtri",
-        dropZoneText: "Trascina i file qui o", dropZoneTextClick: "clicca per selezionare",
-        targetFormatLabel: "Formato di destinazione",
-        convertBtn: "Converti",
-        fileSelectionAlertTitle: "Nessun File", fileSelectionAlertMsg: "Per favore, seleziona almeno un file immagine prima di procedere.",
-        unsupportedFormatToast: "Il formato '{format}' non è supportato. Salvataggio in {fallback}.",
-        conversionInProgress: "Conversione in corso...",
-        downloadLink: "Scarica",
-        themeLight: "Chiaro", themeDark: "Scuro", themeMidnight: "Midnight", themeSlate: "Slate",
-        seoTitle1: "Il Tuo Convertitore di Immagini Online Definitivo",
-        seoIntro1: "Nel mondo digitale di oggi, le immagini sono tutto. Che tu sia un web developer che ottimizza i tempi di caricamento, un social media manager che crea contenuti virali, o un fotografo che archivia i propri scatti, la gestione dei formati di immagine è cruciale. Il nostro strumento gratuito ti offre la flessibilità di convertire le immagini in formati moderni come WebP, standard come JPEG e PNG, e altri ancora, direttamente dal tuo browser, senza installare nulla e nel pieno rispetto della tua privacy.",
-        seoTitle2: "Perché Convertire le Immagini?",
-        seoIntro2: "Ogni formato ha i suoi punti di forza. La conversione ti permette di scegliere il formato giusto per ogni esigenza, bilanciando qualità e peso del file.",
-        seoPoint1: "Ottimizzazione per il Web: Converti in WebP per ridurre drasticamente il peso delle immagini senza perdere qualità, migliorando la velocità del tuo sito e la SEO.",
-        seoPoint2: "Compatibilità: Assicurati che le tue immagini siano visualizzabili su ogni dispositivo e piattaforma convertendole in formati universalmente supportati come JPEG o PNG.",
-        seoPoint3: "Trasparenza e Qualità: Usa il formato PNG quando hai bisogno di sfondi trasparenti o di una compressione senza perdita di dati per loghi e grafiche.",
-        seoTitle3: "Guida ai Formati di Immagine",
-        seoFormatWebP: "WebP", seoDescWebP: "Un formato moderno di Google che offre compressione superiore (sia con che senza perdita) rispetto a JPEG e PNG. Ideale per il web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "Il re della fotografia digitale. Offre un'ottima compressione con perdita, ideale per foto complesse con milioni di colori.",
-        seoFormatPNG: "PNG", seoDescPNG: "Perfetto per grafiche, loghi e immagini che richiedono uno sfondo trasparente. Utilizza una compressione senza perdita di qualità.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Un formato di alta qualità, spesso non compresso, usato in fotografia professionale e stampa. Non è ideale per il web a causa delle grandi dimensioni dei file.",
-        seoTitle4: "Domande Frequenti (FAQ)",
-        seoFaq1Title: "La conversione delle immagini è sicura?",
-        seoFaq1Desc: "Assolutamente. Tutte le conversioni avvengono localmente nel tuo browser. Nessun file viene caricato sui nostri server, garantendo la massima privacy e sicurezza.",
-        seoFaq2Title: "Posso convertire più immagini contemporaneamente?",
-        seoFaq2Desc: "Sì, il nostro strumento è progettato per la conversione multipla. Trascina tutti i file che desideri, seleziona il formato e convertili tutti in una volta.",
-        seoFaq3Title: "Perderò qualità durante la conversione?",
-        seoFaq3Desc: "Dipende dai formati. La conversione verso un formato 'lossy' (con perdita) come JPEG implica sempre una minima perdita di qualità per ridurre le dimensioni. La conversione a formati 'lossless' (senza perdita) come PNG preserverà la qualità originale."
-      },
-      en: {
-        pageTitle: "Pro Image Converter – WebToolbox.fun",
-        metaDescription: "Convert images with an advanced iOS-inspired interface. Supports drag-and-drop, 12 languages, multiple themes, and fluid animations.",
-        mainTitle: "Image Converter",
-        description: "Drag your images, choose a format, and convert them instantly. A powerful conversion experience, wrapped in a clean and intuitive design.",
-        navConvert: "Convert", navResize: "Resize", navCrop: "Crop", navRotate: "Rotate", navFilters: "Filters",
-        dropZoneText: "Drag files here or", dropZoneTextClick: "click to select",
-        targetFormatLabel: "Target format",
-        convertBtn: "Convert",
-        fileSelectionAlertTitle: "No Files", fileSelectionAlertMsg: "Please select at least one image file before proceeding.",
-        unsupportedFormatToast: "Format '{format}' is not supported. Saving as {fallback}.",
-        conversionInProgress: "Conversion in progress...",
-        downloadLink: "Download",
-        themeLight: "Light", themeDark: "Dark", themeMidnight: "Midnight", themeSlate: "Slate",
-        seoTitle1: "Your Ultimate Online Image Converter",
-        seoIntro1: "In today's digital world, images are everything. Whether you're a web developer optimizing loading times, a social media manager creating viral content, or a photographer archiving your shots, managing image formats is crucial. Our free tool gives you the flexibility to convert images into modern formats like WebP, standards like JPEG and PNG, and more, directly from your browser, with no installation required and full respect for your privacy.",
-        seoTitle2: "Why Convert Images?",
-        seoIntro2: "Each format has its strengths. Conversion allows you to choose the right format for every need, balancing quality and file size.",
-        seoPoint1: "Web Optimization: Convert to WebP to drastically reduce image weight without losing quality, improving your site's speed and SEO.",
-        seoPoint2: "Compatibility: Ensure your images are viewable on every device and platform by converting them to universally supported formats like JPEG or PNG.",
-        seoPoint3: "Transparency and Quality: Use the PNG format when you need transparent backgrounds or lossless compression for logos and graphics.",
-        seoTitle3: "A Guide to Image Formats",
-        seoFormatWebP: "WebP", seoDescWebP: "A modern format from Google that offers superior compression (both lossy and lossless) compared to JPEG and PNG. Ideal for the web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "The king of digital photography. It offers excellent lossy compression, ideal for complex photos with millions of colors.",
-        seoFormatPNG: "PNG", seoDescPNG: "Perfect for graphics, logos, and images requiring a transparent background. It uses lossless compression.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "A high-quality, often uncompressed format used in professional photography and printing. Not ideal for the web due to large file sizes.",
-        seoTitle4: "Frequently Asked Questions (FAQ)",
-        seoFaq1Title: "Is image conversion secure?",
-        seoFaq1Desc: "Absolutely. All conversions happen locally in your browser. No files are uploaded to our servers, ensuring maximum privacy and security.",
-        seoFaq2Title: "Can I convert multiple images at once?",
-        seoFaq2Desc: "Yes, our tool is designed for batch conversion. Drag and drop all the files you want, select the format, and convert them all at once.",
-        seoFaq3Title: "Will I lose quality during conversion?",
-        seoFaq3Desc: "It depends on the formats. Converting to a 'lossy' format like JPEG always involves a slight quality loss to reduce size. Converting to 'lossless' formats like PNG will preserve the original quality."
-      },
-      es: {
-        pageTitle: "Conversor de Imágenes Pro – WebToolbox.fun",
-        metaDescription: "Convierta imágenes con una interfaz avanzada inspirada en iOS. Admite arrastrar y soltar, 12 idiomas, múltiples temas y animaciones fluidas.",
-        mainTitle: "Conversor de Imágenes",
-        description: "Arrastra tus imágenes, elige un formato y conviértelas al instante. Una potente experiencia de conversión, envuelta en un diseño limpio e intuitivo.",
-        navConvert: "Convertir", navResize: "Redimensionar", navCrop: "Recortar", navRotate: "Girar", navFilters: "Filtros",
-        dropZoneText: "Arrastra archivos aquí o", dropZoneTextClick: "haz clic para seleccionar",
-        targetFormatLabel: "Formato de destino",
-        convertBtn: "Convertir",
-        fileSelectionAlertTitle: "No hay archivos", fileSelectionAlertMsg: "Por favor, seleccione al menos un archivo de imagen antes de continuar.",
-        unsupportedFormatToast: "El formato '{format}' no es compatible. Guardando como {fallback}.",
-        conversionInProgress: "Conversión en progreso...",
-        downloadLink: "Descargar",
-        themeLight: "Claro", themeDark: "Oscuro", themeMidnight: "Medianoche", themeSlate: "Pizarra",
-        seoTitle1: "Tu Conversor de Imágenes Online Definitivo",
-        seoIntro1: "En el mundo digital de hoy, las imágenes lo son todo. Si eres un desarrollador web optimizando tiempos de carga, un gestor de redes sociales creando contenido viral, o un fotógrafo archivando tus capturas, la gestión de formatos de imagen es crucial. Nuestra herramienta gratuita te da la flexibilidad de convertir imágenes a formatos modernos como WebP, estándares como JPEG y PNG, y más, directamente desde tu navegador, sin necesidad de instalación y con total respeto a tu privacidad.",
-        seoTitle2: "¿Por Qué Convertir Imágenes?",
-        seoIntro2: "Cada formato tiene sus fortalezas. La conversión te permite elegir el formato adecuado para cada necesidad, equilibrando calidad y tamaño de archivo.",
-        seoPoint1: "Optimización Web: Convierte a WebP para reducir drásticamente el peso de la imagen sin perder calidad, mejorando la velocidad de tu sitio y el SEO.",
-        seoPoint2: "Compatibilidad: Asegúrate de que tus imágenes se puedan ver en todos los dispositivos y plataformas convirtiéndolas a formatos universalmente compatibles como JPEG o PNG.",
-        seoPoint3: "Transparencia y Calidad: Usa el formato PNG cuando necesites fondos transparentes o compresión sin pérdidas para logotipos y gráficos.",
-        seoTitle3: "Guía de Formatos de Imagen",
-        seoFormatWebP: "WebP", seoDescWebP: "Un formato moderno de Google que ofrece una compresión superior (con y sin pérdidas) en comparación con JPEG y PNG. Ideal para la web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "El rey de la fotografía digital. Ofrece una excelente compresión con pérdidas, ideal para fotos complejas con millones de colores.",
-        seoFormatPNG: "PNG", seoDescPNG: "Perfecto para gráficos, logotipos e imágenes que requieren un fondo transparente. Utiliza compresión sin pérdidas.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Un formato de alta calidad, a menudo sin comprimir, utilizado en fotografía profesional e imprenta. No es ideal para la web debido al gran tamaño de los archivos.",
-        seoTitle4: "Preguntas Frecuentes (FAQ)",
-        seoFaq1Title: "¿Es segura la conversión de imágenes?",
-        seoFaq1Desc: "Absolutamente. Todas las conversiones ocurren localmente en tu navegador. No se sube ningún archivo a nuestros servidores, garantizando la máxima privacidad y seguridad.",
-        seoFaq2Title: "¿Puedo convertir varias imágenes a la vez?",
-        seoFaq2Desc: "Sí, nuestra herramienta está diseñada para la conversión por lotes. Arrastra y suelta todos los archivos que quieras, selecciona el formato y conviértelos todos de una vez.",
-        seoFaq3Title: "¿Perderé calidad durante la conversión?",
-        seoFaq3Desc: "Depende de los formatos. Convertir a un formato 'con pérdida' como JPEG siempre implica una ligera pérdida de calidad para reducir el tamaño. Convertir a formatos 'sin pérdida' como PNG preservará la calidad original."
-      },
-      fr: {
-        pageTitle: "Convertisseur d'Images Pro – WebToolbox.fun",
-        metaDescription: "Convertissez des images avec une interface avancée inspirée d'iOS. Supporte le glisser-déposer, 12 langues, plusieurs thèmes et des animations fluides.",
-        mainTitle: "Convertisseur d'Images",
-        description: "Faites glisser vos images, choisissez un format et convertissez-les instantanément. Une expérience de conversion puissante, dans un design propre et intuitif.",
-        navConvert: "Convertir", navResize: "Redimensionner", navCrop: "Recadrer", navRotate: "Pivoter", navFilters: "Filtres",
-        dropZoneText: "Glissez des fichiers ici ou", dropZoneTextClick: "cliquez pour sélectionner",
-        targetFormatLabel: "Format de destination",
-        convertBtn: "Convertir",
-        fileSelectionAlertTitle: "Aucun Fichier", fileSelectionAlertMsg: "Veuillez sélectionner au moins un fichier image avant de continuer.",
-        unsupportedFormatToast: "Le format '{format}' n'est pas supporté. Sauvegarde en {fallback}.",
-        conversionInProgress: "Conversion en cours...",
-        downloadLink: "Télécharger",
-        themeLight: "Clair", themeDark: "Sombre", themeMidnight: "Minuit", themeSlate: "Ardoise",
-        seoTitle1: "Votre Convertisseur d'Images en Ligne Ultime",
-        seoIntro1: "Dans le monde numérique d'aujourd'hui, les images sont primordiales. Que vous soyez un développeur web optimisant les temps de chargement, un gestionnaire de médias sociaux créant du contenu viral, ou un photographe archivant ses clichés, la gestion des formats d'image est cruciale. Notre outil gratuit vous offre la flexibilité de convertir des images en formats modernes comme WebP, standards comme JPEG et PNG, et plus encore, directement depuis votre navigateur, sans installation requise et dans le respect total de votre vie privée.",
-        seoTitle2: "Pourquoi Convertir des Images ?",
-        seoIntro2: "Chaque format a ses atouts. La conversion vous permet de choisir le bon format pour chaque besoin, en équilibrant la qualité et le poids du fichier.",
-        seoPoint1: "Optimisation Web : Convertissez en WebP pour réduire considérablement le poids des images sans perte de qualité, améliorant la vitesse de votre site et le SEO.",
-        seoPoint2: "Compatibilité : Assurez-vous que vos images sont visibles sur tous les appareils et plateformes en les convertissant en formats universellement supportés comme JPEG ou PNG.",
-        seoPoint3: "Transparence et Qualité : Utilisez le format PNG lorsque vous avez besoin de fonds transparents ou d'une compression sans perte pour les logos et les graphiques.",
-        seoTitle3: "Guide des Formats d'Image",
-        seoFormatWebP: "WebP", seoDescWebP: "Un format moderne de Google qui offre une compression supérieure (avec ou sans perte) par rapport à JPEG et PNG. Idéal pour le web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "Le roi de la photographie numérique. Il offre une excellente compression avec perte, idéale pour les photos complexes avec des millions de couleurs.",
-        seoFormatPNG: "PNG", seoDescPNG: "Parfait pour les graphiques, logos et images nécessitant un fond transparent. Il utilise une compression sans perte.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Un format de haute qualité, souvent non compressé, utilisé en photographie professionnelle et en imprimerie. Non idéal pour le web en raison de la grande taille des fichiers.",
-        seoTitle4: "Foire Aux Questions (FAQ)",
-        seoFaq1Title: "La conversion d'images est-elle sécurisée ?",
-        seoFaq1Desc: "Absolument. Toutes les conversions se font localement dans votre navigateur. Aucun fichier n'est téléversé sur nos serveurs, garantissant une confidentialité et une sécurité maximales.",
-        seoFaq2Title: "Puis-je convertir plusieurs images à la fois ?",
-        seoFaq2Desc: "Oui, notre outil est conçu pour la conversion par lots. Glissez-déposez tous les fichiers que vous voulez, sélectionnez le format, et convertissez-les tous en une seule fois.",
-        seoFaq3Title: "Vais-je perdre en qualité lors de la conversion ?",
-        seoFaq3Desc: "Cela dépend des formats. La conversion vers un format 'avec perte' comme le JPEG implique toujours une légère perte de qualité pour réduire la taille. La conversion vers des formats 'sans perte' comme le PNG préservera la qualité originale."
-      },
-      de: {
-        pageTitle: "Profi-Bildkonverter – WebToolbox.fun",
-        metaDescription: "Konvertieren Sie Bilder mit einer fortschrittlichen, von iOS inspirierten Oberfläche. Unterstützt Drag-and-Drop, 12 Sprachen, mehrere Themen und flüssige Animationen.",
-        mainTitle: "Bildkonverter",
-        description: "Ziehen Sie Ihre Bilder, wählen Sie ein Format und konvertieren Sie sie sofort. Eine leistungsstarke Konvertierungserfahrung in einem sauberen und intuitiven Design.",
-        navConvert: "Konvertieren", navResize: "Größe ändern", navCrop: "Zuschneiden", navRotate: "Drehen", navFilters: "Filter",
-        dropZoneText: "Dateien hier ablegen oder", dropZoneTextClick: "klicken zum Auswählen",
-        targetFormatLabel: "Zielformat",
-        convertBtn: "Konvertieren",
-        fileSelectionAlertTitle: "Keine Dateien", fileSelectionAlertMsg: "Bitte wählen Sie mindestens eine Bilddatei aus, bevor Sie fortfahren.",
-        unsupportedFormatToast: "Format '{format}' wird nicht unterstützt. Speichern als {fallback}.",
-        conversionInProgress: "Konvertierung läuft...",
-        downloadLink: "Herunterladen",
-        themeLight: "Hell", themeDark: "Dunkel", themeMidnight: "Mitternacht", themeSlate: "Schiefer",
-        seoTitle1: "Ihr Ultimativer Online-Bildkonverter",
-        seoIntro1: "In der heutigen digitalen Welt sind Bilder alles. Ob Sie als Webentwickler Ladezeiten optimieren, als Social-Media-Manager virale Inhalte erstellen oder als Fotograf Ihre Aufnahmen archivieren – die Verwaltung von Bildformaten ist entscheidend. Unser kostenloses Tool gibt Ihnen die Flexibilität, Bilder in moderne Formate wie WebP, Standards wie JPEG und PNG und mehr zu konvertieren, direkt in Ihrem Browser, ohne Installation und mit vollem Respekt für Ihre Privatsphäre.",
-        seoTitle2: "Warum Bilder konvertieren?",
-        seoIntro2: "Jedes Format hat seine Stärken. Die Konvertierung ermöglicht es Ihnen, für jeden Bedarf das richtige Format zu wählen und dabei Qualität und Dateigröße abzuwägen.",
-        seoPoint1: "Web-Optimierung: Konvertieren Sie zu WebP, um das Bildgewicht drastisch zu reduzieren, ohne an Qualität zu verlieren, und verbessern Sie so die Geschwindigkeit Ihrer Website und die SEO.",
-        seoPoint2: "Kompatibilität: Stellen Sie sicher, dass Ihre Bilder auf jedem Gerät und jeder Plattform angezeigt werden können, indem Sie sie in universell unterstützte Formate wie JPEG oder PNG konvertieren.",
-        seoPoint3: "Transparenz und Qualität: Verwenden Sie das PNG-Format, wenn Sie transparente Hintergründe oder eine verlustfreie Komprimierung für Logos und Grafiken benötigen.",
-        seoTitle3: "Ein Leitfaden zu Bildformaten",
-        seoFormatWebP: "WebP", seoDescWebP: "Ein modernes Format von Google, das eine überlegene Komprimierung (sowohl verlustbehaftet als auch verlustfrei) im Vergleich zu JPEG und PNG bietet. Ideal für das Web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "Der König der digitalen Fotografie. Es bietet eine ausgezeichnete verlustbehaftete Komprimierung, ideal für komplexe Fotos mit Millionen von Farben.",
-        seoFormatPNG: "PNG", seoDescPNG: "Perfekt für Grafiken, Logos und Bilder, die einen transparenten Hintergrund erfordern. Es verwendet eine verlustfreie Komprimierung.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Ein hochwertiges, oft unkomprimiertes Format, das in der professionellen Fotografie und im Druck verwendet wird. Aufgrund großer Dateigrößen nicht ideal für das Web.",
-        seoTitle4: "Häufig gestellte Fragen (FAQ)",
-        seoFaq1Title: "Ist die Bildkonvertierung sicher?",
-        seoFaq1Desc: "Absolut. Alle Konvertierungen finden lokal in Ihrem Browser statt. Es werden keine Dateien auf unsere Server hochgeladen, was maximale Privatsphäre und Sicherheit gewährleistet.",
-        seoFaq2Title: "Kann ich mehrere Bilder gleichzeitig konvertieren?",
-        seoFaq2Desc: "Ja, unser Tool ist für die Stapelverarbeitung ausgelegt. Ziehen Sie alle gewünschten Dateien per Drag & Drop, wählen Sie das Format und konvertieren Sie sie alle auf einmal.",
-        seoFaq3Title: "Verliere ich bei der Konvertierung an Qualität?",
-        seoFaq3Desc: "Das hängt von den Formaten ab. Die Konvertierung in ein 'verlustbehaftetes' Format wie JPEG bedeutet immer einen leichten Qualitätsverlust, um die Größe zu reduzieren. Die Konvertierung in 'verlustfreie' Formate wie PNG bewahrt die ursprüngliche Qualität."
-      },
-      pt: {
-        pageTitle: "Conversor de Imagens Pro – WebToolbox.fun",
-        metaDescription: "Converta imagens com uma interface avançada inspirada no iOS. Suporta arrastar e soltar, 12 idiomas, múltiplos temas e animações fluidas.",
-        mainTitle: "Conversor de Imagens",
-        description: "Arraste as suas imagens, escolha um formato e converta-as instantaneamente. Uma experiência de conversão poderosa, envolvida num design limpo e intuitivo.",
-        navConvert: "Converter", navResize: "Redimensionar", navCrop: "Cortar", navRotate: "Girar", navFilters: "Filtros",
-        dropZoneText: "Arraste os arquivos para cá ou", dropZoneTextClick: "clique para selecionar",
-        targetFormatLabel: "Formato de destino",
-        convertBtn: "Converter",
-        fileSelectionAlertTitle: "Nenhum Arquivo", fileSelectionAlertMsg: "Por favor, selecione pelo menos um arquivo de imagem antes de prosseguir.",
-        unsupportedFormatToast: "O formato '{format}' não é suportado. Salvando como {fallback}.",
-        conversionInProgress: "Conversão em andamento...",
-        downloadLink: "Baixar",
-        themeLight: "Claro", themeDark: "Escuro", themeMidnight: "Meia-noite", themeSlate: "Ardósia",
-        seoTitle1: "O Seu Conversor de Imagens Online Definitivo",
-        seoIntro1: "No mundo digital de hoje, as imagens são tudo. Quer seja um desenvolvedor web a otimizar tempos de carregamento, um gestor de redes sociais a criar conteúdo viral, ou um fotógrafo a arquivar as suas fotos, a gestão de formatos de imagem é crucial. A nossa ferramenta gratuita oferece-lhe a flexibilidade de converter imagens para formatos modernos como WebP, padrões como JPEG e PNG, e mais, diretamente do seu navegador, sem necessidade de instalação e com total respeito pela sua privacidade.",
-        seoTitle2: "Porquê Converter Imagens?",
-        seoIntro2: "Cada formato tem os seus pontos fortes. A conversão permite-lhe escolher o formato certo para cada necessidade, equilibrando qualidade e tamanho do arquivo.",
-        seoPoint1: "Otimização para a Web: Converta para WebP para reduzir drasticamente o peso das imagens sem perder qualidade, melhorando a velocidade do seu site e o SEO.",
-        seoPoint2: "Compatibilidade: Garanta que as suas imagens são visíveis em todos os dispositivos e plataformas, convertendo-as para formatos universalmente suportados como JPEG ou PNG.",
-        seoPoint3: "Transparência e Qualidade: Utilize o formato PNG quando precisar de fundos transparentes ou de compressão sem perdas para logótipos e gráficos.",
-        seoTitle3: "Guia de Formatos de Imagem",
-        seoFormatWebP: "WebP", seoDescWebP: "Um formato moderno da Google que oferece compressão superior (com e sem perdas) em comparação com JPEG e PNG. Ideal para a web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "O rei da fotografia digital. Oferece excelente compressão com perdas, ideal para fotos complexas com milhões de cores.",
-        seoFormatPNG: "PNG", seoDescPNG: "Perfeito para gráficos, logótipos e imagens que requerem um fundo transparente. Utiliza compressão sem perdas.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Um formato de alta qualidade, muitas vezes não comprimido, usado em fotografia profissional e impressão. Não é ideal para a web devido aos grandes tamanhos de arquivo.",
-        seoTitle4: "Perguntas Frequentes (FAQ)",
-        seoFaq1Title: "A conversão de imagens é segura?",
-        seoFaq1Desc: "Absolutamente. Todas as conversões ocorrem localmente no seu navegador. Nenhum arquivo é enviado para os nossos servidores, garantindo a máxima privacidade e segurança.",
-        seoFaq2Title: "Posso converter várias imagens de uma só vez?",
-        seoFaq2Desc: "Sim, a nossa ferramenta foi desenhada para conversão em lote. Arraste e solte todos os arquivos que desejar, selecione o formato e converta-os todos de uma vez.",
-        seoFaq3Title: "Vou perder qualidade durante a conversão?",
-        seoFaq3Desc: "Depende dos formatos. A conversão para um formato 'com perdas' como o JPEG implica sempre uma ligeira perda de qualidade para reduzir o tamanho. A conversão para formatos 'sem perdas' como o PNG preservará a qualidade original."
-      },
-      nl: {
-        pageTitle: "Pro Beeldconverter – WebToolbox.fun",
-        metaDescription: "Converteer afbeeldingen met een geavanceerde, op iOS geïnspireerde interface. Ondersteunt slepen en neerzetten, 12 talen, meerdere thema's en vloeiende animaties.",
-        mainTitle: "Beeldconverter",
-        description: "Sleep uw afbeeldingen, kies een formaat en converteer ze onmiddellijk. Een krachtige conversie-ervaring, verpakt in een strak en intuïtief ontwerp.",
-        navConvert: "Converteren", navResize: "Formaat wijzigen", navCrop: "Bijsnijden", navRotate: "Draaien", navFilters: "Filters",
-        dropZoneText: "Sleep bestanden hierheen of", dropZoneTextClick: "klik om te selecteren",
-        targetFormatLabel: "Doelformaat",
-        convertBtn: "Converteren",
-        fileSelectionAlertTitle: "Geen Bestanden", fileSelectionAlertMsg: "Selecteer ten minste één afbeeldingsbestand voordat u doorgaat.",
-        unsupportedFormatToast: "Formaat '{format}' wordt niet ondersteund. Opslaan als {fallback}.",
-        conversionInProgress: "Conversie bezig...",
-        downloadLink: "Downloaden",
-        themeLight: "Licht", themeDark: "Donker", themeMidnight: "Middernacht", themeSlate: "Leisteen",
-        seoTitle1: "Uw Ultieme Online Beeldconverter",
-        seoIntro1: "In de digitale wereld van vandaag zijn afbeeldingen alles. Of u nu een webontwikkelaar bent die laadtijden optimaliseert, een social media manager die virale content creëert, of een fotograaf die zijn foto's archiveert, het beheren van afbeeldingsformaten is cruciaal. Onze gratis tool geeft u de flexibiliteit om afbeeldingen te converteren naar moderne formaten zoals WebP, standaarden zoals JPEG en PNG, en meer, rechtstreeks vanuit uw browser, zonder installatie en met volledig respect voor uw privacy.",
-        seoTitle2: "Waarom Afbeeldingen Converteren?",
-        seoIntro2: "Elk formaat heeft zijn sterke punten. Conversie stelt u in staat om voor elke behoefte het juiste formaat te kiezen, waarbij kwaliteit en bestandsgrootte in evenwicht zijn.",
-        seoPoint1: "Weboptimalisatie: Converteer naar WebP om het gewicht van afbeeldingen drastisch te verminderen zonder kwaliteitsverlies, waardoor de snelheid van uw site en de SEO worden verbeterd.",
-        seoPoint2: "Compatibiliteit: Zorg ervoor dat uw afbeeldingen op elk apparaat en platform kunnen worden bekeken door ze te converteren naar universeel ondersteunde formaten zoals JPEG of PNG.",
-        seoPoint3: "Transparantie en Kwaliteit: Gebruik het PNG-formaat wanneer u transparante achtergronden of verliesvrije compressie nodig heeft voor logo's en afbeeldingen.",
-        seoTitle3: "Een Gids voor Afbeeldingsformaten",
-        seoFormatWebP: "WebP", seoDescWebP: "Een modern formaat van Google dat superieure compressie biedt (zowel met als zonder verlies) in vergelijking met JPEG en PNG. Ideaal voor het web.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "De koning van de digitale fotografie. Het biedt uitstekende compressie met verlies, ideaal voor complexe foto's met miljoenen kleuren.",
-        seoFormatPNG: "PNG", seoDescPNG: "Perfect voor afbeeldingen, logo's en afbeeldingen die een transparante achtergrond vereisen. Het maakt gebruik van verliesvrije compressie.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Een hoogwaardig, vaak niet-gecomprimeerd formaat dat wordt gebruikt in professionele fotografie en drukwerk. Niet ideaal voor het web vanwege de grote bestandsgroottes.",
-        seoTitle4: "Veelgestelde Vragen (FAQ)",
-        seoFaq1Title: "Is beeldconversie veilig?",
-        seoFaq1Desc: "Absoluut. Alle conversies vinden lokaal in uw browser plaats. Er worden geen bestanden naar onze servers geüpload, wat maximale privacy en veiligheid garandeert.",
-        seoFaq2Title: "Kan ik meerdere afbeeldingen tegelijk converteren?",
-        seoFaq2Desc: "Ja, onze tool is ontworpen voor batchconversie. Sleep alle gewenste bestanden, selecteer het formaat en converteer ze allemaal tegelijk.",
-        seoFaq3Title: "Verlies ik kwaliteit tijdens de conversie?",
-        seoFaq3Desc: "Dat hangt van de formaten af. Converteren naar een 'lossy' formaat zoals JPEG brengt altijd een klein kwaliteitsverlies met zich mee om de grootte te verminderen. Converteren naar 'lossless' formaten zoals PNG behoudt de oorspronkelijke kwaliteit."
-      },
-      ru: {
-        pageTitle: "Профессиональный Конвертер Изображений – WebToolbox.fun",
-        metaDescription: "Конвертируйте изображения с помощью продвинутого интерфейса в стиле iOS. Поддерживает перетаскивание, 12 языков, несколько тем и плавные анимации.",
-        mainTitle: "Конвертер Изображений",
-        description: "Перетащите ваши изображения, выберите формат и мгновенно конвертируйте их. Мощный инструмент для конвертации в чистом и интуитивно понятном дизайне.",
-        navConvert: "Конвертировать", navResize: "Изменить размер", navCrop: "Обрезать", navRotate: "Повернуть", navFilters: "Фильтры",
-        dropZoneText: "Перетащите файлы сюда или", dropZoneTextClick: "нажмите для выбора",
-        targetFormatLabel: "Целевой формат",
-        convertBtn: "Конвертировать",
-        fileSelectionAlertTitle: "Нет файлов", fileSelectionAlertMsg: "Пожалуйста, выберите хотя бы один файл изображения перед продолжением.",
-        unsupportedFormatToast: "Формат '{format}' не поддерживается. Сохранение в {fallback}.",
-        conversionInProgress: "Идет конвертация...",
-        downloadLink: "Скачать",
-        themeLight: "Светлая", themeDark: "Темная", themeMidnight: "Ночная", themeSlate: "Сланец",
-        seoTitle1: "Ваш Лучший Онлайн-Конвертер Изображений",
-        seoIntro1: "В современном цифровом мире изображения — это всё. Будь вы веб-разработчик, оптимизирующий время загрузки, менеджер социальных сетей, создающий вирусный контент, или фотограф, архивирующий свои снимки, управление форматами изображений имеет решающее значение. Наш бесплатный инструмент дает вам гибкость для преобразования изображений в современные форматы, такие как WebP, стандартные, как JPEG и PNG, и другие, прямо в вашем браузере, без установки и с полным уважением к вашей конфиденциальности.",
-        seoTitle2: "Зачем конвертировать изображения?",
-        seoIntro2: "У каждого формата есть свои сильные стороны. Преобразование позволяет вам выбрать правильный формат для каждой потребности, сбалансировав качество и размер файла.",
-        seoPoint1: "Оптимизация для веба: Конвертируйте в WebP, чтобы значительно уменьшить вес изображений без потери качества, улучшая скорость вашего сайта и SEO.",
-        seoPoint2: "Совместимость: Убедитесь, что ваши изображения можно просматривать на любом устройстве и платформе, преобразовав их в универсально поддерживаемые форматы, такие как JPEG или PNG.",
-        seoPoint3: "Прозрачность и качество: Используйте формат PNG, когда вам нужны прозрачные фоны или сжатие без потерь для логотипов и графики.",
-        seoTitle3: "Руководство по форматам изображений",
-        seoFormatWebP: "WebP", seoDescWebP: "Современный формат от Google, который предлагает превосходное сжатие (как с потерями, так и без потерь) по сравнению с JPEG и PNG. Идеально подходит для веба.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "Король цифровой фотографии. Он предлагает отличное сжатие с потерями, идеально подходит для сложных фотографий с миллионами цветов.",
-        seoFormatPNG: "PNG", seoDescPNG: "Идеально подходит для графики, логотипов и изображений, требующих прозрачного фона. Использует сжатие без потерь.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "Высококачественный, часто несжатый формат, используемый в профессиональной фотографии и печати. Не идеален для веба из-за больших размеров файлов.",
-        seoTitle4: "Часто задаваемые вопросы (FAQ)",
-        seoFaq1Title: "Безопасно ли конвертировать изображения?",
-        seoFaq1Desc: "Абсолютно. Все преобразования происходят локально в вашем браузере. Никакие файлы не загружаются на наши серверы, что обеспечивает максимальную конфиденциальность и безопасность.",
-        seoFaq2Title: "Могу ли я конвертировать несколько изображений одновременно?",
-        seoFaq2Desc: "Да, наш инструмент предназначен для пакетного преобразования. Перетащите все нужные файлы, выберите формат и конвертируйте их все сразу.",
-        seoFaq3Title: "Потеряю ли я качество при конвертации?",
-        seoFaq3Desc: "Это зависит от форматов. Преобразование в формат с потерями, такой как JPEG, всегда сопряжено с небольшой потерей качества для уменьшения размера. Преобразование в форматы без потерь, такие как PNG, сохранит исходное качество."
-      },
-      ja: {
-        pageTitle: "プロ画像変換ソフト – WebToolbox.fun",
-        metaDescription: "iOS風の先進的なインターフェースで画像を変換。ドラッグ＆ドロップ、12言語、複数テーマ、滑らかなアニメーションに対応。",
-        mainTitle: "画像コンバーター",
-        description: "画像をドラッグし、形式を選択して瞬時に変換。クリーンで直感的なデザインに包まれた、強力な変換体験。",
-        navConvert: "変換", navResize: "リサイズ", navCrop: "トリミング", navRotate: "回転", navFilters: "フィルター",
-        dropZoneText: "ここにファイルをドラッグするか、", dropZoneTextClick: "クリックして選択",
-        targetFormatLabel: "ターゲット形式",
-        convertBtn: "変換",
-        fileSelectionAlertTitle: "ファイルがありません", fileSelectionAlertMsg: "続行する前に、少なくとも1つの画像ファイルを選択してください。",
-        unsupportedFormatToast: "フォーマット「{format}」はサポートされていません。「{fallback}」として保存します。",
-        conversionInProgress: "変換中...",
-        downloadLink: "ダウンロード",
-        themeLight: "ライト", themeDark: "ダーク", themeMidnight: "ミッドナイト", themeSlate: "スレート",
-        seoTitle1: "究極のオンライン画像コンバーター",
-        seoIntro1: "今日のデジタル世界では、画像がすべてです。ウェブ開発者として読み込み時間を最適化したり、ソーシャルメディアマネージャーとしてバイラルコンテンツを作成したり、写真家としてショットをアーカイブしたりする場合でも、画像形式の管理は不可欠です。当社の無料ツールは、WebPのような最新の形式、JPEGやPNGのような標準形式などに、インストール不要でプライバシーを完全に尊重しながら、ブラウザから直接画像を変換する柔軟性を提供します。",
-        seoTitle2: "なぜ画像を変換するのか？",
-        seoIntro2: "各形式にはそれぞれの長所があります。変換により、品質とファイルサイズのバランスを取りながら、あらゆるニーズに適した形式を選択できます。",
-        seoPoint1: "ウェブ最適化：WebPに変換して、品質を損なうことなく画像サイズを劇的に削減し、サイトの速度とSEOを向上させます。",
-        seoPoint2: "互換性：JPEGやPNGなどの普遍的にサポートされている形式に変換することで、あらゆるデバイスやプラットフォームで画像を表示できるようにします。",
-        seoPoint3: "透明度と品質：ロゴやグラフィックに透明な背景や可逆圧縮が必要な場合は、PNG形式を使用します。",
-        seoTitle3: "画像形式ガイド",
-        seoFormatWebP: "WebP", seoDescWebP: "Googleの最新フォーマットで、JPEGやPNGと比較して優れた圧縮（可逆・非可逆）を提供します。ウェブに最適です。",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "デジタル写真の王様。数百万色を持つ複雑な写真に最適な、優れた非可逆圧縮を提供します。",
-        seoFormatPNG: "PNG", seoDescPNG: "透明な背景を必要とするグラフィック、ロゴ、画像に最適です。可逆圧縮を使用します。",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "プロの写真撮影や印刷で使用される高品質で、多くの場合非圧縮のフォーマット。ファイルサイズが大きいため、ウェブには不向きです。",
-        seoTitle4: "よくある質問（FAQ）",
-        seoFaq1Title: "画像変換は安全ですか？",
-        seoFaq1Desc: "もちろんです。すべての変換はブラウザ内でローカルに行われます。当社のサーバーにファイルがアップロードされることはなく、最大限のプライバシーとセキュリティが保証されます。",
-        seoFaq2Title: "一度に複数の画像を変換できますか？",
-        seoFaq2Desc: "はい、当社のツールはバッチ変換用に設計されています。必要なすべてのファイルをドラッグ＆ドロップし、形式を選択して、一度にすべて変換してください。",
-        seoFaq3Title: "変換中に品質は低下しますか？",
-        seoFaq3Desc: "形式によります。JPEGのような「非可逆」形式への変換は、サイズを小さくするために常にわずかな品質低下を伴います。PNGのような「可逆」形式への変換は、元の品質を維持します。"
-      },
-      zh: {
-        pageTitle: "专业图像转换器 – WebToolbox.fun",
-        metaDescription: "使用先进的iOS风格界面转换图像。支持拖放、12种语言、多种主题和流畅的动画。",
-        mainTitle: "图像转换器",
-        description: "拖动您的图像，选择一种格式，然后立即转换。强大的转换体验，融入简洁直观的设计之中。",
-        navConvert: "转换", navResize: "调整大小", navCrop: "裁剪", navRotate: "旋转", navFilters: "滤镜",
-        dropZoneText: "将文件拖到此处或", dropZoneTextClick: "点击选择",
-        targetFormatLabel: "目标格式",
-        convertBtn: "转换",
-        fileSelectionAlertTitle: "无文件", fileSelectionAlertMsg: "请在继续之前至少选择一个图像文件。",
-        unsupportedFormatToast: "不支持"{format}"格式。将另存为 {fallback}。",
-        conversionInProgress: "转换中...",
-        downloadLink: "下载",
-        themeLight: "浅色", themeDark: "深色", themeMidnight: "午夜", themeSlate: "石板",
-        seoTitle1: "您的终极在线图像转换器",
-        seoIntro1: "在当今的数字世界中，图像就是一切。无论您是优化加载时间的Web开发人员，还是创建病毒式内容的社交媒体经理，或是存档照片的摄影师，管理图像格式都至关重要。我们的免费工具让您可以灵活地将图像转换为现代格式（如WebP）、标准格式（如JPEG和PNG）等，所有操作都直接在您的浏览器中完成，无需安装，并完全尊重您的隐私。",
-        seoTitle2: "为什么要转换图像？",
-        seoIntro2: "每种格式都有其优点。转换允许您为每种需求选择合适的格式，平衡质量和文件大小。",
-        seoPoint1: "Web优化：转换为WebP可以在不损失质量的情况下大幅减小图像体积，从而提高您网站的速度和SEO排名。",
-        seoPoint2: "兼容性：通过将图像转换为JPEG或PNG等通用支持的格式，确保您的图像可以在任何设备和平台上查看。",
-        seoPoint3: "透明度和质量：当您需要透明背景或用于徽标和图形的无损压缩时，请使用PNG格式。",
-        seoTitle3: "图像格式指南",
-        seoFormatWebP: "WebP", seoDescWebP: "谷歌的一种现代格式，与JPEG和PNG相比，提供更出色的压缩（有损和无损）。非常适合Web。",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "数码摄影之王。它提供出色的有损压缩，非常适合具有数百万种颜色的复杂照片。",
-        seoFormatPNG: "PNG", seoDescPNG: "非常适合需要透明背景的图形、徽标和图像。它使用无损压缩。",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "一种高质量、通常未经压缩的格式，用于专业摄影和印刷。由于文件较大，不适合Web。",
-        seoTitle4: "常见问题解答 (FAQ)",
-        seoFaq1Title: "图像转换安全吗？",
-        seoFaq1Desc: "绝对安全。所有转换都在您的浏览器本地进行。不会有任何文件上传到我们的服务器，确保了最大的隐私和安全。",
-        seoFaq2Title: "我可以一次转换多张图片吗？",
-        seoFaq2Desc: "是的，我们的工具专为批量转换而设计。拖放您想要的所有文件，选择格式，然后一次性全部转换。",
-        seoFaq3Title: "转换过程中会损失质量吗？",
-        seoFaq3Desc: "这取决于格式。转换为像JPEG这样的"有损"格式总是会为了减小文件大小而牺牲一点质量。转换为像PNG这样的"无损"格式将保留原始质量。"
-      },
-      hi: {
-        pageTitle: "प्रो इमेज कन्वर्टर – WebToolbox.fun",
-        metaDescription: "एक उन्नत आईओएस-प्रेरित इंटरफ़ेस के साथ छवियों को परिवर्तित करें। ड्रैग-एंड-ड्रॉप, 12 भाषाओं, कई थीम और तरल एनिमेशन का समर्थन करता है।",
-        mainTitle: "इमेज कन्वर्टर",
-        description: "अपनी छवियों को खींचें, एक प्रारूप चुनें, और उन्हें तुरंत परिवर्तित करें। एक शक्तिशाली रूपांतरण अनुभव, जो एक स्वच्छ और सहज डिजाइन में लिपटा हुआ है।",
-        navConvert: "कन्वर्ट करें", navResize: "आकार बदलें", navCrop: "काटें", navRotate: "घुमाएँ", navFilters: "फिल्टर",
-        dropZoneText: "फ़ाइलें यहाँ खींचें या", dropZoneTextClick: "चुनने के लिए क्लिक करें",
-        targetFormatLabel: "लक्ष्य प्रारूप",
-        convertBtn: "कन्वर्ट करें",
-        fileSelectionAlertTitle: "कोई फ़ाइल नहीं", fileSelectionAlertMsg: "कृपया आगे बढ़ने से पहले कम से कम एक छवि फ़ाइल चुनें।",
-        unsupportedFormatToast: "प्रारूप '{format}' समर्थित नहीं है। {fallback} के रूप में सहेजा जा रहा है।",
-        conversionInProgress: "रूपांतरण जारी है...",
-        downloadLink: "डाउनलोड करें",
-        themeLight: "लाइट", themeDark: "डार्क", themeMidnight: "मिडनाइट", themeSlate: "स्लेट",
-        seoTitle1: "आपका अंतिम ऑनलाइन इमेज कन्वर्टर",
-        seoIntro1: "आज की डिजिटल दुनिया में, छवियां सब कुछ हैं। चाहे आप लोडिंग समय का अनुकूलन करने वाले वेब डेवलपर हों, वायरल सामग्री बनाने वाले सोशल मीडिया मैनेजर हों, या अपने शॉट्स को संग्रहीत करने वाले फोटोग्राफर हों, छवि प्रारूपों का प्रबंधन महत्वपूर्ण है। हमारा मुफ्त टूल आपको WebP जैसे आधुनिक प्रारूपों, JPEG और PNG जैसे मानकों, और बहुत कुछ में छवियों को सीधे आपके ब्राउज़र से बदलने की सुविधा देता है, बिना किसी इंस्टॉलेशन के और आपकी गोपनीयता का पूरा सम्मान करते हुए।",
-        seoTitle2: "छवियों को क्यों बदलें?",
-        seoIntro2: "प्रत्येक प्रारूप की अपनी ताकत होती है। रूपांतरण आपको हर जरूरत के लिए सही प्रारूप चुनने की अनुमति देता है, गुणवत्ता और फ़ाइल आकार को संतुलित करता है।",
-        seoPoint1: "वेब अनुकूलन: गुणवत्ता खोए बिना छवि का वजन नाटकीय रूप से कम करने के लिए WebP में कनवर्ट करें, जिससे आपकी साइट की गति और SEO में सुधार होता है।",
-        seoPoint2: "संगतता: अपनी छवियों को JPEG या PNG जैसे सार्वभौमिक रूप से समर्थित प्रारूपों में परिवर्तित करके सुनिश्चित करें कि वे हर डिवाइस और प्लेटफॉर्म पर देखने योग्य हैं।",
-        seoPoint3: "पारदर्शिता और गुणवत्ता: जब आपको लोगो और ग्राफिक्स के लिए पारदर्शी पृष्ठभूमि या दोषरहित संपीड़न की आवश्यकता हो तो PNG प्रारूप का उपयोग करें।",
-        seoTitle3: "छवि प्रारूपों के लिए एक गाइड",
-        seoFormatWebP: "WebP", seoDescWebP: "Google का एक आधुनिक प्रारूप जो JPEG और PNG की तुलना में बेहतर संपीड़न (हानिपूर्ण और दोषरहित दोनों) प्रदान करता है। वेब के लिए आदर्श।",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "डिजिटल फोटोग्राफी का राजा। यह उत्कृष्ट हानिपूर्ण संपीड़न प्रदान करता है, जो लाखों रंगों वाली जटिल तस्वीरों के लिए आदर्श है।",
-        seoFormatPNG: "PNG", seoDescPNG: "ग्राफिक्स, लोगो और पारदर्शी पृष्ठभूमि की आवश्यकता वाली छवियों के लिए बिल्कुल सही। यह दोषरहित संपीड़न का उपयोग करता है।",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "एक उच्च-गुणवत्ता, अक्सर असम्पीडित प्रारूप जो पेशेवर फोटोग्राफी और मुद्रण में उपयोग किया जाता है। बड़ी फ़ाइल आकार के कारण वेब के लिए आदर्श नहीं है।",
-        seoTitle4: "अक्सर पूछे जाने वाले प्रश्न (FAQ)",
-        seoFaq1Title: "क्या छवि रूपांतरण सुरक्षित है?",
-        seoFaq1Desc: "बिल्कुल। सभी रूपांतरण आपके ब्राउज़र में स्थानीय रूप से होते हैं। हमारी सर्वर पर कोई फ़ाइल अपलोड नहीं की जाती है, जो अधिकतम गोपनीयता और सुरक्षा सुनिश्चित करता है।",
-        seoFaq2Title: "क्या मैं एक साथ कई छवियों को परिवर्तित कर सकता हूं?",
-        seoFaq2Desc: "हां, हमारा टूल बैच रूपांतरण के लिए डिज़ाइन किया गया है। अपनी इच्छित सभी फ़ाइलों को खींचें और छोड़ें, प्रारूप चुनें, और उन सभी को एक बार में परिवर्तित करें।",
-        seoFaq3Title: "क्या रूपांतरण के दौरान मेरी गुणवत्ता खो जाएगी?",
-        seoFaq3Desc: "यह प्रारूपों पर निर्भर करता है। JPEG जैसे 'हानिपूर्ण' प्रारूप में परिवर्तित करने में आकार को कम करने के लिए हमेशा थोड़ी गुणवत्ता का नुकसान होता है। PNG जैसे 'दोषरहित' प्रारूपों में परिवर्तित करने से मूल गुणवत्ता बनी रहेगी।"
-      },
-      ar: {
-        pageTitle: "محول الصور الاحترافي – WebToolbox.fun",
-        metaDescription: "حوّل الصور بواجهة متقدمة مستوحاة من iOS. يدعم السحب والإفلات، 12 لغة، سمات متعددة، ورسوم متحركة سلسة.",
-        mainTitle: "محول الصور",
-        description: "اسحب صورك، اختر الصيغة، وقم بتحويلها على الفور. تجربة تحويل قوية، مغلفة في تصميم نظيف وبديهي.",
-        navConvert: "تحويل", navResize: "تغيير الحجم", navCrop: "قص", navRotate: "تدوير", navFilters: "فلاتر",
-        dropZoneText: "اسحب الملفات إلى هنا أو", dropZoneTextClick: "انقر للاختيار",
-        targetFormatLabel: "الصيغة المستهدفة",
-        convertBtn: "تحويل",
-        fileSelectionAlertTitle: "لا توجد ملفات", fileSelectionAlertMsg: "يرجى تحديد ملف صورة واحد على الأقل قبل المتابعة.",
-        unsupportedFormatToast: "صيغة '{format}' غير مدعومة. يتم الحفظ بصيغة {fallback}.",
-        conversionInProgress: "جاري التحويل...",
-        downloadLink: "تنزيل",
-        themeLight: "فاتح", themeDark: "داكن", themeMidnight: "منتصف الليل", themeSlate: "إردوازي",
-        seoTitle1: "محول الصور الأفضل عبر الإنترنت",
-        seoIntro1: "في عالم اليوم الرقمي، الصور هي كل شيء. سواء كنت مطور ويب يعمل على تحسين أوقات التحميل، أو مدير وسائط اجتماعية ينشئ محتوى فيروسيًا، أو مصورًا يقوم بأرشفة لقطاته، فإن إدارة صيغ الصور أمر بالغ الأهمية. تمنحك أداتنا المجانية المرونة لتحويل الصور إلى صيغ حديثة مثل WebP، وصيغ قياسية مثل JPEG و PNG، والمزيد، مباشرة من متصفحك، دون الحاجة إلى تثبيت أي شيء مع الاحترام الكامل لخصوصيتك.",
-        seoTitle2: "لماذا تحويل الصور؟",
-        seoIntro2: "كل صيغة لها نقاط قوتها. يتيح لك التحويل اختيار الصيغة المناسبة لكل حاجة، مع الموازنة بين الجودة وحجم الملف.",
-        seoPoint1: "تحسين الويب: قم بالتحويل إلى WebP لتقليل وزن الصور بشكل كبير دون فقدان الجودة، مما يحسن سرعة موقعك وتحسين محركات البحث (SEO).",
-        seoPoint2: "التوافق: تأكد من إمكانية عرض صورك على كل جهاز ومنصة عن طريق تحويلها إلى صيغ مدعومة عالميًا مثل JPEG أو PNG.",
-        seoPoint3: "الشفافية والجودة: استخدم صيغة PNG عندما تحتاج إلى خلفيات شفافة أو ضغط بدون فقدان للبيانات للشعارات والرسومات.",
-        seoTitle3: "دليل صيغ الصور",
-        seoFormatWebP: "WebP", seoDescWebP: "صيغة حديثة من Google توفر ضغطًا فائقًا (مع فقدان وبدون فقدان) مقارنة بـ JPEG و PNG. مثالية للويب.",
-        seoFormatJPEG: "JPEG", seoDescJPEG: "ملك التصوير الرقمي. يوفر ضغطًا ممتازًا مع فقدان، مثالي للصور المعقدة بملايين الألوان.",
-        seoFormatPNG: "PNG", seoDescPNG: "مثالي للرسومات والشعارات والصور التي تتطلب خلفية شفافة. يستخدم ضغطًا بدون فقدان.",
-        seoFormatTIFF: "TIFF", seoDescTIFF: "صيغة عالية الجودة، غالبًا ما تكون غير مضغوطة، تستخدم في التصوير الفوتوغرافي الاحترافي والطباعة. ليست مثالية للويب بسبب أحجام الملفات الكبيرة.",
-        seoTitle4: "الأسئلة الشائعة (FAQ)",
-        seoFaq1Title: "هل تحويل الصور آمن؟",
-        seoFaq1Desc: "بالتأكيد. تتم جميع التحويلات محليًا في متصفحك. لا يتم تحميل أي ملفات إلى خوادمنا، مما يضمن أقصى قدر من الخصوصية والأمان.",
-        seoFaq2Title: "هل يمكنني تحويل صور متعددة في وقت واحد؟",
-        seoFaq2Desc: "نعم، تم تصميم أداتنا للتحويل الجماعي. اسحب وأفلت جميع الملفات التي تريدها، وحدد الصيغة، وقم بتحويلها جميعًا مرة واحدة.",
-        seoFaq3Title: "هل سأفقد الجودة أثناء التحويل؟",
-        seoFaq3Desc: "يعتمد ذلك على الصيغ. التحويل إلى صيغة 'ذات فقدان' مثل JPEG ينطوي دائمًا على فقدان طفيف للجودة لتقليل الحجم. التحويل إلى صيغ 'بدون فقدان' مثل PNG سيحافظ على الجودة الأصلية."
-      }
-    };
-    
-    const dom = {
-      html: document.documentElement,
-      body: document.body,
-      mainTitle: document.getElementById('mainTitle'),
-      navTitle: document.querySelector('.nav-title-scrolled'),
-      mobileNav: document.getElementById('mobileNav'),
-      mobileMenuTrigger: document.getElementById('mobile-menu-trigger'),
-      mobileMenuClose: document.getElementById('mobile-menu-close'),
-      themeSelectors: [document.getElementById('themeSelector'), document.getElementById('themeSelectorMobile')],
-      langSelectors: [document.getElementById('langSelector'), document.getElementById('langSelectorMobile')],
-      inputFiles: document.getElementById('inputFiles'),
-      outputFormat: document.getElementById('outputFormat'),
-      convertBtn: document.getElementById('convertBtn'),
-      dropZone: document.getElementById('dropZone'),
-      previewContainer: document.getElementById('previewContainer'),
-      resultContainer: document.getElementById('resultContainer'),
-      modal: document.getElementById('customModal'),
-      modalTitle: document.getElementById('modalTitle'),
-      modalMessage: document.getElementById('modalMessage'),
-      modalOkBtn: document.getElementById('modalOkBtn'),
-      toastContainer: document.getElementById('toastContainer'),
-      progressContainer: document.getElementById('progressContainer'),
-      progressBar: document.getElementById('progressBar'),
-      progressText: document.getElementById('progressText')
-    };
+  // --- Utils UI (minimi, senza sistema traduzioni) ---
+  const ensureToastContainer = () => {
+    if (!dom.toastContainer) {
+      const div = document.createElement('div');
+      div.id = 'toastContainer';
+      document.body.appendChild(div);
+      dom.toastContainer = div;
+    }
+  };
+  const showToast = (msg) => {
+    ensureToastContainer();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right:.5rem;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>${msg}`;
+    dom.toastContainer.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+  };
+  const showModal = (title, message) => {
+    if (!dom.modal) return alert(`${title}\n\n${message}`);
+    dom.modalTitle.textContent = title;
+    dom.modalMessage.textContent = message;
+    dom.modal.classList.add('visible');
+  };
+  const hideModal = () => dom.modal && dom.modal.classList.remove('visible');
+  dom.modalOk && dom.modalOk.addEventListener('click', hideModal);
+  dom.modal && dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) hideModal(); });
 
-    // Progress bar functions
-    const showProgress = () => {
-      dom.progressContainer.style.display = 'block';
+  const showProgress = (txt = 'Conversione in corso...') => {
+    if (dom.progressWrap) dom.progressWrap.style.display = 'block';
+    if (dom.progressText) {
       dom.progressText.style.display = 'block';
-      updateProgress(0, translations[currentLang].conversionInProgress);
-    };
-
-    const hideProgress = () => {
-      dom.progressContainer.style.display = 'none';
-      dom.progressText.style.display = 'none';
-    };
-
-    const updateProgress = (percent, text) => {
-      dom.progressBar.style.width = `${percent}%`;
-      if (text) dom.progressText.textContent = text;
-    };
-
-    // Advanced Format Conversion Functions
-    const formatConverters = {
-      // Natively supported formats
-      jpeg: (canvas, quality = 0.92) => new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality)),
-      jpg: (canvas, quality = 0.92) => new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality)),
-      png: (canvas) => new Promise(resolve => canvas.toBlob(resolve, 'image/png')),
-      webp: (canvas, quality = 0.92) => new Promise(resolve => canvas.toBlob(resolve, 'image/webp', quality)),
-      
-      // BMP conversion
-      bmp: (canvas) => {
-        return new Promise(resolve => {
-          const ctx = canvas.getContext('2d');
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const bmpData = createBMPFromImageData(imageData);
-          resolve(new Blob([bmpData], { type: 'image/bmp' }));
-        });
-      },
-
-      // TIFF conversion using UTIF library
-      tiff: (canvas) => {
-        return new Promise(resolve => {
-          const ctx = canvas.getContext('2d');
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          // Create a simple TIFF using basic structure
-          canvas.toBlob(blob => {
-            // For now, convert to PNG as fallback for TIFF
-            resolve(blob);
-          }, 'image/png');
-        });
-      },
-
-      // GIF conversion (single frame)
-      gif: (canvas) => {
-        return new Promise(resolve => {
-          // For static GIF, convert to PNG with palette optimization
-          canvas.toBlob(resolve, 'image/png');
-        });
-      },
-
-      // ICO conversion
-      ico: (canvas) => {
-        return new Promise(resolve => {
-          // Resize to common ICO size (32x32) and convert
-          const icoCanvas = document.createElement('canvas');
-          icoCanvas.width = 32;
-          icoCanvas.height = 32;
-          const ctx = icoCanvas.getContext('2d');
-          ctx.drawImage(canvas, 0, 0, 32, 32);
-          icoCanvas.toBlob(resolve, 'image/png');
-        });
-      },
-
-      // AVIF conversion (fallback to WebP if not supported)
-      avif: (canvas, quality = 0.92) => {
-        return new Promise(resolve => {
-          try {
-            canvas.toBlob(blob => {
-              if (blob) resolve(blob);
-              else formatConverters.webp(canvas, quality).then(resolve);
-            }, 'image/avif', quality);
-          } catch {
-            formatConverters.webp(canvas, quality).then(resolve);
-          }
-        });
-      },
-
-      // HEIC conversion (fallback to JPEG)
-      heic: (canvas, quality = 0.92) => {
-        return new Promise(resolve => {
-          // HEIC not natively supported in browsers, fallback to JPEG
-          formatConverters.jpeg(canvas, quality).then(resolve);
-        });
-      },
-
-      // JPEG XL conversion (fallback to WebP)
-      jxl: (canvas, quality = 0.92) => {
-        return new Promise(resolve => {
-          // JXL not yet widely supported, fallback to WebP
-          formatConverters.webp(canvas, quality).then(resolve);
-        });
-      },
-
-      // Vector formats (rasterized)
-      svg: (canvas) => {
-        return new Promise(resolve => {
-          // Convert canvas to SVG
-          const svgString = canvasToSVG(canvas);
-          const blob = new Blob([svgString], { type: 'image/svg+xml' });
-          resolve(blob);
-        });
-      },
-
-      pdf: (canvas) => {
-        return new Promise(resolve => {
-          // Simple PDF creation with image
-          const pdfString = canvasToPDF(canvas);
-          const blob = new Blob([pdfString], { type: 'application/pdf' });
-          resolve(blob);
-        });
-      },
-
-      // Specialized formats (all fallback to PNG for now)
-      psd: (canvas) => formatConverters.png(canvas),
-      xcf: (canvas) => formatConverters.png(canvas),
-      kra: (canvas) => formatConverters.png(canvas),
-      ora: (canvas) => formatConverters.png(canvas),
-      pdn: (canvas) => formatConverters.png(canvas),
-      ai: (canvas) => formatConverters.png(canvas),
-      eps: (canvas) => formatConverters.png(canvas),
-      hdr: (canvas) => formatConverters.png(canvas),
-      exr: (canvas) => formatConverters.png(canvas),
-      dcm: (canvas) => formatConverters.png(canvas),
-      fits: (canvas) => formatConverters.png(canvas),
-      nii: (canvas) => formatConverters.png(canvas),
-      dds: (canvas) => formatConverters.png(canvas),
-      tga: (canvas) => formatConverters.png(canvas),
-      ktx: (canvas) => formatConverters.png(canvas),
-      pvr: (canvas) => formatConverters.png(canvas),
-      pcx: (canvas) => formatConverters.png(canvas),
-      xbm: (canvas) => formatConverters.png(canvas),
-      pnm: (canvas) => formatConverters.png(canvas),
-      ras: (canvas) => formatConverters.png(canvas)
-    };
-
-    // Helper functions for format conversion
-    function createBMPFromImageData(imageData) {
-      const width = imageData.width;
-      const height = imageData.height;
-      const data = imageData.data;
-      
-      const fileHeaderSize = 14;
-      const infoHeaderSize = 40;
-      const headerSize = fileHeaderSize + infoHeaderSize;
-      const imageSize = width * height * 4;
-      const fileSize = headerSize + imageSize;
-      
-      const buffer = new ArrayBuffer(fileSize);
-      const view = new DataView(buffer);
-      
-      // File header
-      view.setUint16(0, 0x4D42); // BM
-      view.setUint32(2, fileSize, true);
-      view.setUint32(10, headerSize, true);
-      
-      // Info header
-      view.setUint32(14, infoHeaderSize, true);
-      view.setUint32(18, width, true);
-      view.setUint32(22, height, true);
-      view.setUint16(26, 1, true); // planes
-      view.setUint16(28, 32, true); // bits per pixel
-      
-      // Image data (flip vertically)
-      let offset = headerSize;
-      for (let y = height - 1; y >= 0; y--) {
-        for (let x = 0; x < width; x++) {
-          const i = (y * width + x) * 4;
-          view.setUint8(offset++, data[i + 2]); // B
-          view.setUint8(offset++, data[i + 1]); // G
-          view.setUint8(offset++, data[i]);     // R
-          view.setUint8(offset++, data[i + 3]); // A
-        }
-      }
-      
-      return buffer;
+      dom.progressText.textContent = txt;
     }
+    updateProgress(0);
+  };
+  const hideProgress = () => {
+    if (dom.progressWrap) dom.progressWrap.style.display = 'none';
+    if (dom.progressText) dom.progressText.style.display = 'none';
+  };
+  const updateProgress = (p, txt) => {
+    if (dom.progressBar) dom.progressBar.style.width = `${Math.max(0, Math.min(100, p))}%`;
+    if (txt && dom.progressText) dom.progressText.textContent = txt;
+  };
 
-    function canvasToSVG(canvas) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
-        <image href="${canvas.toDataURL()}" width="${canvas.width}" height="${canvas.height}"/>
-      </svg>`;
+  // --- Supporto formati output ---
+  const isWebPSupported = (() => {
+    try {
+      const c = document.createElement('canvas');
+      return c.toDataURL && c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    } catch { return false; }
+  })();
+
+  // Inizializza il select con SOLI formati reali e supportati
+  const initOutputFormats = () => {
+    if (!dom.outputFormat) return;
+    const opts = [
+      { value: 'png', label: 'PNG (.png)' },
+      { value: 'jpeg', label: 'JPEG / JPG (.jpg, .jpeg)' },
+      ...(isWebPSupported ? [{ value: 'webp', label: 'WebP (.webp)' }] : []),
+      { value: 'bmp', label: 'BMP (.bmp)' }
+    ];
+    dom.outputFormat.innerHTML = '';
+    for (const o of opts) {
+      const el = document.createElement('option');
+      el.value = o.value;
+      el.textContent = o.label;
+      dom.outputFormat.appendChild(el);
     }
+  };
+  initOutputFormats();
 
-    function canvasToPDF(canvas) {
-      // Very basic PDF structure
-      const dataURL = canvas.toDataURL('image/jpeg', 0.95);
-      return `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${canvas.width} ${canvas.height}] /Contents 4 0 R >>
-endobj
-4 0 obj
-<< /Length 44 >>
-stream
-q
-${canvas.width} 0 0 ${canvas.height} 0 0 cm
-/Im1 Do
-Q
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f
-0000000009 00000 n
-0000000058 00000 n
-0000000115 00000 n
-0000000230 00000 n
-trailer
-<< /Size 5 /Root 1 0 R >>
-startxref
-320
-%%EOF`;
-    }
+  // --- Caricamento file & anteprime (solo immagini decodificabili dal browser) ---
+  let loadedFiles = []; // solo file effettivamente decodificabili
+  const clearPreviews = () => { if (dom.preview) dom.preview.innerHTML = ''; };
 
-    const showToast = (messageKey, format = '', fallback = '') => {
-        let message = translations[currentLang][messageKey] || messageKey;
-        message = message.replace('{format}', format.toUpperCase()).replace('{fallback}', fallback.toUpperCase());
-
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span>${message}</span>`;
-        dom.toastContainer.appendChild(toast);
-        setTimeout(() => {
-            toast.remove();
-        }, 5000);
-    };
-
-    const showModal = (titleKey, messageKey) => {
-      dom.modalTitle.textContent = translations[currentLang][titleKey] || titleKey;
-      dom.modalMessage.textContent = translations[currentLang][messageKey] || messageKey;
-      dom.modal.classList.add('visible');
-    };
-    const hideModal = () => dom.modal.classList.remove('visible');
-    dom.modalOkBtn.addEventListener('click', hideModal);
-    dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) hideModal(); });
-
-    const themes = { light: 'themeLight', dark: 'themeDark', midnight: 'themeMidnight', slate: 'themeSlate' };
-    const languages = { it: '🇮🇹 Italiano', en: '🇬🇧 English', es: '🇪🇸 Español', fr: '🇫🇷 Français', de: '🇩🇪 Deutsch', pt: '🇵🇹 Português', nl: '🇳🇱 Nederlands', ru: '🇷🇺 Русский', ja: '🇯🇵 日本語', zh: '🇨🇳 中文', hi: '🇮🇳 हिन्दी', ar: '🇸🇦 العربية' };
-
-    const setupSelector = (selectors, options, initialValue, callback, langKey = false) => {
-      selectors.forEach(selector => {
-        if (!selector) return;
-        selector.innerHTML = '';
-        for (const [value, text] of Object.entries(options)) {
-          const option = document.createElement('option');
-          option.value = value;
-          option.textContent = langKey ? translations[currentLang]?.[text] || text : text;
-          selector.appendChild(option);
-        }
-        selector.value = initialValue;
-        selector.addEventListener('change', (e) => callback(e.target.value));
-      });
-    };
-    
-    const setTheme = (theme) => {
-      currentTheme = theme;
-      dom.html.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-      dom.themeSelectors.forEach(s => { if(s) s.value = theme; });
-    };
-
-    const setLanguage = (lang) => {
-      currentLang = lang;
-      localStorage.setItem('language', lang);
-      dom.html.lang = lang;
-      if (lang === 'ar') {
-        dom.html.dir = 'rtl';
-      } else {
-        dom.html.dir = 'ltr';
-      }
-      dom.langSelectors.forEach(s => { if(s) s.value = lang; });
-      
-      document.querySelectorAll('[data-translate-key]').forEach(el => {
-        const key = el.getAttribute('data-translate-key');
-        const translation = translations[lang]?.[key];
-        if (translation) {
-            if (el.tagName === 'META') el.content = translation;
-            else if (el.tagName === 'TITLE') el.textContent = translation;
-            else el.innerText = translation;
-        }
-      });
-      setupSelector(dom.themeSelectors, themes, currentTheme, setTheme, true);
-    };
-
-    dom.mobileMenuTrigger.addEventListener('click', () => {
-      dom.mobileNav.classList.add('active');
-      dom.body.classList.add('no-scroll');
-    });
-    dom.mobileMenuClose.addEventListener('click', () => {
-      dom.mobileNav.classList.remove('active');
-      dom.body.classList.remove('no-scroll');
-    });
-    window.addEventListener('scroll', () => {
-        if (!dom.mainTitle) return;
-        const isScrolled = dom.mainTitle.getBoundingClientRect().top < 20;
-        dom.navTitle.style.opacity = isScrolled ? '1' : '0';
-        dom.mainTitle.style.opacity = isScrolled ? '0' : '1';
-    }, { passive: true });
-
-    const handleFiles = (files) => {
-      loadedFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
-      dom.previewContainer.innerHTML = '';
-      dom.resultContainer.innerHTML = '';
-      dom.convertBtn.classList.remove('pulsing');
-      hideProgress();
-      
-      if (loadedFiles.length) {
-        loadedFiles.forEach((file, index) => {
-          const reader = new FileReader();
-          reader.onload = ev => {
-            const img = document.createElement('img');
-            img.src = ev.target.result;
-            img.alt = file.name;
-            img.style.animationDelay = `${index * 0.07}s`;
-            dom.previewContainer.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        });
-        setTimeout(() => dom.convertBtn.classList.add('pulsing'), 500);
-      }
-    };
-    
-    dom.dropZone.addEventListener('click', () => dom.inputFiles.click());
-    dom.inputFiles.addEventListener('change', (e) => handleFiles(e.target.files));
-    ['dragover', 'dragleave', 'drop'].forEach(eventName => {
-      dom.dropZone.addEventListener(eventName, e => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (eventName === 'dragover') dom.dropZone.classList.add('drag-glow');
-        else dom.dropZone.classList.remove('drag-glow');
-        if (eventName === 'drop') handleFiles(e.dataTransfer.files);
-      });
-    });
-  
-    dom.convertBtn.addEventListener('click', async () => {
-      if (!loadedFiles.length) {
-        showModal('fileSelectionAlertTitle', 'fileSelectionAlertMsg');
-        return;
-      }
-
-      const selectedFormat = dom.outputFormat.value;
-      const formatMap = {
-        jpeg: 'jpg', jpg: 'jpg', png: 'png', webp: 'webp', gif: 'gif',
-        bmp: 'bmp', tiff: 'tiff', heic: 'jpg', avif: 'webp', jxl: 'webp',
-        ico: 'ico', svg: 'svg', pdf: 'pdf',
-        psd: 'png', xcf: 'png', kra: 'png', ora: 'png', pdn: 'png',
-        ai: 'png', eps: 'png', hdr: 'png', exr: 'png',
-        dcm: 'png', fits: 'png', nii: 'png',
-        dds: 'png', tga: 'png', ktx: 'png', pvr: 'png',
-        pcx: 'png', xbm: 'png', pnm: 'png', ras: 'png'
-      };
-
-      dom.convertBtn.disabled = true;
-      dom.convertBtn.classList.remove('pulsing');
-      showProgress();
-      dom.resultContainer.innerHTML = '';
-
-      const totalFiles = loadedFiles.length;
-      let processedFiles = 0;
-
-      for (let i = 0; i < totalFiles; i++) {
-        const file = loadedFiles[i];
-        updateProgress((i / totalFiles) * 100, `Processing ${file.name}...`);
-
-        try {
-          const result = await processImage(file, selectedFormat, formatMap);
-          
-          if (dom.resultContainer.innerHTML === '') {
-            // First result
-            dom.resultContainer.innerHTML = '<div class="ios-card" style="padding: 1rem; text-align: center;"></div>';
-          }
-          
-          const resultCard = dom.resultContainer.querySelector('.ios-card');
-          const resultItem = document.createElement('div');
-          resultItem.style.marginBottom = '1rem';
-          resultItem.innerHTML = `
-            <img src="${result.url}" alt="Converted image" style="max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 1rem;">
-            <br>
-            <a href="${result.url}" download="${result.filename}" style="font-weight: 500; color: var(--accent-primary); text-decoration: none; font-size: 1.1rem;">
-              ${translations[currentLang].downloadLink} ${result.filename}
-            </a>
-          `;
-          resultCard.appendChild(resultItem);
-          
-          if (result.fallbackUsed) {
-            showToast('unsupportedFormatToast', selectedFormat, result.actualFormat);
-          }
-        } catch (error) {
-          console.error('Conversion error:', error);
-          showToast('unsupportedFormatToast', selectedFormat, 'PNG');
-        }
-        
-        processedFiles++;
-        updateProgress((processedFiles / totalFiles) * 100);
-      }
-
-      updateProgress(100, 'Conversion completed!');
-      setTimeout(() => {
-        hideProgress();
-        dom.convertBtn.disabled = false;
-      }, 1000);
-    });
-
-    async function processImage(file, targetFormat, formatMap) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const img = new Image();
-          img.onload = async () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-
-            let converter = formatConverters[targetFormat];
-            let actualFormat = targetFormat;
-            let fallbackUsed = false;
-
-            if (!converter) {
-              converter = formatConverters.png;
-              actualFormat = 'png';
-              fallbackUsed = true;
-            }
-
-            try {
-              const blob = await converter(canvas);
-              const url = URL.createObjectURL(blob);
-              const extension = formatMap[actualFormat] || actualFormat;
-              const filename = file.name.replace(/\.[^/.]+$/, `.${extension}`);
-              
-              resolve({
-                url,
-                filename,
-                actualFormat: extension,
-                fallbackUsed
-              });
-            } catch (error) {
-              // Final fallback to PNG
-              const blob = await formatConverters.png(canvas);
-              const url = URL.createObjectURL(blob);
-              const filename = file.name.replace(/\.[^/.]+$/, '.png');
-              
-              resolve({
-                url,
-                filename,
-                actualFormat: 'png',
-                fallbackUsed: true
-              });
-            }
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-    
-    setupSelector(dom.langSelectors, languages, currentLang, setLanguage);
-    setLanguage(currentLang);
-    setTheme(currentTheme);
+  const testDecodeImage = (file) => new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Decode fallita')); };
+    img.src = url;
   });
+
+  const handleFiles = async (fileList) => {
+    loadedFiles = [];
+    clearPreviews();
+    if (dom.result) dom.result.innerHTML = '';
+    hideProgress();
+
+    const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
+    if (!files.length) return;
+
+    let idx = 0;
+    for (const f of files) {
+      try {
+        const img = await testDecodeImage(f);
+        loadedFiles.push(f);
+
+        // anteprima
+        if (dom.preview) {
+          const thumb = document.createElement('img');
+          // riutilizziamo un DataURL per non tenere in vita Blob URL
+          const reader = new FileReader();
+          reader.onload = e => {
+            thumb.src = e.target.result;
+            thumb.alt = f.name;
+            thumb.style.animationDelay = `${idx * 0.06}s`;
+            dom.preview.appendChild(thumb);
+          };
+          reader.readAsDataURL(f);
+        }
+        idx++;
+      } catch {
+        showToast(`Input non supportato dal browser: ${f.name}`);
+      }
+    }
+  };
+
+  // --- Eventi dropzone/input ---
+  dom.dropZone && dom.dropZone.addEventListener('click', () => dom.input && dom.input.click());
+  dom.input && dom.input.addEventListener('change', (e) => handleFiles(e.target.files));
+  if (dom.dropZone) {
+    ['dragover', 'dragleave', 'drop'].forEach(ev => {
+      dom.dropZone.addEventListener(ev, e => {
+        e.preventDefault(); e.stopPropagation();
+        if (ev === 'dragover') dom.dropZone.classList.add('drag-glow');
+        else dom.dropZone.classList.remove('drag-glow');
+        if (ev === 'drop') handleFiles(e.dataTransfer.files);
+      });
+    });
+  }
+
+  // --- Converter helpers ---
+  const drawOnWhite = (sourceCanvas) => {
+    const c = document.createElement('canvas');
+    c.width = sourceCanvas.width;
+    c.height = sourceCanvas.height;
+    const cx = c.getContext('2d');
+    cx.fillStyle = '#ffffff';
+    cx.fillRect(0, 0, c.width, c.height);
+    cx.drawImage(sourceCanvas, 0, 0);
+    return c;
+  };
+
+  // Crea un Blob BMP 24-bit vero (BGR, bottom-up, row padding a 4 byte)
+  const canvasToBMP24 = (srcCanvas) => {
+    const c = drawOnWhite(srcCanvas); // niente alpha nel BMP: flattiamo su bianco
+    const w = c.width, h = c.height;
+    const ctx = c.getContext('2d');
+    const { data } = ctx.getImageData(0, 0, w, h);
+
+    const rowBytes = ((w * 3 + 3) & ~3);     // 3 byte per pixel + padding a 4
+    const imageSize = rowBytes * h;
+    const fileSize = 54 + imageSize;         // 14 (BMP) + 40 (DIB) + data
+    const buf = new ArrayBuffer(fileSize);
+    const dv = new DataView(buf);
+    let p = 0;
+
+    // Header BMP (14)
+    dv.setUint8(p++, 0x42); // 'B'
+    dv.setUint8(p++, 0x4D); // 'M'
+    dv.setUint32(p, fileSize, true); p += 4;
+    dv.setUint32(p, 0, true); p += 4;       // reserved
+    dv.setUint32(p, 54, true); p += 4;      // data offset
+
+    // DIB BITMAPINFOHEADER (40)
+    dv.setUint32(p, 40, true); p += 4;      // header size
+    dv.setInt32(p, w, true); p += 4;
+    dv.setInt32(p, h, true); p += 4;        // positivo = bottom-up
+    dv.setUint16(p, 1, true); p += 2;       // planes
+    dv.setUint16(p, 24, true); p += 2;      // bpp
+    dv.setUint32(p, 0, true); p += 4;       // BI_RGB (no compression)
+    dv.setUint32(p, imageSize, true); p += 4;
+    dv.setInt32(p, 2835, true); p += 4;     // ~72 DPI
+    dv.setInt32(p, 2835, true); p += 4;
+    dv.setUint32(p, 0, true); p += 4;       // colors used
+    dv.setUint32(p, 0, true); p += 4;       // important colors
+
+    // Pixel data (B,G,R) bottom-up
+    let offset = 54;
+    const pad = rowBytes - w * 3;
+    for (let y = h - 1; y >= 0; y--) {
+      const rowStart = y * w * 4;
+      for (let x = 0; x < w; x++) {
+        const i = rowStart + x * 4;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        dv.setUint8(offset++, b);
+        dv.setUint8(offset++, g);
+        dv.setUint8(offset++, r);
+      }
+      for (let k = 0; k < pad; k++) dv.setUint8(offset++, 0);
+    }
+    return new Blob([buf], { type: 'image/bmp' });
+  };
+
+  // Converters reali
+  const converters = {
+    png: async (canvas) => new Promise(res => canvas.toBlob(res, 'image/png')),
+    jpeg: async (canvas, quality = 0.92) => new Promise(res => drawOnWhite(canvas).toBlob(res, 'image/jpeg', quality)),
+    jpg: async (canvas, quality = 0.92) => converters.jpeg(canvas, quality),
+    webp: async (canvas, quality = 0.92) => {
+      if (!isWebPSupported) throw new Error('WebP non supportato');
+      return new Promise(res => canvas.toBlob(res, 'image/webp', quality));
+    },
+    bmp: async (canvas) => canvasToBMP24(canvas)
+  };
+
+  const extMap = { png: 'png', jpeg: 'jpg', jpg: 'jpg', webp: 'webp', bmp: 'bmp' };
+
+  // --- Processo singolo file ---
+  const processFile = (file, targetFormat) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || img.width;
+          canvas.height = img.naturalHeight || img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          const fn = converters[targetFormat] || converters.png; // sicurezza
+          const blob = await fn(canvas);
+          const url = URL.createObjectURL(blob);
+          const ext = extMap[targetFormat] || 'png';
+          const filename = file.name.replace(/\.[^/.]+$/, `.${ext}`);
+          resolve({ url, filename });
+        } catch (e) {
+          reject(e);
+        }
+      };
+      img.onerror = () => reject(new Error('Immagine non decodificabile'));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error('Lettura file fallita'));
+    reader.readAsDataURL(file);
+  });
+
+  // --- Azione converti ---
+  dom.convertBtn && dom.convertBtn.addEventListener('click', async () => {
+    if (!loadedFiles.length) {
+      showModal('Nessun file', 'Seleziona almeno un\'immagine prima di procedere.');
+      return;
+    }
+    const fmt = dom.outputFormat ? dom.outputFormat.value : 'png';
+
+    dom.convertBtn.disabled = true;
+    showProgress('Conversione in corso...');
+    if (dom.result) dom.result.innerHTML = '';
+
+    const total = loadedFiles.length;
+    let done = 0;
+
+    // wrapper card visiva
+    const card = document.createElement('div');
+    card.className = 'ios-card';
+    card.style.padding = '1rem';
+    card.style.textAlign = 'center';
+    if (dom.result) dom.result.appendChild(card);
+
+    for (const file of loadedFiles) {
+      updateProgress((done / total) * 100, `Elaboro: ${file.name}`);
+      try {
+        const out = await processFile(file, fmt);
+        const item = document.createElement('div');
+        item.style.marginBottom = '1rem';
+        item.innerHTML = `
+          <img src="${out.url}" alt="Anteprima" style="max-width:100%;max-height:200px;border-radius:8px;margin-bottom:.75rem;">
+          <br>
+          <a href="${out.url}" download="${out.filename}" style="font-weight:600;text-decoration:none;">
+            Scarica ${out.filename}
+          </a>
+        `;
+        card.appendChild(item);
+      } catch (e) {
+        console.error(e);
+        showToast(`Impossibile convertire ${file.name} → ${fmt}. Salvato niente.`);
+      }
+      done++;
+      updateProgress((done / total) * 100);
+    }
+
+    updateProgress(100, 'Fatto!');
+    setTimeout(() => { hideProgress(); dom.convertBtn.disabled = false; }, 800);
+  });
+
+  // --- piccoli extra UX ---
+  // spinta visiva sul bottone quando ci sono file validi
+  const maybePulseBtn = () => {
+    if (!dom.convertBtn) return;
+    dom.convertBtn.classList.remove('pulsing');
+    if (loadedFiles.length) setTimeout(() => dom.convertBtn.classList.add('pulsing'), 350);
+  };
+
+  // ricarica file e attiva pulsazione
+  const bindHandleFiles = async (files) => {
+    await handleFiles(files);
+    maybePulseBtn();
+  };
+
+  // collega ai listener già creati
+  if (dom.input) dom.input.addEventListener('change', (e) => bindHandleFiles(e.target.files));
+  if (dom.dropZone) dom.dropZone.addEventListener('drop', (e) => { e.preventDefault(); bindHandleFiles(e.dataTransfer.files); });
+
+  // Se la pagina aveva già opzioni fake nel <select>, le eliminiamo comunque ora.
+  initOutputFormats();
+});
+
 </script>
 
 </body>
