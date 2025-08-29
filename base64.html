@@ -1,435 +1,473 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Convertitore Immagini Base64 e ASCII – WebToolbox.fun</title>
-<meta name="description" content="Converti immagini in Base64 o ASCII art online. Carica la tua immagine, copia il codice Base64 o la versione ASCII facilmente." />
-<style>
-  /*
-    Stile CSS aggiornato con estetica iOS
-    - Palette Dark Mode
-    - Font di sistema Apple
-    - Componenti UI moderni e puliti
-    - Logica responsiva avanzata per mobile
-  */
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Convertitore Immagini Base64 e ASCII – WebToolbox.fun</title>
+    <meta name="description" content="Converti immagini in Base64 o ASCII art online. Carica la tua immagine, copia il codice Base64 o la versione ASCII facilmente." />
+    <style>
+      /* CSS v5.0 - Cleaned and Consolidated */
+      :root { /* Default Dark Theme */
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF599;
+        --accent-primary: #0A84FF;
+        --separator-color: #38383A;
+        --nav-bg: rgba(28, 28, 30, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.5);
+      }
+      [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --text-primary: #000000;
+        --text-secondary: #3C3C4399;
+        --accent-primary: #007AFF;
+        --separator-color: #C6C6C8;
+        --nav-bg: rgba(249, 249, 249, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.08);
+      }
+      [data-theme="midnight"] {
+        --bg-primary: #000000;
+        --bg-secondary: #1D1D1F;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --accent-primary: #0A84FF;
+        --shadow-color: rgba(0, 0, 0, 0.6);
+        --nav-bg: rgba(0, 0, 0, 0.75);
+      }
+      [data-theme="slate"] {
+        --bg-primary: #29313E;
+        --bg-secondary: #354152;
+        --bg-tertiary: #495867;
+        --text-primary: #F7F7F7;
+        --accent-primary: #F9A03F;
+        --separator-color: #495867;
+        --nav-bg: rgba(25, 32, 41, 0.8);
+      }
 
-  /* Reset e Stili Globali */
-  body {
-    background: #000000;
-    color: #F2F2F7;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
+      /* Base and Global Styles */
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        transition: background 0.4s, color 0.4s;
+      }
+      body.no-scroll { overflow: hidden; }
 
-  /* --- Navigazione --- */
-  nav {
-    background: rgba(28, 28, 30, 0.75);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
+      /* Navigation Bar */
+      nav {
+        width: 100%;
+        background: var(--nav-bg);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-bottom: 0.5px solid var(--separator-color);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      nav .logo { 
+        font-weight: 600; 
+        color: var(--text-primary); 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem; 
+      }
+      nav .logo img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      .nav-title-scrolled {
+        display: none; /* Hidden by default, shown on mobile */
+        font-weight: 600;
+      }
+      nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+      nav a:hover { color: var(--text-primary); }
+      nav a.active { color: var(--text-primary); font-weight: 600; }
+      .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
+      
+      /* Mobile Menu */
+      #mobile-menu-trigger, #mobile-menu-close {
+        display: none; background: none; border: none; cursor: pointer;
+        padding: 0.5rem; color: var(--accent-primary); z-index: 110;
+      }
+      #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+      #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
 
-  nav .logo {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #F2F2F7;
-  }
+      .mobile-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-secondary);
+        z-index: 100; display: flex; flex-direction: column;
+        padding: 6rem 1.5rem 2rem;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .mobile-nav.active { transform: translateX(0); }
+      .mobile-nav ul { list-style: none; padding: 0; margin: 0; }
+      .mobile-nav ul a {
+        display: block; font-size: 1.25rem; padding: 1rem;
+        color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color);
+      }
+      .mobile-nav .nav-controls { margin-top: auto; justify-content: center; }
 
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0;
-  }
+      /* Main Content */
+      main {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1.5rem 4rem;
+      }
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0.5rem;
+      }
+      p {
+        text-align: center;
+        color: var(--text-secondary);
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
+      }
+      .hidden { display: none; }
 
-  nav a {
-    text-decoration: none;
-    color: #0A84FF;
-    font-weight: 500;
-    transition: opacity 0.2s ease-in-out;
-  }
-
-  nav a:hover {
-    opacity: 0.7;
-  }
-
-  /* Pulsante menu mobile (nascosto su desktop) */
-  #mobile-menu-trigger {
-    display: none;
-  }
-
-  /* --- Contenuto Principale --- */
-  main {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1.5rem 4rem 1.5rem;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    text-align: center;
-    color: #AEAEB2;
-    margin-bottom: 2.5rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.5;
-  }
-
-  /* --- Componenti UI --- */
-  button, input[type=file]::file-selector-button {
-    padding: 0.9rem 1.5rem;
-    border-radius: 50px;
-    border: none;
-    background: #0A84FF;
-    color: #FFFFFF;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-
-  button:hover, input[type=file]::file-selector-button:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1);
-  }
-  
-  input[type=file] {
-    color: transparent;
-  }
-
-  textarea {
-    width: 100%;
-    height: 200px;
-    background: #1C1C1E;
-    color: #F2F2F7;
-    border-radius: 12px;
-    border: 1px solid rgba(84, 84, 88, 0.65);
-    margin-top: 1.5rem;
-    font-family: monospace, monospace;
-    font-size: 1rem;
-    padding: 1rem;
-    resize: vertical;
-  }
-
-  textarea:focus {
-    outline: none;
-    border-color: #0A84FF;
-    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
-  }
-
-  .btn-group {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
-    align-items: center;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  #asciiArt {
-    background-color: #1C1C1E;
-    padding: 1.5rem;
-    border-radius: 20px;
-    margin-top: 2rem;
-    white-space: pre;
-    text-align: center;
-    overflow-x: auto;
-    font-size: 7px;
-    line-height: 7px;
-    letter-spacing: 1px;
-  }
-
-  /* ======================================= */
-  /* === STILI RESPONSIVI / VERSIONE MOBILE === */
-  /* ======================================= */
-  
-  /* Attivati solo su schermi più piccoli di 768px */
-  @media (max-width: 768px) {
-    
-    /* Nascondi la navigazione desktop */
-    nav ul {
-      display: none;
-      /* Stile del menu a comparsa quando attivo */
-      position: absolute;
-      top: 65px; /* Posizione sotto la navbar */
-      right: 1.5rem;
-      width: 250px;
-      background: rgba(44, 44, 46, 0.9); /* Effetto vetro più intenso */
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-radius: 14px;
-      border: 1px solid rgba(84, 84, 88, 0.65);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      padding: 0.5rem 0;
-      flex-direction: column;
-      gap: 0;
-      z-index: 100;
-    }
-    
-    /* Classe per mostrare il menu */
-    nav ul.mobile-menu-active {
-      display: flex;
-    }
-    
-    /* Stile dei link nel menu mobile */
-    nav ul li {
-      width: 100%;
-    }
-    
-    nav ul li a {
-      display: block;
-      padding: 0.9rem 1.25rem;
-      color: #F2F2F7; /* Testo bianco nel menu */
-      font-weight: 400;
-      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-    }
-    
-    nav ul li:last-child a {
-      border-bottom: none;
-    }
-
-    nav ul li a.active {
-      background-color: #0A84FF; /* Colore di selezione */
-      color: #FFFFFF;
-    }
-    
-    /* Mostra e stila il pulsante trigger del menu */
-    #mobile-menu-trigger {
-      display: block;
-      background: none;
-      border: none;
-      padding: 0.5rem;
-      cursor: pointer;
-    }
-
-    #mobile-menu-trigger svg {
-      width: 24px;
-      height: 24px;
-      fill: #0A84FF;
-    }
-
-    /* Adatta il testo e gli spazi */
-    h1 { font-size: 2rem; }
-    main { padding: 0 1rem 4rem 1rem; }
-  }
-  
-  @media (max-width: 600px) {
-    textarea { height: 150px; }
-    #asciiArt { 
-        font-size: 5px; 
-        line-height: 5px; 
-        letter-spacing: 0.5px;
+      /* UI Components (Buttons, Textarea, etc.) */
+      select {
+        padding: 0.5rem 0.8rem; border-radius: 8px; border: none; 
+        font-weight: 500; cursor: pointer;
+        background-color: var(--bg-tertiary); color: var(--text-primary); 
+        font-family: inherit; font-size: 0.9rem;
+        -webkit-appearance: none; appearance: none;
+      }
+      button {
+        padding: 0.9rem 1.5rem;
+        border-radius: 50px;
+        border: none;
+        background: var(--accent-primary);
+        color: #FFFFFF;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+      button:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+        align-items: center;
+      }
+      textarea {
+        width: 100%;
+        height: 200px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border-radius: 12px;
+        border: 1px solid var(--separator-color);
+        margin-top: 1.5rem;
+        font-family: monospace, monospace;
+        font-size: 1rem;
         padding: 1rem;
-    }
-  }
-</style>
+        resize: vertical;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
+      }
+      #asciiArt {
+        background-color: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: 20px;
+        margin-top: 2rem;
+        white-space: pre;
+        text-align: center;
+        overflow-x: auto;
+        font-size: 7px;
+        line-height: 7px;
+        letter-spacing: 1px;
+      }
 
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        nav { padding: 0.75rem 1rem; }
+        nav .logo, nav .desktop-nav { display: none; }
+        .nav-title-scrolled { display: block; }
+        #mobile-menu-trigger { display: block; }
+        main { padding: 0 1rem 4rem; }
+        h1 { font-size: 2rem; }
+      }
+      @media (max-width: 600px) {
+        textarea { height: 150px; }
+        #asciiArt {  
+            font-size: 5px;  
+            line-height: 5px;  
+            letter-spacing: 0.5px;
+            padding: 1rem;
+        }
+      }
+    </style>
 </head>
 <body>
-<nav>
-  <div class="logo">WebToolbox.fun</div>
-  <ul>
-    <li><a href="index.html">Converti</a></li>
-    <li><a href="ridimensiona.html">Ridimensiona</a></li>
-    <li><a href="ruota-immagini.html">Ruota</a></li>
-    <li><a href="flip-immagini.html">Specchia</a></li>
-    <li><a href="crop-immagini.html">Ritaglia</a></li>
-    <li><a href="base64.html" class="active">Base64/ASCII</a></li>
-    <li><a href="scala-grigi.html">Filtri</a></li>
-  </ul>
-  <button id="mobile-menu-trigger" aria-label="Apri menu">
-    <svg viewBox="0 0 100 80" width="40" height="40">
-      <circle cx="50" cy="10" r="8"/>
-      <circle cx="50" cy="40" r="8"/>
-      <circle cx="50" cy="70" r="8"/>
-    </svg>
-  </button>
-</nav>
 
-<main>
-  <h1>Converti Immagini in Base64 e ASCII Art</h1>
-  <p>Carica un'immagine e ottieni il codice Base64 o la sua versione ASCII. Copia facilmente con i pulsanti.</p>
+    <nav>
+      <div class="logo">
+        <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
+        🧰 WebToolbox
+      </div>
 
-  <div class="btn-group">
-    <label for="upload" class="button-label">
-        <button onclick="document.getElementById('upload').click();" type="button">Carica Immagine</button>
-    </label>
-    <input type="file" id="upload" accept="image/*" class="hidden" />
-  </div>
+      <div class="nav-title-scrolled">
+        Base64 Converter
+      </div>
 
-  <div class="btn-group hidden" id="actionButtons">
-    <button id="toBase64Btn">Base64</button>
-    <button id="toAsciiBtn">Converti in ASCII</button>
-  </div>
+      <ul class="desktop-nav">
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html" class="active">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
 
-  <textarea id="output" readonly placeholder="Carica un'immagine per generare output..."></textarea>
-  <div class="btn-group">
-      <button id="copyBtn" class="hidden">Copia negli Appunti</button>
-  </div>
+      <div class="nav-controls">
+        <select id="themeSelector" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
 
-  <pre id="asciiArt" class="hidden"></pre>
-</main>
+      <button id="mobile-menu-trigger" title="Apri Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
 
-<script>
-  // Elementi del DOM
-  const upload = document.getElementById('upload');
-  const toBase64Btn = document.getElementById('toBase64Btn');
-  const toAsciiBtn = document.getElementById('toAsciiBtn');
-  const output = document.getElementById('output');
-  const copyBtn = document.getElementById('copyBtn');
-  const asciiArt = document.getElementById('asciiArt');
-  const actionButtons = document.getElementById('actionButtons');
+    <div class="mobile-nav" id="mobileMenu">
+      <button id="mobile-menu-close" title="Chiudi Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
 
-  // Variabili di stato
-  let currentBase64 = '';
-  let currentAscii = '';
+      <ul>
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html" class="active">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
 
-  // Gestione upload
-  upload.addEventListener('change', e => {
-    if (!e.target.files.length) return reset();
-    actionButtons.classList.remove('hidden');
-    resetOutputs();
-  });
-  
-  // --- LOGICA DI CONVERSIONE ---
-  toBase64Btn.addEventListener('click', () => {
-    const file = upload.files[0];
-    if (!file) return alert('Seleziona prima un\'immagine!');
-    const reader = new FileReader();
-    reader.onload = () => {
-      currentBase64 = reader.result;
-      output.value = currentBase64;
-      output.classList.remove('hidden');
-      asciiArt.classList.add('hidden');
-      copyBtn.classList.remove('hidden');
-      copyBtn.textContent = 'Copia Base64';
-    };
-    reader.readAsDataURL(file);
-  });
+      <div class="nav-controls">
+        <select id="themeSelectorMobile" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
+    </div>
 
-  toAsciiBtn.addEventListener('click', () => {
-    const file = upload.files[0];
-    if (!file) return alert('Seleziona prima un\'immagine!');
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const ascii = convertToAscii(img);
-        currentAscii = ascii;
-        asciiArt.textContent = ascii;
-        asciiArt.classList.remove('hidden');
-        output.classList.add('hidden');
-        copyBtn.classList.remove('hidden');
-        copyBtn.textContent = 'Copia ASCII';
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-  
-  // Gestione copia
-  copyBtn.addEventListener('click', () => {
-    const isAsciiVisible = !asciiArt.classList.contains('hidden');
-    const textToCopy = isAsciiVisible ? currentAscii : currentBase64;
-    const type = isAsciiVisible ? 'ASCII' : 'Base64';
-    
-    if (!textToCopy) return;
-    
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      alert(`${type} copiato negli appunti!`);
-    }).catch(err => {
-      console.error('Errore durante la copia: ', err);
-      alert(`Impossibile copiare il testo. Controlla i permessi del browser.`);
+    <main>
+        <h1>Converti Immagini in Base64 e ASCII Art</h1>
+        <p>Carica un'immagine e ottieni il codice Base64 o la sua versione ASCII. Copia facilmente con i pulsanti.</p>
+
+        <div class="btn-group">
+            <button onclick="document.getElementById('upload').click();" type="button">Carica Immagine</button>
+            <input type="file" id="upload" accept="image/*" class="hidden" />
+        </div>
+
+        <div class="btn-group hidden" id="actionButtons">
+            <button id="toBase64Btn">Base64</button>
+            <button id="toAsciiBtn">Converti in ASCII</button>
+        </div>
+
+        <textarea id="output" readonly placeholder="Carica un'immagine per generare output..."></textarea>
+        
+        <div class="btn-group">
+            <button id="copyBtn" class="hidden">Copia negli Appunti</button>
+        </div>
+
+        <pre id="asciiArt" class="hidden"></pre>
+    </main>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- Theme and Menu Logic ---
+        const body = document.body;
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileTrigger = document.getElementById("mobile-menu-trigger");
+        const mobileClose = document.getElementById("mobile-menu-close");
+        const themeSelector = document.getElementById("themeSelector");
+        const themeSelectorMobile = document.getElementById("themeSelectorMobile");
+        
+        // Open menu
+        mobileTrigger.addEventListener("click", () => {
+          mobileMenu.classList.add("active");
+          body.classList.add("no-scroll");
+        });
+
+        // Close menu
+        mobileClose.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+          body.classList.remove("no-scroll");
+        });
+
+        function applyTheme(theme) {
+          document.documentElement.setAttribute("data-theme", theme);
+          localStorage.setItem("theme", theme);
+          if(themeSelector) themeSelector.value = theme;
+          if(themeSelectorMobile) themeSelectorMobile.value = theme;
+        }
+
+        if(themeSelector) themeSelector.addEventListener("change", (e) => applyTheme(e.target.value));
+        if(themeSelectorMobile) themeSelectorMobile.addEventListener("change", (e) => applyTheme(e.target.value));
+        
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(savedTheme);
+
+
+        // --- Base64 / ASCII Converter Logic ---
+        const upload = document.getElementById('upload');
+        const toBase64Btn = document.getElementById('toBase64Btn');
+        const toAsciiBtn = document.getElementById('toAsciiBtn');
+        const output = document.getElementById('output');
+        const copyBtn = document.getElementById('copyBtn');
+        const asciiArt = document.getElementById('asciiArt');
+        const actionButtons = document.getElementById('actionButtons');
+
+        let currentBase64 = '';
+        let currentAscii = '';
+
+        upload.addEventListener('change', e => {
+            if (!e.target.files.length) return reset();
+            actionButtons.classList.remove('hidden');
+            resetOutputs();
+        });
+        
+        toBase64Btn.addEventListener('click', () => {
+            const file = upload.files[0];
+            if (!file) return alert('Seleziona prima un\'immagine!');
+            const reader = new FileReader();
+            reader.onload = () => {
+                currentBase64 = reader.result;
+                output.value = currentBase64;
+                output.classList.remove('hidden');
+                asciiArt.classList.add('hidden');
+                copyBtn.classList.remove('hidden');
+                copyBtn.textContent = 'Copia Base64';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        toAsciiBtn.addEventListener('click', () => {
+            const file = upload.files[0];
+            if (!file) return alert('Seleziona prima un\'immagine!');
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const ascii = convertToAscii(img);
+                    currentAscii = ascii;
+                    asciiArt.textContent = ascii;
+                    asciiArt.classList.remove('hidden');
+                    output.classList.add('hidden');
+                    copyBtn.classList.remove('hidden');
+                    copyBtn.textContent = 'Copia ASCII';
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        copyBtn.addEventListener('click', () => {
+            const isAsciiVisible = !asciiArt.classList.contains('hidden');
+            const textToCopy = isAsciiVisible ? currentAscii : currentBase64;
+            const type = isAsciiVisible ? 'ASCII' : 'Base64';
+            if (!textToCopy) return;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert(`${type} copiato negli appunti!`);
+            }).catch(err => {
+                console.error('Errore durante la copia: ', err);
+                alert(`Impossibile copiare il testo.`);
+            });
+        });
+
+        function resetOutputs() {
+            output.value = '';
+            output.classList.remove('hidden');
+            asciiArt.classList.add('hidden');
+            copyBtn.classList.add('hidden');
+            currentBase64 = '';
+            currentAscii = '';
+        }
+
+        function reset() {
+            actionButtons.classList.add('hidden');
+            resetOutputs();
+        }
+
+        function convertToAscii(image) {
+            const w = 120;
+            const aspectRatio = image.height / image.width;
+            const h = Math.round((w * aspectRatio) * 0.55);
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, w, h);
+
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const pixels = imgData.data;
+            const chars = '`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
+            
+            let ascii = '';
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const offset = (y * w + x) * 4;
+                    const lum = 0.2126 * pixels[offset] + 0.7152 * pixels[offset + 1] + 0.0722 * pixels[offset + 2];
+                    const charIndex = Math.floor((lum / 255) * (chars.length - 1));
+                    ascii += chars[chars.length - 1 - charIndex];
+                }
+                ascii += '\n';
+            }
+            return ascii;
+        }
     });
-  });
-
-  // Funzioni di utilità
-  function resetOutputs() {
-    output.value = '';
-    output.classList.remove('hidden');
-    asciiArt.classList.add('hidden');
-    copyBtn.classList.add('hidden');
-    currentBase64 = '';
-    currentAscii = '';
-  }
-
-  function reset() {
-    actionButtons.classList.add('hidden');
-    resetOutputs();
-  }
-
-  // Funzione di conversione ASCII
-  function convertToAscii(image) {
-    const w = 120; // Aumentata leggermente la larghezza per più dettaglio
-    const aspectRatio = image.height / image.width;
-    const h = Math.round((w * aspectRatio) * 0.55); // Correzione aspect ratio per i font
-
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0, w, h);
-
-    const imgData = ctx.getImageData(0, 0, w, h);
-    const pixels = imgData.data;
-    const chars = '`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'; // Scala di grigi più dettagliata
-    
-    let ascii = '';
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const offset = (y * w + x) * 4;
-        const lum = 0.2126 * pixels[offset] + 0.7152 * pixels[offset + 1] + 0.0722 * pixels[offset + 2];
-        const charIndex = Math.floor((lum / 255) * (chars.length - 1));
-        ascii += chars[chars.length - 1 - charIndex];
-      }
-      ascii += '\n';
-    }
-    return ascii;
-  }
-
-  /* ======================================= */
-  /* === LOGICA PER MENU MOBILE === */
-  /* ======================================= */
-  const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
-  const navUl = document.querySelector('nav ul');
-
-  if (mobileMenuTrigger && navUl) {
-    mobileMenuTrigger.addEventListener('click', (event) => {
-      // Ferma la propagazione per non far chiudere subito il menu dal listener sul documento
-      event.stopPropagation();
-      navUl.classList.toggle('mobile-menu-active');
-    });
-
-    // Chiudi il menu se si clicca fuori
-    document.addEventListener('click', (event) => {
-      if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
-        navUl.classList.remove('mobile-menu-active');
-      }
-    });
-  }
-
-</script>
+    </script>
 </body>
 </html>
