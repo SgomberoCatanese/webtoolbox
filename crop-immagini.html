@@ -1,351 +1,417 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ritaglia Immagini con Cropper.js - WebToolbox.fun</title>
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
-
-<style>
-  /*
-    Stile CSS con estetica iOS e logica mobile avanzata
-  */
-
-  /* Reset e Stili Globali */
-  body {
-    background: #000000;
-    color: #F2F2F7;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: 0; padding: 0;
-    display: flex; flex-direction: column; min-height: 100vh;
-  }
-  
-  /* --- Navigazione --- */
-  nav {
-    background: rgba(28, 28, 30, 0.75);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
-
-  nav .logo {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #F2F2F7;
-  }
-
-  nav ul {
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
-    flex-wrap: wrap;
-    margin: 0;
-  }
-
-  nav a {
-    color: #0A84FF;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  nav a.active {
-    color: #F2F2F7;
-    font-weight: 600;
-  }
-  
-  #mobile-menu-trigger {
-    display: none;
-  }
-
-  /* --- Contenuto Principale --- */
-  main {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
-    flex: 1;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 0.5rem;
-    font-size: 2.5rem;
-    font-weight: 700;
-  }
-
-  p.description {
-    text-align: center;
-    margin-bottom: 2.5rem;
-    color: #AEAEB2;
-    line-height: 1.5;
-  }
-  
-  /* --- Elementi UI e Form --- */
-  input[type="file"] {
-    display: none;
-  }
-
-  button {
-    display: block;
-    margin: 2rem auto;
-    padding: 0.9rem 1.5rem;
-    background-color: #0A84FF;
-    border: none;
-    border-radius: 50px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #FFFFFF;
-    max-width: 300px;
-    width: 100%;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: all 0.2s ease-in-out;
-  }
-
-  button:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1);
-  }
-
-  #cropBtn {
-    margin-top: 2rem;
-  }
-
-  /* Contenitore per il cropper */
-  #imageContainer {
-    max-width: 100%;
-    margin: 0 auto;
-    display: none;
-    border-radius: 20px;
-    background-color: #1C1C1E;
-    overflow: hidden; /* Nasconde le parti dell'immagine fuori dal contenitore */
-  }
-  #imageContainer img {
-    max-width: 100%;
-    display: block;
-  }
-
-  /* Override per Cropper.js per il tema scuro */
-  .cropper-view-box {
-    outline-color: #0A84FF; /* Colore del riquadro di ritaglio */
-  }
-  .cropper-line, .cropper-point {
-    background-color: #0A84FF; /* Colore delle guide e dei punti */
-  }
-  .cropper-modal {
-    background-color: rgba(0,0,0,0.65); /* Sfondo più scuro */
-  }
-
-  /* Risultato */
-  #resultContainer {
-    margin-top: 2rem;
-    text-align: center;
-  }
-  #resultContainer img {
-    max-width: 100%;
-    max-height: 300px;
-    border-radius: 12px;
-    border: none;
-    background-color: #1c1c1e;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-  }
-  #resultContainer a {
-    color: #0A84FF;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  /* Footer */
-  footer {
-    background-color: #1C1C1E;
-    text-align: center;
-    padding: 1.5rem;
-    font-size: 0.9rem;
-    color: #8E8E93;
-    margin-top: 3rem;
-  }
-
-  /* ============================ */
-  /* === STILI VERSIONE MOBILE === */
-  /* ============================ */
-  @media (max-width: 768px) {
-    nav ul {
-      display: none;
-      position: absolute;
-      top: 65px;
-      right: 1.5rem;
-      width: 250px;
-      background: rgba(44, 44, 46, 0.9);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-radius: 14px;
-      border: 1px solid rgba(84, 84, 88, 0.65);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      padding: 0.5rem 0;
-      flex-direction: column;
-      gap: 0;
-      z-index: 100;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ritaglia Immagini con Cropper.js - WebToolbox.fun</title>
     
-    nav ul.mobile-menu-active { display: flex; }
-    
-    nav ul li { width: 100%; }
-    nav ul li a {
-      display: block;
-      padding: 0.9rem 1.25rem;
-      color: #F2F2F7;
-      font-weight: 400;
-      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-    }
-    nav ul li:last-child a { border-bottom: none; }
-    nav ul li a.active { background-color: #0A84FF; color: #FFFFFF; }
-    
-    #mobile-menu-trigger {
-      display: block;
-      background: none;
-      border: none;
-      padding: 0.5rem;
-      cursor: pointer;
-    }
-    #mobile-menu-trigger svg { width: 24px; height: 24px; fill: #0A84FF; }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
 
-    h1 { font-size: 2rem; }
-    main { padding: 0 1rem; }
-  }
-</style>
+    <style>
+      /* CSS v5.0 - Integrated with Cropper.js page */
+      :root { /* Default Dark Theme */
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF599;
+        --accent-primary: #0A84FF;
+        --separator-color: #38383A;
+        --nav-bg: rgba(28, 28, 30, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.5);
+      }
+      [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --text-primary: #000000;
+        --text-secondary: #3C3C4399;
+        --accent-primary: #007AFF;
+        --separator-color: #C6C6C8;
+        --nav-bg: rgba(249, 249, 249, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.08);
+      }
+      [data-theme="midnight"] {
+        --bg-primary: #000000;
+        --bg-secondary: #1D1D1F;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --accent-primary: #0A84FF;
+        --shadow-color: rgba(0, 0, 0, 0.6);
+        --nav-bg: rgba(0, 0, 0, 0.75);
+      }
+      [data-theme="slate"] {
+        --bg-primary: #29313E;
+        --bg-secondary: #354152;
+        --bg-tertiary: #495867;
+        --text-primary: #F7F7F7;
+        --accent-primary: #F9A03F;
+        --separator-color: #495867;
+        --nav-bg: rgba(25, 32, 41, 0.8);
+      }
+
+      /* Base and Global Styles */
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0; padding: 0;
+        display: flex; flex-direction: column; min-height: 100vh;
+      }
+      body.no-scroll { overflow: hidden; }
+
+      /* Navigation Bar */
+      nav {
+        width: 100%;
+        background: var(--nav-bg);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-bottom: 0.5px solid var(--separator-color);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      nav .logo { 
+        font-weight: 600; 
+        color: var(--text-primary); 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem; 
+      }
+      nav .logo img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      .nav-title-scrolled {
+        display: none;
+        font-weight: 600;
+      }
+      nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+      nav a:hover { color: var(--text-primary); }
+      nav a.active { color: var(--text-primary); font-weight: 600; }
+      .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
+      
+      /* Mobile Menu */
+      #mobile-menu-trigger, #mobile-menu-close {
+        display: none; background: none; border: none; cursor: pointer;
+        padding: 0.5rem; color: var(--accent-primary); z-index: 110;
+      }
+      #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+      #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
+
+      .mobile-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-secondary);
+        z-index: 100; display: flex; flex-direction: column;
+        padding: 6rem 1.5rem 2rem;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .mobile-nav.active { transform: translateX(0); }
+      .mobile-nav ul { list-style: none; padding: 0; margin: 0; }
+      .mobile-nav ul a {
+        display: block; font-size: 1.25rem; padding: 1rem;
+        color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color);
+      }
+      .mobile-nav .nav-controls { margin-top: auto; justify-content: center; }
+
+      /* Main Content */
+      main {
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        flex: 1;
+        width: 100%;
+        text-align: center;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+      p.description {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      input[type="file"] { display: none; }
+      select {
+        padding: 0.5rem 0.8rem; border-radius: 8px; border: none; 
+        font-weight: 500; cursor: pointer;
+        background-color: var(--bg-tertiary); color: var(--text-primary); 
+        font-family: inherit; font-size: 0.9rem;
+        -webkit-appearance: none; appearance: none;
+      }
+      button {
+        display: block;
+        margin: 2rem auto;
+        padding: 0.9rem 1.5rem;
+        background-color: var(--accent-primary);
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #FFFFFF;
+        max-width: 300px;
+        width: 100%;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.2s ease-in-out;
+      }
+      button:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
+      
+      /* Cropper.js Specific Styles */
+      #imageContainer {
+        max-width: 100%;
+        margin: 0 auto;
+        display: none;
+        border-radius: 20px;
+        background-color: var(--bg-secondary);
+        overflow: hidden;
+      }
+      #imageContainer img {
+        max-width: 100%;
+        display: block;
+      }
+      .cropper-view-box { outline-color: var(--accent-primary); }
+      .cropper-line, .cropper-point { background-color: var(--accent-primary); }
+      .cropper-modal { background-color: rgba(0,0,0,0.65); }
+
+      /* Result Styles */
+      #resultContainer { margin-top: 2rem; text-align: center; }
+      #resultContainer img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 12px;
+        background-color: var(--bg-secondary);
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      #resultContainer a {
+        color: var(--accent-primary);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      /* Footer */
+      footer {
+        background-color: var(--bg-secondary);
+        text-align: center;
+        padding: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 3rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        nav { padding: 0.75rem 1rem; }
+        nav .logo, nav .desktop-nav { display: none; }
+        .nav-title-scrolled { display: block; }
+        #mobile-menu-trigger { display: block; }
+        h1 { font-size: 2rem; }
+        main { padding: 0 1rem; }
+      }
+    </style>
 </head>
 <body>
-<nav>
-  <div class="logo">🧰 WebToolbox.fun</div>
-  <ul>
-    <li><a href="index.html">Converti Immagini</a></li>
-    <li><a href="ridimensiona.html">Ridimensiona</a></li>
-    <li><a href="ruota-immagini.html">Ruota</a></li>
-    <li><a href="flip-immagini.html">Specchia</a></li>
-    <li><a href="crop-immagini.html" class="active">Ritaglia</a></li>
-    <li><a href="base64.html">Img → Base64</a></li>
-    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
-  </ul>
-  <button id="mobile-menu-trigger" aria-label="Apri menu">
-    <svg viewBox="0 0 100 80" width="40" height="40">
-      <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
-    </svg>
-  </button>
-</nav>
 
-<main>
-  <h1>Ritaglia Immagini</h1>
-  <p class="description">Carica un'immagine, seleziona l'area e scarica il ritaglio.</p>
-  
-  <button onclick="document.getElementById('inputImage').click()" type="button">Seleziona Immagine</button>
-  <input type="file" id="inputImage" accept="image/*" />
+    <nav>
+      <div class="logo">
+        <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
+        🧰 WebToolbox
+      </div>
 
-  <div id="imageContainer">
-    <img id="image" alt="Carica un'immagine per ritagliare" />
-  </div>
-  
-  <button id="cropBtn" style="display:none;">Ritaglia e Scarica</button>
-  
-  <div id="resultContainer"></div>
-</main>
+      <div class="nav-title-scrolled">
+        Ritaglia Immagini
+      </div>
 
-<footer>
-  <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
-</footer>
+      <ul class="desktop-nav">
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html" class="active">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-<script>
-  // Script di Cropper.js (invariato)
-  const inputImage = document.getElementById('inputImage');
-  const image = document.getElementById('image');
-  const imageContainer = document.getElementById('imageContainer');
-  const cropBtn = document.getElementById('cropBtn');
-  const resultContainer = document.getElementById('resultContainer');
+      <div class="nav-controls">
+        <select id="themeSelector" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
 
-  let cropper = null;
+      <button id="mobile-menu-trigger" title="Apri Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
 
-  inputImage.addEventListener('change', e => {
-    const files = e.target.files;
-    if (!files || !files.length) return;
+    <div class="mobile-nav" id="mobileMenu">
+      <button id="mobile-menu-close" title="Chiudi Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <ul>
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html" class="active">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+      <div class="nav-controls">
+        <select id="themeSelectorMobile" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
+    </div>
 
-    const file = files[0];
-    if (!file.type.startsWith('image/')) return alert('Seleziona un file immagine valido.');
+    <main>
+        <h1>Ritaglia Immagini</h1>
+        <p class="description">Carica un'immagine, seleziona l'area e scarica il ritaglio.</p>
+        
+        <button onclick="document.getElementById('inputImage').click()" type="button">Seleziona Immagine</button>
+        <input type="file" id="inputImage" accept="image/*" />
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        image.src = event.target.result;
-        resultContainer.innerHTML = '';
-        cropBtn.style.display = 'none';
+        <div id="imageContainer">
+            <img id="image" alt="Carica un'immagine per ritagliare" />
+        </div>
+        
+        <button id="cropBtn" style="display:none;">Ritaglia e Scarica</button>
+        
+        <div id="resultContainer"></div>
+    </main>
 
-        if (cropper) {
-            cropper.destroy();
+    <footer>
+        <p>Creato da Boss & MbareGPT – WebToolbox.fun</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- Theme and Menu Logic ---
+        const body = document.body;
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileTrigger = document.getElementById("mobile-menu-trigger");
+        const mobileClose = document.getElementById("mobile-menu-close");
+        const themeSelector = document.getElementById("themeSelector");
+        const themeSelectorMobile = document.getElementById("themeSelectorMobile");
+        
+        mobileTrigger.addEventListener("click", () => {
+          mobileMenu.classList.add("active");
+          body.classList.add("no-scroll");
+        });
+
+        mobileClose.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+          body.classList.remove("no-scroll");
+        });
+
+        function applyTheme(theme) {
+          document.documentElement.setAttribute("data-theme", theme);
+          localStorage.setItem("theme", theme);
+          if(themeSelector) themeSelector.value = theme;
+          if(themeSelectorMobile) themeSelectorMobile.value = theme;
         }
 
-        imageContainer.style.display = 'block';
+        if(themeSelector) themeSelector.addEventListener("change", (e) => applyTheme(e.target.value));
+        if(themeSelectorMobile) themeSelectorMobile.addEventListener("change", (e) => applyTheme(e.target.value));
+        
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(savedTheme);
 
-        cropper = new Cropper(image, {
-            viewMode: 1,
-            autoCropArea: 0.8,
-            movable: true,
-            zoomable: true,
-            rotatable: true,
-            scalable: true,
-            responsive: true,
-            background: false,
+        // --- Cropper.js Logic ---
+        const inputImage = document.getElementById('inputImage');
+        const image = document.getElementById('image');
+        const imageContainer = document.getElementById('imageContainer');
+        const cropBtn = document.getElementById('cropBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        let cropper = null;
+
+        inputImage.addEventListener('change', e => {
+            const files = e.target.files;
+            if (!files || !files.length) return;
+
+            const file = files[0];
+            if (!file.type.startsWith('image/')) return alert('Seleziona un file immagine valido.');
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                image.src = event.target.result;
+                resultContainer.innerHTML = '';
+                cropBtn.style.display = 'none';
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                imageContainer.style.display = 'block';
+
+                cropper = new Cropper(image, {
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: true,
+                    scalable: true,
+                    responsive: true,
+                    background: false,
+                });
+                cropBtn.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
         });
-        cropBtn.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  });
 
-  cropBtn.addEventListener('click', () => {
-    if (!cropper) return;
-    const canvas = cropper.getCroppedCanvas({
-        width: 1024, // Esempio: imposta una larghezza massima per il canvas
-        height: 1024,
-        imageSmoothingEnabled: true,
-        imageSmoothingQuality: 'high',
+        cropBtn.addEventListener('click', () => {
+            if (!cropper) return;
+            const canvas = cropper.getCroppedCanvas({
+                width: 1024,
+                height: 1024,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const originalFileName = inputImage.files[0].name.split('.').slice(0, -1).join('.');
+                const downloadName = `${originalFileName}-ritagliata.png`;
+                
+                resultContainer.innerHTML = `
+                    <p>Immagine ritagliata:</p>
+                    <a href="${url}" download="${downloadName}">Scarica PNG</a><br>
+                    <img src="${url}" alt="Immagine ritagliata" />
+                `;
+            }, 'image/png');
+        });
     });
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      resultContainer.innerHTML = `
-        <p>Immagine ritagliata:</p>
-        <a href="${url}" download="immagine-ritagliata.png">Scarica PNG</a><br>
-        <img src="${url}" alt="Immagine ritagliata" />
-      `;
-    }, 'image/png');
-  });
-</script>
-
-<script>
-  // --- LOGICA PER MENU MOBILE ---
-  const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
-  const navUl = document.querySelector('nav ul');
-
-  if (mobileMenuTrigger && navUl) {
-    mobileMenuTrigger.addEventListener('click', (event) => {
-      event.stopPropagation();
-      navUl.classList.toggle('mobile-menu-active');
-    });
-
-    document.addEventListener('click', (event) => {
-      if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
-        navUl.classList.remove('mobile-menu-active');
-      }
-    });
-  }
-</script>
-
+    </script>
 </body>
 </html>
