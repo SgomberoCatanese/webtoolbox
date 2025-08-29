@@ -1,406 +1,477 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Specchia e Ruota Immagini Online – WebToolbox.fun</title>
-<meta name="description" content="Specchia immagini orizzontalmente, verticalmente, doppia e ruota di 90, 180, 270 gradi o personalizzato. Supporto multiplo, download singolo e ZIP." />
-<style>
-  /*
-    Stile CSS con estetica iOS e logica mobile avanzata
-  */
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Specchia e Ruota Immagini Online – WebToolbox.fun</title>
+    <meta name="description" content="Specchia immagini orizzontalmente, verticalmente, e ruota di 90, 180, 270 gradi o personalizzato. Supporto multiplo, download singolo e ZIP." />
+    <style>
+      /* CSS v5.0 - Integrated with Flip/Rotate page */
+      :root { /* Default Dark Theme */
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF599;
+        --accent-primary: #0A84FF;
+        --separator-color: #38383A;
+        --nav-bg: rgba(28, 28, 30, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.5);
+      }
+      [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --text-primary: #000000;
+        --text-secondary: #3C3C4399;
+        --accent-primary: #007AFF;
+        --separator-color: #C6C6C8;
+        --nav-bg: rgba(249, 249, 249, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.08);
+      }
+      [data-theme="midnight"] {
+        --bg-primary: #000000;
+        --bg-secondary: #1D1D1F;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --accent-primary: #0A84FF;
+        --shadow-color: rgba(0, 0, 0, 0.6);
+        --nav-bg: rgba(0, 0, 0, 0.75);
+      }
+      [data-theme="slate"] {
+        --bg-primary: #29313E;
+        --bg-secondary: #354152;
+        --bg-tertiary: #495867;
+        --text-primary: #F7F7F7;
+        --accent-primary: #F9A03F;
+        --separator-color: #495867;
+        --nav-bg: rgba(25, 32, 41, 0.8);
+      }
 
-  /* Reset e Stili Globali */
-  body {
-    background: #000000;
-    color: #F2F2F7;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: 0; padding: 0;
-    display: flex; flex-direction: column; min-height: 100vh;
-  }
-  
-  /* --- Navigazione --- */
-  nav {
-    background: rgba(28, 28, 30, 0.75);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
+      /* Base and Global Styles */
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0; padding: 0;
+        display: flex; flex-direction: column; min-height: 100vh;
+      }
+      body.no-scroll { overflow: hidden; }
 
-  nav .logo {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #F2F2F7;
-  }
+      /* Navigation Bar */
+      nav {
+        width: 100%;
+        background: var(--nav-bg);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-bottom: 0.5px solid var(--separator-color);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      nav .logo { 
+        font-weight: 600; 
+        color: var(--text-primary); 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem; 
+      }
+      nav .logo img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      .nav-title-scrolled {
+        display: none;
+        font-weight: 600;
+      }
+      nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+      nav a:hover { color: var(--text-primary); }
+      nav a.active { color: var(--text-primary); font-weight: 600; }
+      .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
+      
+      /* Mobile Menu */
+      #mobile-menu-trigger, #mobile-menu-close {
+        display: none; background: none; border: none; cursor: pointer;
+        padding: 0.5rem; color: var(--accent-primary); z-index: 110;
+      }
+      #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+      #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
 
-  nav ul {
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
-    flex-wrap: wrap;
-    margin: 0;
-  }
+      .mobile-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-secondary);
+        z-index: 100; display: flex; flex-direction: column;
+        padding: 6rem 1.5rem 2rem;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .mobile-nav.active { transform: translateX(0); }
+      .mobile-nav ul { list-style: none; padding: 0; margin: 0; }
+      .mobile-nav ul a {
+        display: block; font-size: 1.25rem; padding: 1rem;
+        color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color);
+      }
+      .mobile-nav .nav-controls { margin-top: auto; justify-content: center; }
 
-  nav a {
-    color: #0A84FF;
-    text-decoration: none;
-    font-weight: 500;
-  }
+      /* Main Content */
+      main {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1.5rem 4rem;
+        width: 100%;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+      p {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      input[type="file"] { display: none; }
+      
+      /* UI Components (Buttons, Inputs, etc.) */
+      main button {
+        background: var(--accent-primary);
+        border: none;
+        color: #FFFFFF;
+        padding: 0.9rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.2s ease-in-out;
+      }
+      main button:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
+      main select, main input[type=number] {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--separator-color);
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      main label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        text-align: left;
+      }
+      select#themeSelector {
+        padding: 0.5rem 0.8rem;
+        margin-bottom: 0;
+      }
 
-  nav a.active {
-    color: #F2F2F7;
-    font-weight: 600;
-  }
-  
-  #mobile-menu-trigger {
-    display: none;
-  }
+      /* Image Card Styles */
+      .image-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+      .single-image {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        padding: 1rem;
+        width: 300px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      canvas {
+        width: 100%;
+        border-radius: 12px;
+        display: block;
+        margin-bottom: 1rem;
+        background: #000;
+      }
+      
+      /* Download All Section */
+      .download-all-container {
+        text-align: center;
+        margin: 3rem 0;
+        background-color: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: 20px;
+      }
+      .download-all-container label { text-align: center; }
+      .download-all-container select { margin: 0 auto 1.5rem auto; }
+      
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        nav { padding: 0.75rem 1rem; }
+        nav .logo, nav .desktop-nav { display: none; }
+        .nav-title-scrolled { display: block; }
+        #mobile-menu-trigger { display: block; }
 
-  /* --- Contenuto Principale --- */
-  main {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1.5rem 4rem 1.5rem;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 0.5rem;
-    font-size: 2.5rem;
-    font-weight: 700;
-  }
-
-  p {
-    text-align: center;
-    margin-bottom: 2.5rem;
-    color: #AEAEB2;
-    line-height: 1.5;
-  }
-  
-  /* --- Stile dei Componenti UI --- */
-
-  input[type="file"] {
-    display: none;
-  }
-
-  /* Stile generico per pulsanti, select, e label nel main */
-  main button {
-    background: #0A84FF;
-    border: none;
-    color: #FFFFFF;
-    padding: 0.9rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: all 0.2s ease-in-out;
-  }
-
-  main button:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1);
-  }
-
-  main select, main input[type=number] {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
-    border: 1px solid #3a3a3c;
-    background-color: #2C2C2E;
-    color: #F2F2F7;
-    font-family: inherit;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  
-  main label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #AEAEB2;
-    text-align: left;
-  }
-
-  /* Card per ogni immagine caricata */
-  .image-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    justify-content: center;
-  }
-  
-  .single-image {
-    background: #1C1C1E;
-    border-radius: 20px;
-    padding: 1rem;
-    width: 300px;
-    flex-grow: 1;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  canvas {
-    width: 100%;
-    border-radius: 12px;
-    display: block;
-    margin-bottom: 1rem;
-    background: #000;
-  }
-  
-  /* Sezione download ZIP */
-  .download-all-container {
-    text-align: center;
-    margin: 3rem 0;
-    background-color: #1C1C1E;
-    padding: 1.5rem;
-    border-radius: 20px;
-  }
-  .download-all-container label {
-    text-align: center;
-  }
-  .download-all-container select {
-    margin: 0 auto 1.5rem auto;
-  }
-  
-  /* === STILI VERSIONE MOBILE === */
-  @media (max-width: 768px) {
-    nav ul {
-      display: none;
-      position: absolute;
-      top: 65px;
-      right: 1.5rem;
-      width: 250px;
-      background: rgba(44, 44, 46, 0.9);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-radius: 14px;
-      border: 1px solid rgba(84, 84, 88, 0.65);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      padding: 0.5rem 0;
-      flex-direction: column;
-      gap: 0;
-      z-index: 100;
-    }
-    
-    nav ul.mobile-menu-active { display: flex; }
-    
-    nav ul li { width: 100%; }
-    nav ul li a {
-      display: block;
-      padding: 0.9rem 1.25rem;
-      color: #F2F2F7;
-      font-weight: 400;
-      border-bottom: 0.5px solid rgba(84, 84, 88, 0.65);
-    }
-    nav ul li:last-child a { border-bottom: none; }
-    nav ul li a.active { background-color: #0A84FF; color: #FFFFFF; }
-    
-    #mobile-menu-trigger {
-      display: block;
-      background: none;
-      border: none;
-      padding: 0.5rem;
-      cursor: pointer;
-    }
-    #mobile-menu-trigger svg { width: 24px; height: 24px; fill: #0A84FF; }
-
-    h1 { font-size: 2rem; }
-    main { padding: 0 1rem 4rem 1rem; }
-    .single-image { width: 100%; }
-  }
-</style>
+        h1 { font-size: 2rem; }
+        main { padding: 0 1rem 4rem; }
+        .single-image { width: 100%; }
+      }
+    </style>
 </head>
 <body>
-<nav>
-  <div class="logo">🧰 WebToolbox.fun</div>
-  <ul>
-    <li><a href="index.html">Converti</a></li>
-    <li><a href="ridimensiona.html">Ridimensiona</a></li>
-    <li><a href="ruota-immagini.html">Ruota</a></li>
-    <li><a href="flip-immagini.html" class="active">Specchia</a></li>
-    <li><a href="crop-immagini.html">Ritaglia</a></li>
-    <li><a href="base64.html">Base64/ASCII</a></li>
-    <li><a href="scala-grigi.html">Scala di Grigi</a></li>
-  </ul>
-  <button id="mobile-menu-trigger" aria-label="Apri menu">
-    <svg viewBox="0 0 100 80" width="40" height="40">
-      <circle cx="50" cy="10" r="8"/><circle cx="50" cy="40" r="8"/><circle cx="50" cy="70" r="8"/>
-    </svg>
-  </button>
-</nav>
 
-<main>
-  <h1>Specchia e Ruota Immagini Online</h1>
-  <p>Carica più immagini, scegli per ognuna specchiatura e rotazione, scarica singolarmente o tutte in ZIP.</p>
+    <nav>
+      <div class="logo">
+        <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="WebToolbox Logo" />
+        🧰 WebToolbox
+      </div>
 
-  <button onclick="document.getElementById('upload').click()" type="button">Seleziona Immagini</button>
-  <input type="file" id="upload" accept="image/*" multiple />
+      <div class="nav-title-scrolled">
+        Specchia e Ruota
+      </div>
 
-  <div class="image-wrapper" id="imageWrapper"></div>
+      <ul class="desktop-nav">
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html" class="active">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
 
-  <div class="download-all-container">
-    <label for="allFormat">Formato download ZIP:</label>
-    <select id="allFormat" aria-label="Formato per download zip">
-      <option value="png">PNG</option>
-      <option value="jpeg">JPEG</option>
-    </select>
-    <button id="downloadAllBtn">Scarica Tutto in ZIP</button>
-  </div>
-</main>
+      <div class="nav-controls">
+        <select id="themeSelector" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script>
-  // Script esistente (logica invariata)
-  const upload = document.getElementById('upload');
-  const imageWrapper = document.getElementById('imageWrapper');
-  const downloadAllBtn = document.getElementById('downloadAllBtn');
-  const allFormatSelect = document.getElementById('allFormat');
+      <button id="mobile-menu-trigger" title="Apri Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
 
-  let imagesData = []; // {img, canvas, ctx, flipH, flipV, rotation, format, dataUrl}
+    <div class="mobile-nav" id="mobileMenu">
+      <button id="mobile-menu-close" title="Chiudi Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <ul>
+        <li><a href="index.html">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html" class="active">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+      <div class="nav-controls">
+        <select id="themeSelectorMobile" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
+    </div>
 
-  upload.addEventListener('change', () => {
-    imagesData = [];
-    imageWrapper.innerHTML = '';
-    if(!upload.files.length) return;
+    <main>
+        <h1>Specchia e Ruota Immagini Online</h1>
+        <p>Carica più immagini, scegli per ognuna specchiatura e rotazione, scarica singolarmente o tutte in ZIP.</p>
 
-    Array.from(upload.files).forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const container = document.createElement('div');
-          container.className = 'single-image';
-          container.setAttribute('aria-label', `Controlli per ${file.name}`);
+        <button onclick="document.getElementById('upload').click()" type="button">Seleziona Immagini</button>
+        <input type="file" id="upload" accept="image/*" multiple />
 
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
+        <div class="image-wrapper" id="imageWrapper"></div>
 
-          function createControl(labelText, options, type = 'select') {
-              const label = document.createElement('label');
-              label.textContent = labelText;
-              const control = document.createElement(type);
-              
-              if (type === 'select') {
-                options.forEach(opt => {
-                  const option = document.createElement('option');
-                  option.value = opt.value;
-                  option.textContent = opt.text;
-                  control.appendChild(option);
-                });
-              }
-              
-              label.appendChild(control);
-              return { label, control };
-          }
-          
-          const { label: flipHLabel, control: flipHSelect } = createControl('Specchia Orizzontale', [{text: 'No', value: 'false'}, {text: 'Sì', value: 'true'}]);
-          const { label: flipVLabel, control: flipVSelect } = createControl('Specchia Verticale', [{text: 'No', value: 'false'}, {text: 'Sì', value: 'true'}]);
-          const { label: rotationLabel, control: rotationSelect } = createControl('Rotazione', [{text: '0°', value: '0'}, {text: '90°', value: '90'}, {text: '180°', value: '180'}, {text: '270°', value: '270'}, {text: 'Personalizzato', value: 'personalizzato'}]);
+        <div class="download-all-container">
+            <label for="allFormat">Formato download ZIP:</label>
+            <select id="allFormat" aria-label="Formato per download zip">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+            </select>
+            <button id="downloadAllBtn">Scarica Tutto in ZIP</button>
+        </div>
+    </main>
 
-          const rotationCustomInput = document.createElement('input');
-          rotationCustomInput.type = 'number'; rotationCustomInput.min = '0'; rotationCustomInput.max = '360'; rotationCustomInput.value = '0'; rotationCustomInput.style.display = 'none';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- Theme and Menu Logic ---
+        const body = document.body;
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileTrigger = document.getElementById("mobile-menu-trigger");
+        const mobileClose = document.getElementById("mobile-menu-close");
+        const themeSelector = document.getElementById("themeSelector");
+        const themeSelectorMobile = document.getElementById("themeSelectorMobile");
+        
+        mobileTrigger.addEventListener("click", () => {
+          mobileMenu.classList.add("active");
+          body.classList.add("no-scroll");
+        });
 
-          rotationSelect.addEventListener('change', () => {
-            rotationCustomInput.style.display = rotationSelect.value === 'personalizzato' ? 'block' : 'none';
-            if(rotationSelect.value !== 'personalizzato') rotationCustomInput.value = '0';
-            updateCanvas();
-          });
+        mobileClose.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+          body.classList.remove("no-scroll");
+        });
 
-          const downloadBtn = document.createElement('button');
-          downloadBtn.textContent = 'Scarica Immagine';
-          downloadBtn.addEventListener('click', () => {
-            const fmt = formatSelect.value;
-            canvas.toBlob(blob => saveAs(blob, `immagine_${index+1}.${fmt}`), `image/${fmt}`);
-          });
+        function applyTheme(theme) {
+          document.documentElement.setAttribute("data-theme", theme);
+          localStorage.setItem("theme", theme);
+          if(themeSelector) themeSelector.value = theme;
+          if(themeSelectorMobile) themeSelectorMobile.value = theme;
+        }
 
-          const { label: formatLabel, control: formatSelect } = createControl('Formato Download', [{text: 'PNG', value: 'png'}, {text: 'JPEG', value: 'jpeg'}]);
+        if(themeSelector) themeSelector.addEventListener("change", (e) => applyTheme(e.target.value));
+        if(themeSelectorMobile) themeSelectorMobile.addEventListener("change", (e) => applyTheme(e.target.value));
+        
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(savedTheme);
 
-          [canvas, flipHLabel, flipVLabel, rotationLabel, rotationCustomInput, formatLabel, downloadBtn].forEach(el => container.appendChild(el));
-          imageWrapper.appendChild(container);
+        // --- Flip/Rotate App Logic ---
+        const upload = document.getElementById('upload');
+        const imageWrapper = document.getElementById('imageWrapper');
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const allFormatSelect = document.getElementById('allFormat');
 
-          const imageData = { img, canvas, ctx, flipH: false, flipV: false, rotation: 0 };
-          imagesData.push(imageData);
+        let imagesData = [];
 
-          function updateCanvas() {
-            let rot = rotationSelect.value === 'personalizzato' ? Number(rotationCustomInput.value) || 0 : Number(rotationSelect.value) || 0;
-            imageData.flipH = flipHSelect.value === 'true';
-            imageData.flipV = flipVSelect.value === 'true';
-            imageData.rotation = rot;
+        upload.addEventListener('change', () => {
+            imagesData = [];
+            imageWrapper.innerHTML = '';
+            if(!upload.files.length) return;
 
-            if (rot % 180 !== 0) { canvas.width = img.height; canvas.height = img.width; } 
-            else { canvas.width = img.width; canvas.height = img.height; }
+            Array.from(upload.files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const container = document.createElement('div');
+                        container.className = 'single-image';
 
-            ctx.save();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.rotate(rot * Math.PI / 180);
-            ctx.scale(imageData.flipH ? -1 : 1, imageData.flipV ? -1 : 1);
-            ctx.drawImage(img, -img.width / 2, -img.height / 2);
-            ctx.restore();
-          }
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        function createControl(labelText, options, type = 'select') {
+                            const label = document.createElement('label');
+                            label.textContent = labelText;
+                            const control = document.createElement(type);
+                            
+                            if (type === 'select') {
+                                options.forEach(opt => {
+                                    const option = document.createElement('option');
+                                    option.value = opt.value;
+                                    option.textContent = opt.text;
+                                    control.appendChild(option);
+                                });
+                            }
+                            label.appendChild(control);
+                            return { label, control };
+                        }
+                        
+                        const { control: flipHSelect } = createControl('Specchia Orizzontale', [{text: 'No', value: 'false'}, {text: 'Sì', value: 'true'}]);
+                        const { control: flipVSelect } = createControl('Specchia Verticale', [{text: 'No', value: 'false'}, {text: 'Sì', value: 'true'}]);
+                        const { control: rotationSelect } = createControl('Rotazione', [{text: '0°', value: '0'}, {text: '90°', value: '90'}, {text: '180°', value: '180'}, {text: '270°', value: '270'}, {text: 'Personalizzato', value: 'personalizzato'}]);
 
-          [flipHSelect, flipVSelect, rotationSelect, rotationCustomInput, formatSelect].forEach(ctrl => {
-            ctrl.addEventListener('change', updateCanvas);
-            ctrl.addEventListener('input', updateCanvas);
-          });
-          updateCanvas();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+                        const rotationCustomInput = document.createElement('input');
+                        rotationCustomInput.type = 'number'; rotationCustomInput.min = '0'; rotationCustomInput.max = '360'; rotationCustomInput.value = '0'; rotationCustomInput.style.display = 'none';
+
+                        rotationSelect.addEventListener('change', () => {
+                            rotationCustomInput.style.display = rotationSelect.value === 'personalizzato' ? 'block' : 'none';
+                            if(rotationSelect.value !== 'personalizzato') rotationCustomInput.value = '0';
+                            updateCanvas();
+                        });
+
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.textContent = 'Scarica Immagine';
+                        downloadBtn.addEventListener('click', () => {
+                            const fmt = formatSelect.value;
+                            const originalFileName = file.name.split('.').slice(0, -1).join('.');
+                            const downloadName = `${originalFileName}-modificata.${fmt}`;
+                            canvas.toBlob(blob => saveAs(blob, downloadName), `image/${fmt}`);
+                        });
+
+                        const { control: formatSelect } = createControl('Formato Download', [{text: 'PNG', value: 'png'}, {text: 'JPEG', value: 'jpeg'}]);
+                        
+                        container.append(canvas, flipHSelect.parentElement, flipVSelect.parentElement, rotationSelect.parentElement, rotationCustomInput, formatSelect.parentElement, downloadBtn);
+                        imageWrapper.appendChild(container);
+
+                        const imageData = { img, canvas, ctx };
+                        imagesData.push(imageData);
+
+                        function updateCanvas() {
+                            let rot = rotationSelect.value === 'personalizzato' ? Number(rotationCustomInput.value) || 0 : Number(rotationSelect.value) || 0;
+                            const flipH = flipHSelect.value === 'true';
+                            const flipV = flipVSelect.value === 'true';
+
+                            if (rot % 180 !== 0) { canvas.width = img.height; canvas.height = img.width; }
+                            else { canvas.width = img.width; canvas.height = img.height; }
+
+                            ctx.save();
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.translate(canvas.width / 2, canvas.height / 2);
+                            ctx.rotate(rot * Math.PI / 180);
+                            ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+                            ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                            ctx.restore();
+                        }
+
+                        [flipHSelect, flipVSelect, rotationSelect, rotationCustomInput, formatSelect].forEach(ctrl => {
+                            ctrl.addEventListener('change', updateCanvas);
+                            ctrl.addEventListener('input', updateCanvas);
+                        });
+                        updateCanvas();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        downloadAllBtn.addEventListener('click', async () => {
+            if (imagesData.length === 0) { alert('Carica prima almeno un\'immagine!'); return; }
+            const zip = new JSZip();
+            const format = allFormatSelect.value;
+            for (let i = 0; i < imagesData.length; i++) {
+                const blob = await new Promise(resolve => imagesData[i].canvas.toBlob(resolve, `image/${format}`));
+                const originalFileName = upload.files[i].name.split('.').slice(0, -1).join('.');
+                zip.file(`${originalFileName}-modificata.${format}`, blob);
+            }
+            const content = await zip.generateAsync({type: "blob"});
+            saveAs(content, `immagini_modificate.zip`);
+        });
     });
-  });
-
-  downloadAllBtn.addEventListener('click', async () => {
-    if (imagesData.length === 0) { alert('Carica prima almeno un\'immagine!'); return; }
-    const zip = new JSZip();
-    const format = allFormatSelect.value;
-    for (let i = 0; i < imagesData.length; i++) {
-      const blob = await new Promise(resolve => imagesData[i].canvas.toBlob(resolve, `image/${format}`));
-      zip.file(`immagine_${i+1}.${format}`, blob);
-    }
-    const content = await zip.generateAsync({type: "blob"});
-    saveAs(content, `immagini_modificate.zip`);
-  });
-</script>
-<script>
-  // --- LOGICA PER MENU MOBILE ---
-  const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
-  const navUl = document.querySelector('nav ul');
-
-  if (mobileMenuTrigger && navUl) {
-    mobileMenuTrigger.addEventListener('click', (event) => {
-      event.stopPropagation();
-      navUl.classList.toggle('mobile-menu-active');
-    });
-    document.addEventListener('click', (event) => {
-      if (navUl.classList.contains('mobile-menu-active') && !navUl.contains(event.target)) {
-        navUl.classList.remove('mobile-menu-active');
-      }
-    });
-  }
-</script>
-
+    </script>
 </body>
 </html>
