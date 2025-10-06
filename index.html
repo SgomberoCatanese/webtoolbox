@@ -3,665 +3,798 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Convertitore Immagini Pro – CronoTools</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <meta name="description" content="Converti immagini con un'interfaccia avanzata ispirata a iOS. Supporta drag-and-drop, temi multipli e animazioni fluide con il design CronoGlass." />
+  <title data-translate-key="pageTitle">Convertitore Immagini Pro – CronoTools</title>
+  <meta name="description" content="Converti immagini con un'interfaccia avanzata ispirata a iOS. Supporta drag-and-drop, 12 lingue, temi multipli e animazioni fluide." data-translate-key="metaDescription" />
+  <link rel="stylesheet" href="style.css" />
   <style>
-/* ===================================================================
- * CRONOGLASS DESIGN SYSTEM - Replicato da Cronoshop
- * ===================================================================
- */
-:root {
-  --ios-blue: #007aff;
-  --ios-green: #34c759;
-  --ios-pink: #ff2d92;
-  --ios-orange: #ff9500;
-  --ios-purple: #af52de;
-  --ios-bg-primary: #f2f2f7;
-  --ios-bg-secondary: #ffffff;
-  --ios-text-primary: #000000;
-  --ios-text-secondary: rgba(60, 60, 67, 0.6);
-  --ios-separator: rgba(60, 60, 67, 0.29);
-  --ios-radius-sm: 8px;
-  --ios-radius-md: 12px;
-  --ios-radius-lg: 20px;
-  --ios-radius-xl: 24px;
-}
-
-[data-theme="dark"] {
-  --ios-blue: #0a84ff;
-  --ios-green: #30d158;
-  --ios-pink: #ff375f;
-  --ios-orange: #ff9f0a;
-  --ios-purple: #bf5af2;
-  --ios-bg-primary: #000000;
-  --ios-bg-secondary: #1c1c1e;
-  --ios-text-primary: #ffffff;
-  --ios-text-secondary: rgba(235, 235, 245, 0.6);
-  --ios-separator: rgba(84, 84, 88, 0.65);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(135deg, var(--ios-pink) 0%, var(--ios-orange) 50%, var(--ios-purple) 100%);
-  color: var(--ios-text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-body.no-scroll { overflow: hidden; }
-
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 88px;
-  background: rgba(242, 242, 247, 0.7);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 0.5px solid var(--ios-separator);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-}
-
-[data-theme="dark"] nav {
-  background: rgba(28, 28, 30, 0.7);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--ios-text-primary);
-}
-
-.logo img {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--ios-radius-sm);
-}
-
-.nav-title-scrolled {
-  display: none;
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.desktop-nav {
-  display: flex;
-  list-style: none;
-  gap: 8px;
-  margin-left: auto;
-  margin-right: 20px;
-}
-
-.desktop-nav a {
-  padding: 8px 16px;
-  border-radius: var(--ios-radius-sm);
-  text-decoration: none;
-  color: var(--ios-text-secondary);
-  font-weight: 500;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.desktop-nav a:hover {
-  background: rgba(120, 120, 128, 0.12);
-  color: var(--ios-text-primary);
-}
-
-.desktop-nav a.active {
-  background: var(--ios-blue);
-  color: white;
-}
-
-.nav-controls select {
-  padding: 8px 12px;
-  border-radius: var(--ios-radius-sm);
-  border: none;
-  background: rgba(120, 120, 128, 0.12);
-  color: var(--ios-text-primary);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-#mobile-menu-trigger {
-  display: none;
-  background: rgba(120, 120, 128, 0.12);
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-}
-
-#mobile-menu-trigger svg {
-  width: 24px;
-  height: 24px;
-  stroke: var(--ios-text-primary);
-}
-
-.mobile-nav {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 320px;
-  height: 100%;
-  background: var(--ios-bg-secondary);
-  backdrop-filter: blur(20px);
-  transform: translateX(100%);
-  transition: transform 0.3s;
-  z-index: 1001;
-  padding: 100px 20px 20px;
-  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.mobile-nav.active {
-  transform: translateX(0);
-}
-
-#mobile-menu-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(120, 120, 128, 0.12);
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.mobile-nav ul {
-  list-style: none;
-}
-
-.mobile-nav a {
-  display: block;
-  padding: 16px;
-  text-decoration: none;
-  color: var(--ios-text-primary);
-  font-weight: 500;
-  border-radius: var(--ios-radius-md);
-  margin-bottom: 8px;
-  transition: background 0.2s;
-}
-
-.mobile-nav a:hover,
-.mobile-nav a.active {
-  background: var(--ios-blue);
-  color: white;
-}
-
-.content-wrapper {
-  padding-top: 88px;
-  min-height: 100vh;
-}
-
-.main-header {
-  text-align: center;
-  padding: 60px 20px 20px;
-  color: white;
-}
-
-.main-header h1 {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 700;
-  margin-bottom: 16px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px 60px;
-}
-
-.description {
-  text-align: center;
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 40px;
-  line-height: 1.6;
-}
-
-.ios-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: var(--ios-radius-xl);
-  padding: 32px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  margin-bottom: 32px;
-}
-
-[data-theme="dark"] .ios-card {
-  background: rgba(28, 28, 30, 0.95);
-}
-
-#dropZone {
-  border: 2px dashed var(--ios-separator);
-  border-radius: var(--ios-radius-lg);
-  padding: 60px 40px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  background: rgba(120, 120, 128, 0.04);
-}
-
-#dropZone:hover {
-  border-color: var(--ios-blue);
-  background: rgba(0, 122, 255, 0.05);
-}
-
-#dropZone.drag-glow {
-  border-color: var(--ios-blue);
-  background: rgba(0, 122, 255, 0.1);
-  transform: scale(1.02);
-}
-
-.upload-icon {
-  width: 64px;
-  height: 64px;
-  stroke: var(--ios-blue);
-  margin: 0 auto 20px;
-}
-
-#dropZone p {
-  font-size: 16px;
-  color: var(--ios-text-secondary);
-}
-
-input[type="file"] {
-  display: none;
-}
-
-.ios-list {
-  margin-top: 32px;
-}
-
-.ios-list label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 0.5px solid var(--ios-separator);
-  font-weight: 500;
-}
-
-.ios-list select {
-  padding: 8px 16px;
-  border-radius: var(--ios-radius-sm);
-  border: none;
-  background: rgba(120, 120, 128, 0.12);
-  color: var(--ios-text-primary);
-  font-weight: 500;
-  cursor: pointer;
-  min-width: 200px;
-}
-
-.progress-container {
-  width: 100%;
-  height: 8px;
-  background: rgba(120, 120, 128, 0.12);
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 20px 0;
-  display: none;
-}
-
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--ios-blue), var(--ios-purple));
-  width: 0;
-  transition: width 0.3s;
-}
-
-.progress-text {
-  text-align: center;
-  color: var(--ios-text-secondary);
-  font-size: 14px;
-  margin-bottom: 16px;
-  display: none;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  background: var(--ios-blue);
-  border: none;
-  border-radius: var(--ios-radius-md);
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-#previewContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 32px;
-  justify-content: center;
-}
-
-#previewContainer img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: var(--ios-radius-md);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-#resultContainer {
-  margin-top: 32px;
-}
-
-.seo-content {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: var(--ios-radius-xl);
-  padding: 48px;
-  margin-top: 48px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="dark"] .seo-content {
-  background: rgba(28, 28, 30, 0.95);
-}
-
-.seo-content h2 {
-  font-size: 32px;
-  margin-bottom: 24px;
-  color: var(--ios-text-primary);
-}
-
-.seo-content h3 {
-  font-size: 24px;
-  margin: 32px 0 16px;
-  color: var(--ios-text-primary);
-}
-
-.seo-content p,
-.seo-content li {
-  line-height: 1.7;
-  color: var(--ios-text-secondary);
-  margin-bottom: 16px;
-}
-
-.seo-content ul {
-  padding-left: 24px;
-}
-
-.faq-item {
-  background: rgba(120, 120, 128, 0.08);
-  border-radius: var(--ios-radius-md);
-  padding: 24px;
-  margin-bottom: 16px;
-}
-
-.faq-item h4 {
-  font-size: 18px;
-  margin-bottom: 12px;
-  color: var(--ios-text-primary);
-}
-
-#toastContainer {
-  position: fixed;
-  top: 108px;
-  right: 20px;
-  z-index: 2000;
-}
-
-.toast {
-  background: var(--ios-bg-secondary);
-  padding: 16px 20px;
-  border-radius: var(--ios-radius-md);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  margin-bottom: 12px;
-  animation: slideIn 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(400px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.modal-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 3000;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-}
-
-.modal-backdrop.visible {
-  display: flex;
-}
-
-.modal-dialog {
-  background: var(--ios-bg-secondary);
-  border-radius: var(--ios-radius-lg);
-  padding: 32px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  text-align: center;
-}
-
-.modal-dialog h3 {
-  font-size: 20px;
-  margin-bottom: 16px;
-}
-
-.modal-dialog p {
-  color: var(--ios-text-secondary);
-  margin-bottom: 24px;
-}
-
-.modal-buttons button {
-  max-width: 200px;
-  margin: 0 auto;
-}
-
-@media (max-width: 768px) {
-  nav { height: 72px; padding: 0 16px; }
-  .logo { font-size: 18px; }
-  .logo img { width: 32px; height: 32px; }
-  .desktop-nav { display: none; }
-  .nav-title-scrolled { display: block; margin-left: auto; margin-right: 16px; }
-  #mobile-menu-trigger { display: flex; }
-  .main-header { padding: 40px 16px 16px; }
-  .main-header h1 { font-size: 2rem; }
-  .ios-card { padding: 24px 20px; }
-  #dropZone { padding: 40px 20px; }
-  .seo-content { padding: 32px 24px; }
-  .mobile-nav { width: 100%; }
-}
+    /*
+      Stile CSS v5.0 FINAL - Lista Formati Completa, Fallback Intelligente e Notifiche Toast
+    */
+    :root { /* Tema Scuro (Default) */
+      --bg-primary: #1C1C1E;
+      --bg-secondary: #2C2C2E;
+      --bg-tertiary: #3A3A3C;
+      --bg-modal-backdrop: rgba(0, 0, 0, 0.6);
+      --bg-modal: rgba(40, 40, 42, 0.9);
+      --text-primary: #FFFFFF;
+      --text-secondary: #EBEBF599;
+      --text-tertiary: #EBEBF566;
+      --accent-primary: #0A84FF;
+      --accent-secondary: #FF9F0A;
+      --accent-destructive: #FF453A;
+      --separator-color: #38383A;
+      --separator-modal: #545458A6;
+      --nav-bg: rgba(28, 28, 30, 0.8);
+      --shadow-color: rgba(0, 0, 0, 0.5);
+      --glow-color: rgba(10, 132, 255, 0.8);
+    }
+    [data-theme="light"] {
+      --bg-primary: #F2F2F7;
+      --bg-secondary: #FFFFFF;
+      --bg-tertiary: #E5E5EA;
+      --bg-modal-backdrop: rgba(0, 0, 0, 0.3);
+      --bg-modal: rgba(245, 245, 247, 0.9);
+      --text-primary: #000000;
+      --text-secondary: #3C3C4399;
+      --text-tertiary: #3C3C4366;
+      --accent-primary: #007AFF;
+      --accent-secondary: #FF9500;
+      --accent-destructive: #FF3B30;
+      --separator-color: #C6C6C8;
+      --separator-modal: #3C3C434A;
+      --nav-bg: rgba(249, 249, 249, 0.8);
+      --shadow-color: rgba(0, 0, 0, 0.08);
+      --glow-color: rgba(0, 122, 255, 0.7);
+    }
+    [data-theme="midnight"] {
+      --bg-primary: #000000;
+      --bg-secondary: #1D1D1F;
+      --bg-tertiary: #2C2C2E;
+      --text-primary: #FFFFFF;
+      --accent-primary: #0A84FF;
+      --shadow-color: rgba(0, 0, 0, 0.6);
+      --nav-bg: rgba(0, 0, 0, 0.75);
+    }
+    [data-theme="slate"] {
+      --bg-primary: #29313E;
+      --bg-secondary: #354152;
+      --bg-tertiary: #495867;
+      --text-primary: #F7F7F7;
+      --accent-primary: #F9A03F;
+      --accent-destructive: #E54B4B;
+      --separator-color: #495867;
+      --nav-bg: rgba(25, 32, 41, 0.8);
+      --glow-color: rgba(249, 160, 63, 0.7);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+    body.no-scroll { overflow: hidden; }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 var(--glow-color); } 70% { box-shadow: 0 0 0 10px rgba(10, 132, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes slideInDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes glow-border {
+      0%, 100% { box-shadow: 0 0 5px var(--glow-color), inset 0 0 5px var(--glow-color); border-color: var(--accent-primary); }
+      50% { box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px var(--glow-color); border-color: var(--accent-primary); }
+    }
+    @keyframes progressGlow {
+      0% { box-shadow: 0 0 5px var(--accent-primary); }
+      50% { box-shadow: 0 0 20px var(--accent-primary); }
+      100% { box-shadow: 0 0 5px var(--accent-primary); }
+    }
+    
+    nav {
+      background: var(--nav-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 0.5px solid var(--separator-color);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    nav .logo { 
+      font-weight: 600; 
+      color: var(--text-primary); 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+    }
+    nav .logo img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    nav .nav-title-scrolled {
+      font-weight: 600;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+    nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+    nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+    nav a:hover { color: var(--text-primary); }
+    nav a.active { color: var(--text-primary); font-weight: 600; }
+    .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
+    
+    #mobile-menu-trigger, #mobile-menu-close {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 0.5rem; color: var(--accent-primary); z-index: 110;
+    }
+    #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+    #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
+
+    .mobile-nav {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-modal);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      z-index: 100; display: flex; flex-direction: column;
+      padding: 6rem 1.5rem 2rem;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .mobile-nav.active { transform: translateX(0); }
+    .mobile-nav ul { list-style: none; padding: 0; margin: 0; width: 100%; }
+    .mobile-nav ul a {
+      display: flex; align-items: center; gap: 1rem; font-size: 1.25rem; padding: 1rem;
+      color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color);
+    }
+    .mobile-nav ul a svg { width: 24px; height: 24px; color: var(--accent-primary); }
+    .mobile-nav ul li:first-child a { border-top: 0.5px solid var(--separator-color); }
+    .mobile-nav .nav-controls { margin-top: auto; justify-content: center; width: 100%; display: flex; gap: 1rem; }
+    
+    .content-wrapper { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    header.main-header { padding-top: 1rem; }
+    header.main-header h1 { font-size: 2.5rem; font-weight: 700; margin: 0; transition: opacity 0.2s ease-in-out; }
+    p.description { margin: 0.5rem 0 2.5rem 0; color: var(--text-secondary); line-height: 1.5; font-size: 1.1rem; }
+    
+    .ios-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px var(--shadow-color);
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .ios-list > * { padding: 1rem 1.25rem; }
+    .ios-list > :not(:last-child) { border-bottom: 0.5px solid var(--separator-color); }
+    .ios-list label { display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
+
+    #dropZone {
+      border: 2px dashed var(--bg-tertiary); border-radius: 18px; padding: 3rem 1rem; text-align: center;
+      color: var(--text-secondary); cursor: pointer; transition: all 0.3s ease-in-out; margin: 1.5rem; position: relative;
+    }
+    #dropZone:hover { border-color: var(--accent-primary); background: var(--bg-tertiary); }
+    #dropZone.drag-glow { border-style: solid; animation: glow-border 1.5s infinite; }
+    #dropZone .upload-icon { width: 40px; height: 40px; margin-bottom: 1rem; color: var(--text-secondary); transition: color 0.2s; }
+    #dropZone:hover .upload-icon { color: var(--accent-primary); }
+    #dropZone p { margin: 0; font-weight: 500; }
+    #dropZone p span { color: var(--accent-primary); font-weight: 600; }
+    input[type="file"] { display: none; }
+    
+    select {
+      padding: 0.7rem 1rem; border-radius: 8px; border: none; font-weight: 500; cursor: pointer;
+      background-color: var(--bg-tertiary); color: var(--text-primary); font-family: inherit; font-size: 1rem;
+      -webkit-appearance: none; appearance: none; transition: background 0.4s;
+    }
+    select#outputFormat { max-height: 150px; overflow-y: auto; text-align: right; }
+    
+    button#convertBtn {
+      width: 100%; border: none; background: var(--accent-primary); color: white; font-size: 1.1rem;
+      font-weight: 600; padding: 0.9rem; border-radius: 8px; cursor: pointer;
+      transition: transform 0.2s, filter 0.2s; position: relative; overflow: hidden;
+    }
+    button#convertBtn:hover { filter: brightness(1.1); }
+    button#convertBtn:active { transform: scale(0.98); }
+    button#convertBtn.pulsing { animation: pulse-glow 2s infinite; }
+    button#convertBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Progress Bar Styles */
+    .progress-container {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      margin: 1rem 0;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+      position: relative;
+      animation: progressGlow 2s infinite;
+    }
+    .progress-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    #previewContainer { display: flex; flex-wrap: wrap; gap: 15px; padding: 1.5rem; justify-content: center; }
+    #previewContainer img { height: 120px; border-radius: 12px; object-fit: contain; animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
+    
+    #resultContainer { margin-top: 2rem; }
+    #resultContainer .ios-card { padding: 1rem; text-align: center; animation: fadeInUp 0.5s; }
+    #resultContainer img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 1rem; }
+    #resultContainer a { font-weight: 500; color: var(--accent-primary); text-decoration: none; font-size: 1.1rem; }
+
+    #toastContainer {
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0) + 1rem);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 300;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        width: fit-content;
+        max-width: 90%;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 0.75rem; color: var(--text-primary); background: var(--bg-modal);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      padding: 0.8rem 1.2rem; border-radius: 50px; font-size: 0.9rem; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      animation: slideInDown 0.4s cubic-bezier(0.25, 1, 0.5, 1), fadeOut 0.4s 4.5s forwards;
+    }
+    .toast svg { width: 20px; height: 20px; color: var(--accent-secondary); }
+
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-modal-backdrop);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200; display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+      animation: fadeIn 0.3s;
+    }
+    .modal-backdrop.visible { opacity: 1; visibility: visible; }
+    .modal-dialog {
+      background: var(--bg-modal); border-radius: 14px; text-align: center;
+      max-width: 280px; width: 90%; padding-top: 1.25rem;
+      animation: zoomIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .modal-dialog h3 { margin: 0 1rem 0.5rem; font-size: 1.1rem; font-weight: 600; }
+    .modal-dialog p { margin: 0 1rem 1.25rem; font-size: 0.9rem; color: var(--text-secondary); }
+    .modal-buttons { display: flex; border-top: 0.5px solid var(--separator-modal); }
+    .modal-buttons button {
+      flex: 1; background: none; border: none; padding: 0.8rem;
+      font-size: 1.1rem; font-family: inherit; color: var(--accent-primary);
+      cursor: pointer; font-weight: 600;
+    }
+    .modal-buttons button:first-child:not(:only-child) { border-right: 0.5px solid var(--separator-modal); font-weight: 400; }
+    
+    .seo-content {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--separator-color);
+        color: var(--text-secondary);
+    }
+    .seo-content h2 { font-size: 1.8rem; font-weight: 600; color: var(--text-primary); }
+    .seo-content h3 { font-size: 1.3rem; font-weight: 600; color: var(--text-primary); margin-top: 2rem; }
+    .seo-content p, .seo-content li { line-height: 1.6; }
+    .seo-content a { color: var(--accent-primary); text-decoration: none; }
+    .seo-content a:hover { text-decoration: underline; }
+    .seo-content ul { padding-left: 1.5rem; }
+    .seo-content code { background-color: var(--bg-secondary); padding: 0.2em 0.4em; border-radius: 4px; font-family: monospace; }
+    .faq-item { margin-bottom: 1.5rem; }
+    .faq-item h4 { color: var(--text-primary); margin: 0 0 0.5rem 0; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0.75rem 1rem; }
+      nav .logo, nav .desktop-nav { display: none; }
+      nav .nav-title-scrolled { display: block; opacity: 1; }
+      #mobile-menu-trigger { display: block; }
+      .content-wrapper { padding: 0 1rem 4rem; }
+      header.main-header { padding: 1rem; }
+      header.main-header h1 { font-size: 2rem; }
+      .ios-card { border-radius: 0; margin: 0 -1rem; }
+      .seo-content { margin: 4rem -1rem 0; padding: 2rem 1rem 0; border-radius: 0;}
+    }
+     /*
+        Stile CSS v5.0 FINAL - Lista Formati Completa, Fallback Intelligente e Notifiche Toast
+      */
+      :root { /* Tema Scuro (Default) */
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --bg-modal-backdrop: rgba(0, 0, 0, 0.6);
+        --bg-modal: rgba(40, 40, 42, 0.9);
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF599;
+        --text-tertiary: #EBEBF566;
+        --accent-primary: #0A84FF;
+        --accent-secondary: #FF9F0A;
+        --accent-destructive: #FF453A;
+        --separator-color: #38383A;
+        --separator-modal: #545458A6;
+        --nav-bg: rgba(28, 28, 30, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.5);
+        --glow-color: rgba(10, 132, 255, 0.8);
+      }
+      [data-theme="light"] {
+        --bg-primary: #F2F2F7;
+        --bg-secondary: #FFFFFF;
+        --bg-tertiary: #E5E5EA;
+        --bg-modal-backdrop: rgba(0, 0, 0, 0.3);
+        --bg-modal: rgba(245, 245, 247, 0.9);
+        --text-primary: #000000;
+        --text-secondary: #3C3C4399;
+        --text-tertiary: #3C3C4366;
+        --accent-primary: #007AFF;
+        --accent-secondary: #FF9500;
+        --accent-destructive: #FF3B30;
+        --separator-color: #C6C6C8;
+        --separator-modal: #3C3C434A;
+        --nav-bg: rgba(249, 249, 249, 0.8);
+        --shadow-color: rgba(0, 0, 0, 0.08);
+        --glow-color: rgba(0, 122, 255, 0.7);
+      }
+      [data-theme="midnight"] {
+        --bg-primary: #000000;
+        --bg-secondary: #1D1D1F;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --accent-primary: #0A84FF;
+        --shadow-color: rgba(0, 0, 0, 0.6);
+        --nav-bg: rgba(0, 0, 0, 0.75);
+      }
+      [data-theme="slate"] {
+        --bg-primary: #29313E;
+        --bg-secondary: #354152;
+        --bg-tertiary: #495867;
+        --text-primary: #F7F7F7;
+        --accent-primary: #F9A03F;
+        --accent-destructive: #E54B4B;
+        --separator-color: #495867;
+        --nav-bg: rgba(25, 32, 41, 0.8);
+        --glow-color: rgba(249, 160, 63, 0.7);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        transition: background 0.4s, color 0.4s;
+      }
+      body.no-scroll { overflow: hidden; }
+
+      @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 var(--glow-color); } 70% { box-shadow: 0 0 0 10px rgba(10, 132, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0); } }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+      @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      @keyframes slideInDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      @keyframes glow-border {
+        0%, 100% { box-shadow: 0 0 5px var(--glow-color), inset 0 0 5px var(--glow-color); border-color: var(--accent-primary); }
+        50% { box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px var(--glow-color); border-color: var(--accent-primary); }
+      }
+      @keyframes progressGlow {
+        0% { box-shadow: 0 0 5px var(--accent-primary); }
+        50% { box-shadow: 0 0 20px var(--accent-primary); }
+        100% { box-shadow: 0 0 5px var(--accent-primary); }
+      }
+      
+      nav {
+        background: var(--nav-bg);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-bottom: 0.5px solid var(--separator-color);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      nav .logo { 
+        font-weight: 600; 
+        color: var(--text-primary); 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem; 
+      }
+      nav .logo img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      nav .nav-title-scrolled {
+        font-weight: 600;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+      }
+      nav .desktop-nav { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      nav a { color: var(--accent-primary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+      nav a:hover { color: var(--text-primary); }
+      nav a.active { color: var(--text-primary); font-weight: 600; }
+      .nav-controls { display: flex; align-items: center; gap: 0.75rem; }
+      
+      #mobile-menu-trigger, #mobile-menu-close {
+        display: none; background: none; border: none; cursor: pointer;
+        padding: 0.5rem; color: var(--accent-primary); z-index: 110;
+      }
+      #mobile-menu-close { position: absolute; top: 1rem; right: 1.5rem; }
+      #mobile-menu-trigger svg, #mobile-menu-close svg { width: 28px; height: 28px; }
+
+      .mobile-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-modal);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        z-index: 100; display: flex; flex-direction: column;
+        padding: 6rem 1.5rem 2rem;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .mobile-nav.active { transform: translateX(0); }
+      .mobile-nav ul { list-style: none; padding: 0; margin: 0; width: 100%; }
+      .mobile-nav ul a {
+        display: flex; align-items: center; gap: 1rem; font-size: 1.25rem; padding: 1rem;
+        color: var(--text-primary); font-weight: 500; border-bottom: 0.5px solid var(--separator-color);
+      }
+      .mobile-nav ul a svg { width: 24px; height: 24px; color: var(--accent-primary); }
+      .mobile-nav ul li:first-child a { border-top: 0.5px solid var(--separator-color); }
+      .mobile-nav .nav-controls { margin-top: auto; justify-content: center; width: 100%; display: flex; gap: 1rem; }
+      
+      .content-wrapper { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+      header.main-header { padding-top: 1rem; }
+      header.main-header h1 { font-size: 2.5rem; font-weight: 700; margin: 0; transition: opacity 0.2s ease-in-out; }
+      p.description { margin: 0.5rem 0 2.5rem 0; color: var(--text-secondary); line-height: 1.5; font-size: 1.1rem; }
+      
+      .ios-card {
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px var(--shadow-color);
+        transition: background 0.4s, box-shadow 0.4s;
+      }
+      .ios-list > * { padding: 1rem 1.25rem; }
+      .ios-list > :not(:last-child) { border-bottom: 0.5px solid var(--separator-color); }
+      .ios-list label { display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
+
+      #dropZone {
+        border: 2px dashed var(--bg-tertiary); border-radius: 18px; padding: 3rem 1rem; text-align: center;
+        color: var(--text-secondary); cursor: pointer; transition: all 0.3s ease-in-out; margin: 1.5rem; position: relative;
+      }
+      #dropZone:hover { border-color: var(--accent-primary); background: var(--bg-tertiary); }
+      #dropZone.drag-glow { border-style: solid; animation: glow-border 1.5s infinite; }
+      #dropZone .upload-icon { width: 40px; height: 40px; margin-bottom: 1rem; color: var(--text-secondary); transition: color 0.2s; }
+      #dropZone:hover .upload-icon { color: var(--accent-primary); }
+      #dropZone p { margin: 0; font-weight: 500; }
+      #dropZone p span { color: var(--accent-primary); font-weight: 600; }
+      input[type="file"] { display: none; }
+      
+      select {
+        padding: 0.7rem 1rem; border-radius: 8px; border: none; font-weight: 500; cursor: pointer;
+        background-color: var(--bg-tertiary); color: var(--text-primary); font-family: inherit; font-size: 1rem;
+        -webkit-appearance: none; appearance: none; transition: background 0.4s;
+      }
+      select#outputFormat { max-height: 150px; overflow-y: auto; text-align: right; }
+      
+      button#convertBtn {
+        width: 100%; border: none; background: var(--accent-primary); color: white; font-size: 1.1rem;
+        font-weight: 600; padding: 0.9rem; border-radius: 8px; cursor: pointer;
+        transition: transform 0.2s, filter 0.2s; position: relative; overflow: hidden;
+      }
+      button#convertBtn:hover { filter: brightness(1.1); }
+      button#convertBtn:active { transform: scale(0.98); }
+      button#convertBtn.pulsing { animation: pulse-glow 2s infinite; }
+      button#convertBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+      /* Progress Bar Styles */
+      .progress-container {
+        position: relative;
+        width: 100%;
+        height: 4px;
+        background: var(--bg-tertiary);
+        border-radius: 2px;
+        margin: 1rem 0;
+        overflow: hidden;
+        display: none;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.3s ease;
+        position: relative;
+        animation: progressGlow 2s infinite;
+      }
+      .progress-text {
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      #previewContainer { display: flex; flex-wrap: wrap; gap: 15px; padding: 1.5rem; justify-content: center; }
+      #previewContainer img { height: 120px; border-radius: 12px; object-fit: contain; animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
+      
+      #resultContainer { margin-top: 2rem; }
+      #resultContainer .ios-card { padding: 1rem; text-align: center; animation: fadeInUp 0.5s; }
+      #resultContainer img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 1rem; }
+      #resultContainer a { font-weight: 500; color: var(--accent-primary); text-decoration: none; font-size: 1.1rem; }
+
+      #toastContainer {
+          position: fixed;
+          top: calc(env(safe-area-inset-top, 0) + 1rem);
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 300;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+          width: fit-content;
+          max-width: 90%;
+      }
+      .toast {
+        display: flex; align-items: center; gap: 0.75rem; color: var(--text-primary); background: var(--bg-modal);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        padding: 0.8rem 1.2rem; border-radius: 50px; font-size: 0.9rem; font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        animation: slideInDown 0.4s cubic-bezier(0.25, 1, 0.5, 1), fadeOut 0.4s 4.5s forwards;
+      }
+      .toast svg { width: 20px; height: 20px; color: var(--accent-secondary); }
+
+      .modal-backdrop {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-modal-backdrop);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 200; display: flex; justify-content: center; align-items: center;
+        opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+        animation: fadeIn 0.3s;
+      }
+      .modal-backdrop.visible { opacity: 1; visibility: visible; }
+      .modal-dialog {
+        background: var(--bg-modal); border-radius: 14px; text-align: center;
+        max-width: 280px; width: 90%; padding-top: 1.25rem;
+        animation: zoomIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .modal-dialog h3 { margin: 0 1rem 0.5rem; font-size: 1.1rem; font-weight: 600; }
+      .modal-dialog p { margin: 0 1rem 1.25rem; font-size: 0.9rem; color: var(--text-secondary); }
+      .modal-buttons { display: flex; border-top: 0.5px solid var(--separator-modal); }
+      .modal-buttons button {
+        flex: 1; background: none; border: none; padding: 0.8rem;
+        font-size: 1.1rem; font-family: inherit; color: var(--accent-primary);
+        cursor: pointer; font-weight: 600;
+      }
+      .modal-buttons button:first-child:not(:only-child) { border-right: 0.5px solid var(--separator-modal); font-weight: 400; }
+      
+      .seo-content {
+          margin-top: 4rem;
+          padding-top: 2rem;
+          border-top: 1px solid var(--separator-color);
+          color: var(--text-secondary);
+      }
+      .seo-content h2 { font-size: 1.8rem; font-weight: 600; color: var(--text-primary); }
+      .seo-content h3 { font-size: 1.3rem; font-weight: 600; color: var(--text-primary); margin-top: 2rem; }
+      .seo-content p, .seo-content li { line-height: 1.6; }
+      .seo-content a { color: var(--accent-primary); text-decoration: none; }
+      .seo-content a:hover { text-decoration: underline; }
+      .seo-content ul { padding-left: 1.5rem; }
+      .seo-content code { background-color: var(--bg-secondary); padding: 0.2em 0.4em; border-radius: 4px; font-family: monospace; }
+      .faq-item { margin-bottom: 1.5rem; }
+      .faq-item h4 { color: var(--text-primary); margin: 0 0 0.5rem 0; font-weight: 600; }
+
+      @media (max-width: 768px) {
+        nav { padding: 0.75rem 1rem; }
+        nav .logo, nav .desktop-nav { display: none; }
+        nav .nav-title-scrolled { display: block; opacity: 1; }
+        #mobile-menu-trigger { display: block; }
+        .content-wrapper { padding: 0 1rem 4rem; }
+        header.main-header { padding: 1rem; }
+        header.main-header h1 { font-size: 2rem; }
+        .ios-card { border-radius: 0; margin: 0 -1rem; }
+        .seo-content { margin: 4rem -1rem 0; padding: 2rem 1rem 0; border-radius: 0;}
+      }
   </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">
-    <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="CronoTools Logo" />
-    ⚡ CronoTools
-  </div>
-
-  <div class="nav-title-scrolled">
-    CronoTools
-  </div>
-
-  <ul class="desktop-nav">
-    <li><a href="index.html" class="active">Converti</a></li>
-    <li><a href="ridimensiona.html">Ridimensiona</a></li>
-    <li><a href="ruota-immagini.html">Ruota</a></li>
-    <li><a href="flip-immagini.html">Specchia</a></li>
-    <li><a href="crop-immagini.html">Ritaglia</a></li>
-    <li><a href="base64.html">Base64</a></li>
-    <li><a href="scala-grigi.html">Filtri</a></li>
-    <li><a href="weight.html">Converti Peso</a></li>
-    <li><a href="share.html">Condividi</a></li>
-  </ul>
-
-  <div class="nav-controls">
-    <select id="themeSelector" title="Seleziona Tema">
-      <option value="dark">Scuro</option>
-      <option value="light">Chiaro</option>
-      <option value="midnight">Midnight</option>
-      <option value="slate">Slate</option>
-    </select>
-  </div>
-
-  <button id="mobile-menu-trigger" title="Apri Menu">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  </button>
-</nav>
-
-<div class="mobile-nav" id="mobileMenu">
+<div id="mobileNav" class="mobile-nav">
   <button id="mobile-menu-close" title="Chiudi Menu">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.607a1 1 0 010-1.414z"/></svg>
   </button>
-
   <ul>
-    <li><a href="index.html" class="active">Converti</a></li>
-    <li><a href="ridimensiona.html">Ridimensiona</a></li>
-    <li><a href="ruota-immagini.html">Ruota</a></li>
-    <li><a href="flip-immagini.html">Specchia</a></li>
-    <li><a href="crop-immagini.html">Ritaglia</a></li>
-    <li><a href="base64.html">Base64</a></li>
-    <li><a href="scala-grigi.html">Filtri</a></li>
-    <li><a href="weight.html">Converti Peso</a></li>
-    <li><a href="share.html">Condividi</a></li>
+    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg> <span data-translate-key="navConvert">Converti</span></a></li>
+    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> <span data-translate-key="navResize">Ridimensiona</span></a></li>
+    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.13 1L6 16a2 2 0 002 2h15"></path><path d="M1 6.13L16 6a2 2 0 012 2v15"></path></svg> <span data-translate-key="navCrop">Ritaglia</span></a></li>
+    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"></path></svg> <span data-translate-key="navRotate">Ruota</span></a></li>
+    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l-9 9h6v9h6v-9h6z"></path></svg> <span data-translate-key="navFilters">Filtri</span></a></li>
   </ul>
-
   <div class="nav-controls">
-    <select id="themeSelectorMobile" title="Seleziona Tema">
-      <option value="dark">Scuro</option>
-      <option value="light">Chiaro</option>
-      <option value="midnight">Midnight</option>
-      <option value="slate">Slate</option>
-    </select>
+      <select id="themeSelectorMobile"></select>
+      <select id="langSelectorMobile"></select>
   </div>
 </div>
 
+<nav>
+      <div class="logo">
+        <img src="https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2" alt="CronoTools Logo" />
+        ⚡ CronoTools
+      </div>
+
+      <div class="nav-title-scrolled" data-translate-key="mainTitle">
+        CronoTools
+      </div>
+
+      <!-- Nav desktop -->
+      <ul class="desktop-nav">
+        <li><a href="index.html" class="active">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+
+      <!-- Controls desktop -->
+      <div class="nav-controls">
+        <select id="themeSelector" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
+
+      <!-- Trigger mobile -->
+      <button id="mobile-menu-trigger" title="Apri Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile nav -->
+    <div class="mobile-nav" id="mobileMenu">
+      <button id="mobile-menu-close" title="Chiudi Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <ul>
+        <li><a href="index.html" class="active">Converti</a></li>
+        <li><a href="ridimensiona.html">Ridimensiona</a></li>
+        <li><a href="ruota-immagini.html">Ruota</a></li>
+        <li><a href="flip-immagini.html">Specchia</a></li>
+        <li><a href="crop-immagini.html">Ritaglia</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="scala-grigi.html">Filtri</a></li>
+        <li><a href="weight.html">Converti Peso</a></li>
+        <li><a href="share.html">Condividi</a></li>
+      </ul>
+
+      <!-- Controls mobile -->
+      <div class="nav-controls">
+        <select id="themeSelectorMobile" title="Seleziona Tema">
+          <option value="dark">Scuro</option>
+          <option value="light">Chiaro</option>
+          <option value="midnight">Midnight</option>
+          <option value="slate">Slate</option>
+        </select>
+      </div>
+    </div>
 <div class="content-wrapper">
   <header class="main-header">
-    <h1 id="mainTitle">Convertitore Immagini</h1>
+    <h1 id="mainTitle" data-translate-key="mainTitle">Convertitore Immagini</h1>
   </header>
-
   <main>
-    <p class="description">Trascina le tue immagini, scegli un formato e convertile all'istante. Un'esperienza di conversione potente, racchiusa nel design CronoGlass.</p>
+    <p class="description" data-translate-key="description">Trascina le tue immagini, scegli un formato e convertile all'istante. Un'esperienza di conversione potente, racchiusa in un design pulito e intuitivo.</p>
 
     <div class="ios-card">
       <div id="dropZone">
-        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-        <p><span>Trascina i file qui o</span> <span>clicca per selezionare</span></p>
+          <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <p><span data-translate-key="dropZoneText">Trascina i file qui o</span> <span data-translate-key="dropZoneTextClick">clicca per selezionare</span></p>
       </div>
       <input type="file" id="inputFiles" accept="image/*" multiple />
-
+      
       <div class="ios-list">
         <label for="outputFormat">
-          <span>Formato di destinazione</span>
+          <span data-translate-key="targetFormatLabel">Formato di destinazione</span>
           <select id="outputFormat">
-            <option value="jpeg">JPEG (.jpg, .jpeg)</option>
-            <option value="png">PNG (.png)</option>
-            <option value="webp">WebP (.webp)</option>
-            <option value="bmp">BMP (.bmp)</option>
-          </select>
+    <option value="jpeg">JPEG (.jpg, .jpeg)</option>
+    <option value="png">PNG (.png)</option>
+    <option value="webp">WebP (.webp)</option>
+    <option value="bmp">BMP (.bmp)</option>
+</select>
+
         </label>
         <div>
           <div class="progress-container" id="progressContainer">
             <div class="progress-bar" id="progressBar"></div>
           </div>
           <div class="progress-text" id="progressText"></div>
-          <button id="convertBtn">Converti</button>
+          <button id="convertBtn" data-translate-key="convertBtn">Converti</button>
         </div>
       </div>
     </div>
-
+    
     <div id="previewContainer" aria-live="polite"></div>
     <div id="resultContainer"></div>
   </main>
 
   <section class="seo-content">
-    <h2>Il Tuo Convertitore di Immagini Online Definitivo</h2>
-    <p>Nel mondo digitale di oggi, le immagini sono tutto. Che tu sia un web developer che ottimizza i tempi di caricamento, un social media manager che crea contenuti virali, o un fotografo che archivia i propri scatti, la gestione dei formati di immagine è cruciale. Il nostro strumento gratuito ti offre la flessibilità di convertire le immagini in formati moderni come WebP, standard come JPEG e PNG, e altri ancora, direttamente dal tuo browser, senza installare nulla e nel pieno rispetto della tua privacy.</p>
+      <h2 data-translate-key="seoTitle1">Il Tuo Convertitore di Immagini Online Definitivo</h2>
+      <p data-translate-key="seoIntro1">Nel mondo digitale di oggi, le immagini sono tutto. Che tu sia un web developer che ottimizza i tempi di caricamento, un social media manager che crea contenuti virali, o un fotografo che archivia i propri scatti, la gestione dei formati di immagine è cruciale. Il nostro strumento gratuito ti offre la flessibilità di convertire le immagini in formati moderni come WebP, standard come JPEG e PNG, e altri ancora, direttamente dal tuo browser, senza installare nulla e nel pieno rispetto della tua privacy.</p>
+      
+      <h3 data-translate-key="seoTitle2">Perché Convertire le Immagini?</h3>
+      <p data-translate-key="seoIntro2">Ogni formato ha i suoi punti di forza. La conversione ti permette di scegliere il formato giusto per ogni esigenza, bilanciando qualità e peso del file.</p>
+      <ul>
+        <li data-translate-key="seoPoint1">Ottimizzazione per il Web: Converti in WebP per ridurre drasticamente il peso delle immagini senza perdere qualità, migliorando la velocità del tuo sito e la SEO.</li>
+        <li data-translate-key="seoPoint2">Compatibilità: Assicurati che le tue immagini siano visualizzabili su ogni dispositivo e piattaforma convertendole in formati universalmente supportati come JPEG o PNG.</li>
+        <li data-translate-key="seoPoint3">Trasparenza e Qualità: Usa il formato PNG quando hai bisogno di sfondi trasparenti o di una compressione senza perdita di dati per loghi e grafiche.</li>
+      </ul>
 
-    <h3>Perché Convertire le Immagini?</h3>
-    <p>Ogni formato ha i suoi punti di forza. La conversione ti permette di scegliere il formato giusto per ogni esigenza, bilanciando qualità e peso del file.</p>
-    <ul>
-      <li>Ottimizzazione per il Web: Converti in WebP per ridurre drasticamente il peso delle immagini senza perdere qualità, migliorando la velocità del tuo sito e la SEO.</li>
-      <li>Compatibilità: Assicurati che le tue immagini siano visualizzabili su ogni dispositivo e piattaforma convertendole in formati universalmente supportati come JPEG o PNG.</li>
-      <li>Trasparenza e Qualità: Usa il formato PNG quando hai bisogno di sfondi trasparenti o di una compressione senza perdita di dati per loghi e grafiche.</li>
-    </ul>
+      <h3 data-translate-key="seoTitle3">Guida ai Formati di Immagine</h3>
+      <div class="format-guide">
+          <p><strong><span data-translate-key="seoFormatWebP">WebP</span></strong>: <span data-translate-key="seoDescWebP">Un formato moderno di Google che offre compressione superiore (sia con che senza perdita) rispetto a JPEG e PNG. Ideale per il web.</span></p>
+          <p><strong><span data-translate-key="seoFormatJPEG">JPEG</span></strong>: <span data-translate-key="seoDescJPEG">Il re della fotografia digitale. Offre un'ottima compressione con perdita, ideale per foto complesse con milioni di colori.</span></p>
+          <p><strong><span data-translate-key="seoFormatPNG">PNG</span></strong>: <span data-translate-key="seoDescPNG">Perfetto per grafiche, loghi e immagini che richiedono uno sfondo trasparente. Utilizza una compressione senza perdita di qualità.</span></p>
+          <p><strong><span data-translate-key="seoFormatTIFF">TIFF</span></strong>: <span data-translate-key="seoDescTIFF">Un formato di alta qualità, spesso non compresso, usato in fotografia professionale e stampa. Non è ideale per il web a causa delle grandi dimensioni dei file.</span></p>
+      </div>
 
-    <h3>Guida ai Formati di Immagine</h3>
-    <div class="format-guide">
-      <p><strong>WebP</strong>: Un formato moderno di Google che offre compressione superiore (sia con che senza perdita) rispetto a JPEG e PNG. Ideale per il web.</p>
-      <p><strong>JPEG</strong>: Il re della fotografia digitale. Offre un'ottima compressione con perdita, ideale per foto complesse con milioni di colori.</p>
-      <p><strong>PNG</strong>: Perfetto per grafiche, loghi e immagini che richiedono uno sfondo trasparente. Utilizza una compressione senza perdita di qualità.</p>
-      <p><strong>TIFF</strong>: Un formato di alta qualità, spesso non compresso, usato in fotografia professionale e stampa. Non è ideale per il web a causa delle grandi dimensioni dei file.</p>
-    </div>
-
-    <h3>Domande Frequenti (FAQ)</h3>
-    <div class="faq">
-      <div class="faq-item">
-        <h4>La conversione delle immagini è sicura?</h4>
-        <p>Assolutamente. Tutte le conversioni avvengono localmente nel tuo browser. Nessun file viene caricato sui nostri server, garantendo la massima privacy e sicurezza.</p>
+      <h3 data-translate-key="seoTitle4">Domande Frequenti (FAQ)</h3>
+      <div class="faq">
+          <div class="faq-item">
+              <h4 data-translate-key="seoFaq1Title">La conversione delle immagini è sicura?</h4>
+              <p data-translate-key="seoFaq1Desc">Assolutamente. Tutte le conversioni avvengono localmente nel tuo browser. Nessun file viene caricato sui nostri server, garantendo la massima privacy e sicurezza.</p>
+          </div>
+          <div class="faq-item">
+              <h4 data-translate-key="seoFaq2Title">Posso convertire più immagini contemporaneamente?</h4>
+              <p data-translate-key="seoFaq2Desc">Sì, il nostro strumento è progettato per la conversione multipla. Trascina tutti i file che desideri, seleziona il formato e convertili tutti in una volta.</p>
+          </div>
+          <div class="faq-item">
+              <h4 data-translate-key="seoFaq3Title">Perderò qualità durante la conversione?</h4>
+              <p data-translate-key="seoFaq3Desc">Dipende dai formati. La conversione verso un formato 'lossy' (con perdita) come JPEG implica sempre una minima perdita di qualità per ridurre le dimensioni. La conversione a formati 'lossless' (senza perdita) come PNG preserverà la qualità originale.</p>
+          </div>
       </div>
-      <div class="faq-item">
-        <h4>Posso convertire più immagini contemporaneamente?</h4>
-        <p>Sì, il nostro strumento è progettato per la conversione multipla. Trascina tutti i file che desideri, seleziona il formato e convertili tutti in una volta.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Perderò qualità durante la conversione?</h4>
-        <p>Dipende dai formati. La conversione verso un formato 'lossy' (con perdita) come JPEG implica sempre una minima perdita di qualità per ridurre le dimensioni. La conversione a formati 'lossless' (senza perdita) come PNG preserverà la qualità originale.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 </div>
 
 <div id="toastContainer"></div>
@@ -676,64 +809,74 @@ button:active {
   </div>
 </div>
 
+<!-- UTIF Library for TIFF support -->
 <script src="https://cdn.jsdelivr.net/npm/utif@4.6.0/UTIF.min.js"></script>
+<!-- JSZip for file compression -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const body = document.body;
-  const mobileMenu = document.getElementById("mobileMenu");
-  const mobileTrigger = document.getElementById("mobile-menu-trigger");
-  const mobileClose = document.getElementById("mobile-menu-close");
+     document.addEventListener("DOMContentLoaded", () => {
+        const body = document.body;
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileTrigger = document.getElementById("mobile-menu-trigger");
+        const mobileClose = document.getElementById("mobile-menu-close");
 
-  mobileTrigger.addEventListener("click", () => {
-    mobileMenu.classList.add("active");
-    body.classList.add("no-scroll");
-  });
+        // Apri menu
+        mobileTrigger.addEventListener("click", () => {
+          mobileMenu.classList.add("active");
+          body.classList.add("no-scroll");
+        });
 
-  mobileClose.addEventListener("click", () => {
-    mobileMenu.classList.remove("active");
-    body.classList.remove("no-scroll");
-  });
+        // Chiudi menu
+        mobileClose.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+          body.classList.remove("no-scroll");
+        });
 
-  function applyTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-    document.getElementById("themeSelector").value = theme;
-    document.getElementById("themeSelectorMobile").value = theme;
-  }
+        // Cambia tema
+        function applyTheme(theme) {
+          document.documentElement.setAttribute("data-theme", theme);
+          localStorage.setItem("theme", theme);
+          document.getElementById("themeSelector").value = theme;
+          document.getElementById("themeSelectorMobile").value = theme;
+        }
 
-  document.getElementById("themeSelector").addEventListener("change", (e) => applyTheme(e.target.value));
-  document.getElementById("themeSelectorMobile").addEventListener("change", (e) => applyTheme(e.target.value));
+        document.getElementById("themeSelector").addEventListener("change", (e) => applyTheme(e.target.value));
+        document.getElementById("themeSelectorMobile").addEventListener("change", (e) => applyTheme(e.target.value));
 
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  applyTheme(savedTheme);
+        // Carica tema salvato
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(savedTheme);
 
-  document.addEventListener("click", (e) => {
-    if (mobileMenu.classList.contains("active")) {
-      if (e.target === mobileMenu || (!mobileMenu.contains(e.target) && e.target !== mobileTrigger)) {
-        mobileMenu.classList.remove("active");
-        body.classList.remove("no-scroll");
-      }
-    }
-  });
+        // Chiudi menu mobile quando clicchi su overlay o link
+        document.addEventListener("click", (e) => {
+          if (mobileMenu.classList.contains("active")) {
+            if (e.target === mobileMenu || (!mobileMenu.contains(e.target) && e.target !== mobileTrigger)) {
+              mobileMenu.classList.remove("active");
+              body.classList.remove("no-scroll");
+            }
+          }
+        });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
-      mobileMenu.classList.remove("active");
-      body.classList.remove("no-scroll");
-    }
-  });
+        // Chiudi menu con ESC
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+            mobileMenu.classList.remove("active");
+            body.classList.remove("no-scroll");
+          }
+        });
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 768 && mobileMenu.classList.contains("active")) {
-      mobileMenu.classList.remove("active");
-      body.classList.remove("no-scroll");
-    }
-  });
-});
-
+        // Chiudi menu automaticamente quando si ridimensiona la finestra
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 768 && mobileMenu.classList.contains("active")) {
+            mobileMenu.classList.remove("active");
+            body.classList.remove("no-scroll");
+          }
+        });
+      });
+// script.js — versione "solo formati reali", pronta all'uso
 document.addEventListener('DOMContentLoaded', () => {
+  // --- DOM ---
   const dom = {
     input: document.getElementById('inputFiles'),
     outputFormat: document.getElementById('outputFormat'),
@@ -751,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toastContainer: document.getElementById('toastContainer')
   };
 
+  // --- Utils UI (minimi, senza sistema traduzioni) ---
   const ensureToastContainer = () => {
     if (!dom.toastContainer) {
       const div = document.createElement('div');
@@ -759,23 +903,20 @@ document.addEventListener('DOMContentLoaded', () => {
       dom.toastContainer = div;
     }
   };
-
   const showToast = (msg) => {
     ensureToastContainer();
     const t = document.createElement('div');
     t.className = 'toast';
-    t.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>${msg}`;
+    t.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right:.5rem;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>${msg}`;
     dom.toastContainer.appendChild(t);
     setTimeout(() => t.remove(), 4000);
   };
-
   const showModal = (title, message) => {
     if (!dom.modal) return alert(`${title}\n\n${message}`);
     dom.modalTitle.textContent = title;
     dom.modalMessage.textContent = message;
     dom.modal.classList.add('visible');
   };
-
   const hideModal = () => dom.modal && dom.modal.classList.remove('visible');
   dom.modalOk && dom.modalOk.addEventListener('click', hideModal);
   dom.modal && dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) hideModal(); });
@@ -788,17 +929,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateProgress(0);
   };
-
   const hideProgress = () => {
     if (dom.progressWrap) dom.progressWrap.style.display = 'none';
     if (dom.progressText) dom.progressText.style.display = 'none';
   };
-
   const updateProgress = (p, txt) => {
     if (dom.progressBar) dom.progressBar.style.width = `${Math.max(0, Math.min(100, p))}%`;
     if (txt && dom.progressText) dom.progressText.textContent = txt;
   };
 
+  // --- Supporto formati output ---
   const isWebPSupported = (() => {
     try {
       const c = document.createElement('canvas');
@@ -806,6 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch { return false; }
   })();
 
+  // Inizializza il select con SOLI formati reali e supportati
   const initOutputFormats = () => {
     if (!dom.outputFormat) return;
     const opts = [
@@ -824,7 +965,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   initOutputFormats();
 
-  let loadedFiles = [];
+  // --- Caricamento file & anteprime (solo immagini decodificabili dal browser) ---
+  let loadedFiles = []; // solo file effettivamente decodificabili
   const clearPreviews = () => { if (dom.preview) dom.preview.innerHTML = ''; };
 
   const testDecodeImage = (file) => new Promise((resolve, reject) => {
@@ -850,8 +992,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = await testDecodeImage(f);
         loadedFiles.push(f);
 
+        // anteprima
         if (dom.preview) {
           const thumb = document.createElement('img');
+          // riutilizziamo un DataURL per non tenere in vita Blob URL
           const reader = new FileReader();
           reader.onload = e => {
             thumb.src = e.target.result;
@@ -868,9 +1012,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // --- Eventi dropzone/input ---
   dom.dropZone && dom.dropZone.addEventListener('click', () => dom.input && dom.input.click());
   dom.input && dom.input.addEventListener('change', (e) => handleFiles(e.target.files));
-
   if (dom.dropZone) {
     ['dragover', 'dragleave', 'drop'].forEach(ev => {
       dom.dropZone.addEventListener(ev, e => {
@@ -882,6 +1026,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- Converter helpers ---
   const drawOnWhite = (sourceCanvas) => {
     const c = document.createElement('canvas');
     c.width = sourceCanvas.width;
@@ -893,37 +1038,41 @@ document.addEventListener('DOMContentLoaded', () => {
     return c;
   };
 
+  // Crea un Blob BMP 24-bit vero (BGR, bottom-up, row padding a 4 byte)
   const canvasToBMP24 = (srcCanvas) => {
-    const c = drawOnWhite(srcCanvas);
+    const c = drawOnWhite(srcCanvas); // niente alpha nel BMP: flattiamo su bianco
     const w = c.width, h = c.height;
     const ctx = c.getContext('2d');
     const { data } = ctx.getImageData(0, 0, w, h);
 
-    const rowBytes = ((w * 3 + 3) & ~3);
+    const rowBytes = ((w * 3 + 3) & ~3);     // 3 byte per pixel + padding a 4
     const imageSize = rowBytes * h;
-    const fileSize = 54 + imageSize;
+    const fileSize = 54 + imageSize;         // 14 (BMP) + 40 (DIB) + data
     const buf = new ArrayBuffer(fileSize);
     const dv = new DataView(buf);
     let p = 0;
 
-    dv.setUint8(p++, 0x42);
-    dv.setUint8(p++, 0x4D);
+    // Header BMP (14)
+    dv.setUint8(p++, 0x42); // 'B'
+    dv.setUint8(p++, 0x4D); // 'M'
     dv.setUint32(p, fileSize, true); p += 4;
-    dv.setUint32(p, 0, true); p += 4;
-    dv.setUint32(p, 54, true); p += 4;
+    dv.setUint32(p, 0, true); p += 4;       // reserved
+    dv.setUint32(p, 54, true); p += 4;      // data offset
 
-    dv.setUint32(p, 40, true); p += 4;
+    // DIB BITMAPINFOHEADER (40)
+    dv.setUint32(p, 40, true); p += 4;      // header size
     dv.setInt32(p, w, true); p += 4;
-    dv.setInt32(p, h, true); p += 4;
-    dv.setUint16(p, 1, true); p += 2;
-    dv.setUint16(p, 24, true); p += 2;
-    dv.setUint32(p, 0, true); p += 4;
+    dv.setInt32(p, h, true); p += 4;        // positivo = bottom-up
+    dv.setUint16(p, 1, true); p += 2;       // planes
+    dv.setUint16(p, 24, true); p += 2;      // bpp
+    dv.setUint32(p, 0, true); p += 4;       // BI_RGB (no compression)
     dv.setUint32(p, imageSize, true); p += 4;
+    dv.setInt32(p, 2835, true); p += 4;     // ~72 DPI
     dv.setInt32(p, 2835, true); p += 4;
-    dv.setInt32(p, 2835, true); p += 4;
-    dv.setUint32(p, 0, true); p += 4;
-    dv.setUint32(p, 0, true); p += 4;
+    dv.setUint32(p, 0, true); p += 4;       // colors used
+    dv.setUint32(p, 0, true); p += 4;       // important colors
 
+    // Pixel data (B,G,R) bottom-up
     let offset = 54;
     const pad = rowBytes - w * 3;
     for (let y = h - 1; y >= 0; y--) {
@@ -940,6 +1089,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Blob([buf], { type: 'image/bmp' });
   };
 
+  // Converters reali
   const converters = {
     png: async (canvas) => new Promise(res => canvas.toBlob(res, 'image/png')),
     jpeg: async (canvas, quality = 0.92) => new Promise(res => drawOnWhite(canvas).toBlob(res, 'image/jpeg', quality)),
@@ -953,6 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const extMap = { png: 'png', jpeg: 'jpg', jpg: 'jpg', webp: 'webp', bmp: 'bmp' };
 
+  // --- Processo singolo file ---
   const processFile = (file, targetFormat) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -965,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
 
-          const fn = converters[targetFormat] || converters.png;
+          const fn = converters[targetFormat] || converters.png; // sicurezza
           const blob = await fn(canvas);
           const url = URL.createObjectURL(blob);
           const ext = extMap[targetFormat] || 'png';
@@ -982,6 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.readAsDataURL(file);
   });
 
+  // --- Azione converti ---
   dom.convertBtn && dom.convertBtn.addEventListener('click', async () => {
     if (!loadedFiles.length) {
       showModal('Nessun file', 'Seleziona almeno un\'immagine prima di procedere.');
@@ -996,6 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const total = loadedFiles.length;
     let done = 0;
 
+    // wrapper card visiva
     const card = document.createElement('div');
     card.className = 'ios-card';
     card.style.padding = '1rem';
@@ -1018,7 +1171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.appendChild(item);
       } catch (e) {
         console.error(e);
-        showToast(`Impossibile convertire ${file.name} → ${fmt}.`);
+        showToast(`Impossibile convertire ${file.name} → ${fmt}. Salvato niente.`);
       }
       done++;
       updateProgress((done / total) * 100);
@@ -1028,22 +1181,28 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { hideProgress(); dom.convertBtn.disabled = false; }, 800);
   });
 
+  // --- piccoli extra UX ---
+  // spinta visiva sul bottone quando ci sono file validi
   const maybePulseBtn = () => {
     if (!dom.convertBtn) return;
     dom.convertBtn.classList.remove('pulsing');
     if (loadedFiles.length) setTimeout(() => dom.convertBtn.classList.add('pulsing'), 350);
   };
 
+  // ricarica file e attiva pulsazione
   const bindHandleFiles = async (files) => {
     await handleFiles(files);
     maybePulseBtn();
   };
 
+  // collega ai listener già creati
   if (dom.input) dom.input.addEventListener('change', (e) => bindHandleFiles(e.target.files));
   if (dom.dropZone) dom.dropZone.addEventListener('drop', (e) => { e.preventDefault(); bindHandleFiles(e.dataTransfer.files); });
 
+  // Se la pagina aveva già opzioni fake nel <select>, le eliminiamo comunque ora.
   initOutputFormats();
 });
+
 </script>
 
 </body>
