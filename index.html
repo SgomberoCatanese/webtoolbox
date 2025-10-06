@@ -4,8 +4,512 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Convertitore Immagini Pro – CronoTools</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <meta name="description" content="Converti immagini con un'interfaccia avanzata ispirata a iOS. Supporta drag-and-drop, temi multipli e animazioni fluide con il design CronoGlass." />
-  <link rel="stylesheet" href="style.css" />
+  <style>
+/* ===================================================================
+ * CRONOGLASS DESIGN SYSTEM - Replicato da Cronoshop
+ * ===================================================================
+ */
+:root {
+  --ios-blue: #007aff;
+  --ios-green: #34c759;
+  --ios-pink: #ff2d92;
+  --ios-orange: #ff9500;
+  --ios-purple: #af52de;
+  --ios-bg-primary: #f2f2f7;
+  --ios-bg-secondary: #ffffff;
+  --ios-text-primary: #000000;
+  --ios-text-secondary: rgba(60, 60, 67, 0.6);
+  --ios-separator: rgba(60, 60, 67, 0.29);
+  --ios-radius-sm: 8px;
+  --ios-radius-md: 12px;
+  --ios-radius-lg: 20px;
+  --ios-radius-xl: 24px;
+}
+
+[data-theme="dark"] {
+  --ios-blue: #0a84ff;
+  --ios-green: #30d158;
+  --ios-pink: #ff375f;
+  --ios-orange: #ff9f0a;
+  --ios-purple: #bf5af2;
+  --ios-bg-primary: #000000;
+  --ios-bg-secondary: #1c1c1e;
+  --ios-text-primary: #ffffff;
+  --ios-text-secondary: rgba(235, 235, 245, 0.6);
+  --ios-separator: rgba(84, 84, 88, 0.65);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, var(--ios-pink) 0%, var(--ios-orange) 50%, var(--ios-purple) 100%);
+  color: var(--ios-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body.no-scroll { overflow: hidden; }
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88px;
+  background: rgba(242, 242, 247, 0.7);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--ios-separator);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+[data-theme="dark"] nav {
+  background: rgba(28, 28, 30, 0.7);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ios-text-primary);
+}
+
+.logo img {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ios-radius-sm);
+}
+
+.nav-title-scrolled {
+  display: none;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.desktop-nav {
+  display: flex;
+  list-style: none;
+  gap: 8px;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.desktop-nav a {
+  padding: 8px 16px;
+  border-radius: var(--ios-radius-sm);
+  text-decoration: none;
+  color: var(--ios-text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.desktop-nav a:hover {
+  background: rgba(120, 120, 128, 0.12);
+  color: var(--ios-text-primary);
+}
+
+.desktop-nav a.active {
+  background: var(--ios-blue);
+  color: white;
+}
+
+.nav-controls select {
+  padding: 8px 12px;
+  border-radius: var(--ios-radius-sm);
+  border: none;
+  background: rgba(120, 120, 128, 0.12);
+  color: var(--ios-text-primary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#mobile-menu-trigger {
+  display: none;
+  background: rgba(120, 120, 128, 0.12);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+#mobile-menu-trigger svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--ios-text-primary);
+}
+
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background: var(--ios-bg-secondary);
+  backdrop-filter: blur(20px);
+  transform: translateX(100%);
+  transition: transform 0.3s;
+  z-index: 1001;
+  padding: 100px 20px 20px;
+  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-nav.active {
+  transform: translateX(0);
+}
+
+#mobile-menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(120, 120, 128, 0.12);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mobile-nav ul {
+  list-style: none;
+}
+
+.mobile-nav a {
+  display: block;
+  padding: 16px;
+  text-decoration: none;
+  color: var(--ios-text-primary);
+  font-weight: 500;
+  border-radius: var(--ios-radius-md);
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a.active {
+  background: var(--ios-blue);
+  color: white;
+}
+
+.content-wrapper {
+  padding-top: 88px;
+  min-height: 100vh;
+}
+
+.main-header {
+  text-align: center;
+  padding: 60px 20px 20px;
+  color: white;
+}
+
+.main-header h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+.description {
+  text-align: center;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.ios-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--ios-radius-xl);
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  margin-bottom: 32px;
+}
+
+[data-theme="dark"] .ios-card {
+  background: rgba(28, 28, 30, 0.95);
+}
+
+#dropZone {
+  border: 2px dashed var(--ios-separator);
+  border-radius: var(--ios-radius-lg);
+  padding: 60px 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: rgba(120, 120, 128, 0.04);
+}
+
+#dropZone:hover {
+  border-color: var(--ios-blue);
+  background: rgba(0, 122, 255, 0.05);
+}
+
+#dropZone.drag-glow {
+  border-color: var(--ios-blue);
+  background: rgba(0, 122, 255, 0.1);
+  transform: scale(1.02);
+}
+
+.upload-icon {
+  width: 64px;
+  height: 64px;
+  stroke: var(--ios-blue);
+  margin: 0 auto 20px;
+}
+
+#dropZone p {
+  font-size: 16px;
+  color: var(--ios-text-secondary);
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.ios-list {
+  margin-top: 32px;
+}
+
+.ios-list label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 0.5px solid var(--ios-separator);
+  font-weight: 500;
+}
+
+.ios-list select {
+  padding: 8px 16px;
+  border-radius: var(--ios-radius-sm);
+  border: none;
+  background: rgba(120, 120, 128, 0.12);
+  color: var(--ios-text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background: rgba(120, 120, 128, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 20px 0;
+  display: none;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ios-blue), var(--ios-purple));
+  width: 0;
+  transition: width 0.3s;
+}
+
+.progress-text {
+  text-align: center;
+  color: var(--ios-text-secondary);
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  background: var(--ios-blue);
+  border: none;
+  border-radius: var(--ios-radius-md);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+#previewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+  justify-content: center;
+}
+
+#previewContainer img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--ios-radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#resultContainer {
+  margin-top: 32px;
+}
+
+.seo-content {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--ios-radius-xl);
+  padding: 48px;
+  margin-top: 48px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .seo-content {
+  background: rgba(28, 28, 30, 0.95);
+}
+
+.seo-content h2 {
+  font-size: 32px;
+  margin-bottom: 24px;
+  color: var(--ios-text-primary);
+}
+
+.seo-content h3 {
+  font-size: 24px;
+  margin: 32px 0 16px;
+  color: var(--ios-text-primary);
+}
+
+.seo-content p,
+.seo-content li {
+  line-height: 1.7;
+  color: var(--ios-text-secondary);
+  margin-bottom: 16px;
+}
+
+.seo-content ul {
+  padding-left: 24px;
+}
+
+.faq-item {
+  background: rgba(120, 120, 128, 0.08);
+  border-radius: var(--ios-radius-md);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.faq-item h4 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--ios-text-primary);
+}
+
+#toastContainer {
+  position: fixed;
+  top: 108px;
+  right: 20px;
+  z-index: 2000;
+}
+
+.toast {
+  background: var(--ios-bg-secondary);
+  padding: 16px 20px;
+  border-radius: var(--ios-radius-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  margin-bottom: 12px;
+  animation: slideIn 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.modal-backdrop.visible {
+  display: flex;
+}
+
+.modal-dialog {
+  background: var(--ios-bg-secondary);
+  border-radius: var(--ios-radius-lg);
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.modal-dialog h3 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.modal-dialog p {
+  color: var(--ios-text-secondary);
+  margin-bottom: 24px;
+}
+
+.modal-buttons button {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  nav { height: 72px; padding: 0 16px; }
+  .logo { font-size: 18px; }
+  .logo img { width: 32px; height: 32px; }
+  .desktop-nav { display: none; }
+  .nav-title-scrolled { display: block; margin-left: auto; margin-right: 16px; }
+  #mobile-menu-trigger { display: flex; }
+  .main-header { padding: 40px 16px 16px; }
+  .main-header h1 { font-size: 2rem; }
+  .ios-card { padding: 24px 20px; }
+  #dropZone { padding: 40px 20px; }
+  .seo-content { padding: 32px 24px; }
+  .mobile-nav { width: 100%; }
+}
+  </style>
 </head>
 <body>
 
