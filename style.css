@@ -1,185 +1,897 @@
 /*
-  Stile CSS modificato per replicare l'estetica di iOS.
-  - Font di sistema Apple
-  - Palette colori Dark Mode di iOS
-  - Componenti UI con angoli arrotondati e layout pulito
-*/
+ * ===================================================================
+ * CRONOTOOLS - CronoGlass Design System (iOS Replication)
+ * ===================================================================
+ * Design fedele al 100% alle specifiche iOS di CronoShop
+ * ===================================================================
+ */
 
-/* Reset e Stili Globali */
+/* --- [1] RESET E IMPOSTAZIONI BASE --- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  /* Utilizza il font di sistema di Apple/macOS per un aspetto nativo. */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: #000000; /* Sfondo nero puro per schermi OLED, tipico di iOS */
-  color: #F2F2F7; /* Colore testo primario di iOS (leggermente off-white) */
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* Navigazione Superiore */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f0f0f0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- [2] VARIABILI COLORE iOS --- */
+:root {
+  /* iOS System Colors - Light Mode */
+  --ios-blue: #007aff;
+  --ios-green: #34c759;
+  --ios-red: #ff3b30;
+  --ios-orange: #ff9500;
+  --ios-purple: #af52de;
+  --ios-pink: #ff2d92;
+  --ios-yellow: #ffcc00;
+  --ios-indigo: #5856d6;
+  --ios-teal: #5ac8fa;
+  --ios-mint: #00c7be;
+
+  /* iOS Backgrounds */
+  --ios-bg-primary: #f2f2f7;
+  --ios-bg-secondary: #ffffff;
+  --ios-bg-tertiary: #f2f2f7;
+  --ios-bg-grouped: #f2f2f7;
+  --ios-bg-elevated: #ffffff;
+
+  /* iOS Text Colors */
+  --ios-text-primary: #000000;
+  --ios-text-secondary: #3c3c43;
+  --ios-text-tertiary: rgba(60, 60, 67, 0.6);
+  --ios-text-quaternary: rgba(60, 60, 67, 0.3);
+
+  /* iOS Fill Colors */
+  --ios-fill-primary: rgba(120, 120, 128, 0.2);
+  --ios-fill-secondary: rgba(120, 120, 128, 0.16);
+  --ios-fill-tertiary: rgba(118, 118, 128, 0.12);
+  --ios-fill-quaternary: rgba(116, 116, 128, 0.08);
+
+  /* iOS Separators */
+  --ios-separator-opaque: #c6c6c8;
+  --ios-separator-non-opaque: rgba(60, 60, 67, 0.29);
+
+  /* iOS Spacing */
+  --ios-spacing-xs: 4px;
+  --ios-spacing-sm: 8px;
+  --ios-spacing-md: 16px;
+  --ios-spacing-lg: 24px;
+  --ios-spacing-xl: 32px;
+  --ios-spacing-xxl: 48px;
+
+  /* iOS Border Radius */
+  --ios-radius-sm: 8px;
+  --ios-radius-md: 12px;
+  --ios-radius-lg: 16px;
+  --ios-radius-xl: 20px;
+  --ios-radius-full: 50px;
+
+  /* iOS Shadows */
+  --ios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --ios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --ios-shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  /* iOS Transitions */
+  --ios-transition-fast: 0.15s ease-out;
+  --ios-transition-normal: 0.25s ease-out;
+  --ios-transition-slow: 0.4s ease-out;
+
+  /* Variabili legacy per compatibilità */
+  --bg-primary: #f2f2f7;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e5e5ea;
+  --bg-modal-backdrop: rgba(0, 0, 0, 0.3);
+  --bg-modal: rgba(245, 245, 247, 0.9);
+  --text-primary: #000000;
+  --text-secondary: rgba(60, 60, 67, 0.6);
+  --text-tertiary: rgba(60, 60, 67, 0.4);
+  --accent-primary: #007aff;
+  --accent-secondary: #ff9500;
+  --accent-destructive: #ff3b30;
+  --separator-color: #c6c6c8;
+  --separator-modal: rgba(60, 60, 67, 0.29);
+  --nav-bg: rgba(249, 249, 249, 0.8);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --glow-color: rgba(0, 122, 255, 0.7);
+}
+
+/* --- [3] DARK MODE --- */
+body.ios-dark-mode,
+[data-theme="dark"] {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+[data-theme="dark"] {
+  --ios-blue: #0a84ff;
+  --ios-green: #30d158;
+  --ios-red: #ff453a;
+  --ios-orange: #ff9f0a;
+  --ios-purple: #bf5af2;
+  --ios-pink: #ff375f;
+  --ios-yellow: #ffd60a;
+  --ios-indigo: #5e5ce6;
+  --ios-teal: #64d2ff;
+  --ios-mint: #63e6e2;
+
+  --ios-bg-primary: #000000;
+  --ios-bg-secondary: #1c1c1e;
+  --ios-bg-tertiary: #2c2c2e;
+  --ios-bg-grouped: #000000;
+  --ios-bg-elevated: #1c1c1e;
+
+  --ios-text-primary: #ffffff;
+  --ios-text-secondary: #ebebf5;
+  --ios-text-tertiary: rgba(235, 235, 245, 0.6);
+  --ios-text-quaternary: rgba(235, 235, 245, 0.3);
+
+  --ios-fill-primary: rgba(120, 120, 128, 0.36);
+  --ios-fill-secondary: rgba(120, 120, 128, 0.32);
+  --ios-fill-tertiary: rgba(118, 118, 128, 0.24);
+  --ios-fill-quaternary: rgba(116, 116, 128, 0.18);
+
+  --ios-separator-opaque: #38383a;
+  --ios-separator-non-opaque: rgba(84, 84, 88, 0.65);
+
+  /* Legacy vars */
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --bg-tertiary: #3a3a3c;
+  --bg-modal-backdrop: rgba(0, 0, 0, 0.6);
+  --bg-modal: rgba(40, 40, 42, 0.9);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-tertiary: rgba(235, 235, 245, 0.4);
+  --accent-primary: #0a84ff;
+  --accent-secondary: #ff9f0a;
+  --accent-destructive: #ff453a;
+  --separator-color: #38383a;
+  --separator-modal: rgba(84, 84, 88, 0.65);
+  --nav-bg: rgba(28, 28, 30, 0.8);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --glow-color: rgba(10, 132, 255, 0.8);
+}
+
+[data-theme="midnight"] {
+  --ios-bg-primary: #000000;
+  --ios-bg-secondary: #1d1d1f;
+  --ios-bg-tertiary: #2c2c2e;
+  --ios-text-primary: #ffffff;
+  --ios-blue: #0a84ff;
+  --ios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --nav-bg: rgba(0, 0, 0, 0.75);
+
+  --bg-primary: #000000;
+  --bg-secondary: #1d1d1f;
+  --bg-tertiary: #2c2c2e;
+  --text-primary: #ffffff;
+  --accent-primary: #0a84ff;
+  --shadow-color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="slate"] {
+  --ios-bg-primary: #29313e;
+  --ios-bg-secondary: #354152;
+  --ios-bg-tertiary: #495867;
+  --ios-text-primary: #f7f7f7;
+  --ios-orange: #f9a03f;
+  --ios-red: #e54b4b;
+  --ios-separator-opaque: #495867;
+  --nav-bg: rgba(25, 32, 41, 0.8);
+
+  --bg-primary: #29313e;
+  --bg-secondary: #354152;
+  --bg-tertiary: #495867;
+  --text-primary: #f7f7f7;
+  --accent-primary: #f9a03f;
+  --accent-destructive: #e54b4b;
+  --separator-color: #495867;
+  --glow-color: rgba(249, 160, 63, 0.7);
+}
+
+body {
+  background: var(--ios-bg-primary);
+  color: var(--ios-text-primary);
+  transition: background 0.4s, color 0.4s;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* --- [4] ANIMATIONS --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 var(--glow-color); }
+  70% { box-shadow: 0 0 0 10px rgba(10, 132, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes glow-border {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--glow-color), inset 0 0 5px var(--glow-color);
+    border-color: var(--accent-primary);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px var(--glow-color);
+    border-color: var(--accent-primary);
+  }
+}
+
+@keyframes progressGlow {
+  0% { box-shadow: 0 0 5px var(--accent-primary); }
+  50% { box-shadow: 0 0 20px var(--accent-primary); }
+  100% { box-shadow: 0 0 5px var(--accent-primary); }
+}
+
+/* --- [5] NAVBAR iOS --- */
 nav {
-  /* Effetto vetro/traslucido tipico di iOS */
-  background-color: rgba(28, 28, 30, 0.75); /* Grigio scuro traslucido */
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 0.5px solid rgba(84, 84, 88, 0.65); /* Separatore sottile */
-  
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--ios-separator-non-opaque);
+  padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+  transition: all var(--ios-transition-fast);
 }
 
 nav .logo {
-  font-weight: 600; /* Semibold, come i titoli di iOS */
-  font-size: 1.1rem; /* Dimensione standard per i titoli della nav */
-  color: #F2F2F7;
+  font-weight: 600;
+  color: var(--ios-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
 }
 
-nav ul {
+nav .logo img {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ios-radius-sm);
+  object-fit: cover;
+}
+
+nav .nav-title-scrolled {
+  font-weight: 600;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  color: var(--ios-text-primary);
+}
+
+nav .desktop-nav {
   display: flex;
-  gap: 1.5rem; /* Maggiore spaziatura */
+  gap: 1.5rem;
   list-style: none;
-  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
 }
 
 nav a {
+  color: var(--ios-blue);
   text-decoration: none;
-  color: #0A84FF; /* Blu standard di iOS per link e azioni */
-  font-weight: 500; /* Peso medio per i link */
-  font-size: 1.05rem;
-  transition: opacity 0.2s ease-in-out;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
 nav a:hover {
-  opacity: 0.7;
+  color: var(--ios-text-primary);
 }
 
 nav a.active {
-  color: #F2F2F7; /* L'elemento attivo diventa bianco, come una tab selezionata */
+  color: var(--ios-text-primary);
   font-weight: 600;
 }
 
-/* Header */
-header {
-  padding: 2.5rem 1.5rem;
-  text-align: center;
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-header h1 {
-    font-size: 2.5rem; /* Titolo grande e d'impatto */
-    font-weight: 700;
+/* --- [6] MOBILE MENU --- */
+#mobile-menu-trigger, #mobile-menu-close {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--ios-blue);
+  z-index: 110;
 }
 
-/* Contenuto Principale */
-main {
-  flex: 1;
-  padding: 1rem 1.5rem;
-  max-width: 600px;
-  margin: 0 auto;
+#mobile-menu-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+}
+
+#mobile-menu-trigger svg, #mobile-menu-close svg {
+  width: 28px;
+  height: 28px;
+}
+
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-modal);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 6rem 1.5rem 2rem;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.mobile-nav.active {
+  transform: translateX(0);
+}
+
+.mobile-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   width: 100%;
 }
 
-/* Sezione Upload - Stile "Card" di iOS */
-.upload-section {
-  background-color: #1C1C1E; /* Colore delle card/widget di iOS */
-  border: none; /* Rimuoviamo il bordo tratteggiato */
-  padding: 2.5rem;
-  text-align: center;
-  border-radius: 20px; /* Angoli molto arrotondati, tipici delle card */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+.mobile-nav ul a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.25rem;
+  padding: 1rem;
+  color: var(--ios-text-primary);
+  font-weight: 500;
+  border-bottom: 0.5px solid var(--ios-separator-opaque);
+  text-decoration: none;
 }
 
-.upload-section:hover, .upload-section.hover {
-  background-color: #2C2C2E; /* Leggero cambio di colore al passaggio del mouse */
-  transform: scale(1.02); /* Effetto di ingrandimento sottile */
+.mobile-nav ul a svg {
+  width: 24px;
+  height: 24px;
+  color: var(--ios-blue);
+}
+
+.mobile-nav ul li:first-child a {
+  border-top: 0.5px solid var(--ios-separator-opaque);
+}
+
+.mobile-nav .nav-controls {
+  margin-top: auto;
+  justify-content: center;
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+/* --- [7] CONTENT WRAPPER --- */
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+header.main-header {
+  padding-top: 1rem;
+}
+
+header.main-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  transition: opacity 0.2s ease-in-out;
+  color: var(--ios-text-primary);
+}
+
+p.description {
+  margin: 0.5rem 0 2.5rem 0;
+  color: var(--ios-text-secondary);
+  line-height: 1.5;
+  font-size: 1.1rem;
+}
+
+/* --- [8] iOS CARD --- */
+.ios-card {
+  background: var(--ios-bg-secondary);
+  border-radius: var(--ios-radius-md);
+  box-shadow: var(--ios-shadow-sm);
+  transition: background 0.4s, box-shadow 0.4s;
+  border: 1px solid var(--ios-separator-non-opaque);
+}
+
+.ios-list > * {
+  padding: 1rem 1.25rem;
+}
+
+.ios-list > :not(:last-child) {
+  border-bottom: 0.5px solid var(--ios-separator-opaque);
+}
+
+.ios-list label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+/* --- [9] DROP ZONE --- */
+#dropZone {
+  border: 2px dashed var(--ios-fill-tertiary);
+  border-radius: 18px;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--ios-text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin: 1.5rem;
+  position: relative;
+}
+
+#dropZone:hover {
+  border-color: var(--ios-blue);
+  background: var(--ios-fill-quaternary);
+}
+
+#dropZone.drag-glow {
+  border-style: solid;
+  animation: glow-border 1.5s infinite;
+}
+
+#dropZone .upload-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1rem;
+  color: var(--ios-text-secondary);
+  transition: color 0.2s;
+}
+
+#dropZone:hover .upload-icon {
+  color: var(--ios-blue);
+}
+
+#dropZone p {
+  margin: 0;
+  font-weight: 500;
+}
+
+#dropZone p span {
+  color: var(--ios-blue);
+  font-weight: 600;
 }
 
 input[type="file"] {
   display: none;
 }
 
-.select-format {
-  display: block;
-  margin: 2.5rem 0 0.5rem;
-  color: #AEAEB2; /* Colore testo secondario */
-  font-weight: 500;
-  text-align: left;
-}
-
-/* Menu a tendina */
+/* --- [10] SELECT --- */
 select {
+  padding: 0.7rem 1rem;
+  border-radius: var(--ios-radius-sm);
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: var(--ios-fill-tertiary);
+  color: var(--ios-text-primary);
+  font-family: inherit;
+  font-size: 1rem;
   -webkit-appearance: none;
   appearance: none;
+  transition: background 0.4s;
+}
+
+select#outputFormat {
+  max-height: 150px;
+  overflow-y: auto;
+  text-align: right;
+}
+
+/* --- [11] BUTTONS --- */
+button#convertBtn {
   width: 100%;
-  background-color: #2C2C2E; /* Sfondo dei campi di input di iOS */
-  color: #F2F2F7;
-  padding: 0.9rem 1rem;
-  border-radius: 12px; /* Angoli arrotondati */
   border: none;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-/* Pulsante di Conversione */
-.convert-btn {
-  margin-top: 2rem;
-  background: #0A84FF; /* Blu primario per le azioni */
-  border: none;
-  color: #FFFFFF;
-  padding: 1rem 2rem;
-  cursor: pointer;
-  border-radius: 50px; /* Stile a "pillola" */
-  font-weight: 600; /* Semibold */
+  background: var(--ios-blue);
+  color: white;
   font-size: 1.1rem;
-  transition: all 0.3s ease;
-  width: 100%; /* Larghezza piena per un look moderno */
+  font-weight: 600;
+  padding: 0.9rem;
+  border-radius: var(--ios-radius-sm);
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
-.convert-btn:hover {
-    filter: brightness(1.15);
+button#convertBtn:hover {
+  filter: brightness(1.1);
 }
 
-.convert-btn:disabled {
-  background: #2C2C2E; /* Colore per i pulsanti disattivati */
-  color: #5A5A5D;
+button#convertBtn:active {
+  transform: scale(0.98);
+}
+
+button#convertBtn.pulsing {
+  animation: pulse-glow 2s infinite;
+}
+
+button#convertBtn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: scale(1);
-  filter: brightness(1);
 }
 
-/* Sezione Output */
-#output {
-  margin-top: 2.5rem;
+.ios-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ios-spacing-sm);
+  padding: var(--ios-spacing-md) var(--ios-spacing-lg);
+  border-radius: var(--ios-radius-md);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--ios-transition-fast);
+  min-height: 44px;
+}
+
+.ios-btn-primary {
+  background: var(--ios-blue);
+  color: white;
+  box-shadow: var(--ios-shadow-sm);
+}
+
+.ios-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* --- [12] PROGRESS BAR --- */
+.progress-container {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: var(--ios-fill-tertiary);
+  border-radius: 2px;
+  margin: 1rem 0;
+  overflow: hidden;
+  display: none;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ios-blue), var(--ios-orange));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s ease;
+  position: relative;
+  animation: progressGlow 2s infinite;
+}
+
+.progress-text {
   text-align: center;
+  font-size: 0.9rem;
+  color: var(--ios-text-secondary);
+  margin-top: 0.5rem;
+  display: none;
 }
 
-#output img {
+/* --- [13] PREVIEW CONTAINER --- */
+#previewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 1.5rem;
+  justify-content: center;
+}
+
+#previewContainer img {
+  height: 120px;
+  border-radius: var(--ios-radius-md);
+  object-fit: contain;
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* --- [14] RESULT CONTAINER --- */
+#resultContainer {
+  margin-top: 2rem;
+}
+
+#resultContainer .ios-card {
+  padding: 1rem;
+  text-align: center;
+  animation: fadeInUp 0.5s;
+}
+
+#resultContainer img {
   max-width: 100%;
-  border: none; /* Rimuoviamo il bordo verde */
-  border-radius: 12px; /* Angoli arrotondati per coerenza */
-  margin-top: 1rem;
+  max-height: 200px;
+  border-radius: var(--ios-radius-sm);
+  margin-bottom: 1rem;
 }
 
-/* Footer */
-footer {
+#resultContainer a {
+  font-weight: 500;
+  color: var(--ios-blue);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+/* --- [15] TOAST NOTIFICATIONS --- */
+#toastContainer {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0) + 1rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 90%;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ios-text-primary);
+  background: var(--bg-modal);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--ios-radius-full);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--ios-shadow-lg);
+  animation: slideInDown 0.4s cubic-bezier(0.25, 1, 0.5, 1), fadeOut 0.4s 4.5s forwards;
+}
+
+.toast svg {
+  width: 20px;
+  height: 20px;
+  color: var(--ios-orange);
+}
+
+/* --- [16] MODAL --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-modal-backdrop);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  animation: fadeIn 0.3s;
+}
+
+.modal-backdrop.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-dialog {
+  background: var(--bg-modal);
+  border-radius: 14px;
   text-align: center;
-  padding: 1.5rem 1rem;
-  background-color: rgba(28, 28, 30, 0.75); /* Stesso stile della navbar */
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  color: #8E8E93; /* Colore testo terziario/didascalie di iOS */
-  font-size: 0.85rem;
+  max-width: 280px;
+  width: 90%;
+  padding-top: 1.25rem;
+  animation: zoomIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+.modal-dialog h3 {
+  margin: 0 1rem 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.modal-dialog p {
+  margin: 0 1rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--ios-text-secondary);
+}
+
+.modal-buttons {
+  display: flex;
+  border-top: 0.5px solid var(--separator-modal);
+}
+
+.modal-buttons button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  color: var(--ios-blue);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-buttons button:first-child:not(:only-child) {
+  border-right: 0.5px solid var(--separator-modal);
+  font-weight: 400;
+}
+
+/* --- [17] SEO CONTENT --- */
+.seo-content {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--ios-separator-opaque);
+  color: var(--ios-text-secondary);
+}
+
+.seo-content h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--ios-text-primary);
+}
+
+.seo-content h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--ios-text-primary);
+  margin-top: 2rem;
+}
+
+.seo-content p, .seo-content li {
+  line-height: 1.6;
+}
+
+.seo-content a {
+  color: var(--ios-blue);
+  text-decoration: none;
+}
+
+.seo-content a:hover {
+  text-decoration: underline;
+}
+
+.seo-content ul {
+  padding-left: 1.5rem;
+}
+
+.seo-content code {
+  background-color: var(--ios-fill-tertiary);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.faq-item {
+  margin-bottom: 1.5rem;
+}
+
+.faq-item h4 {
+  color: var(--ios-text-primary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+/* --- [18] RESPONSIVE --- */
+@media (max-width: 768px) {
+  nav {
+    padding: 0.75rem 1rem;
+  }
+
+  nav .logo, nav .desktop-nav {
+    display: none;
+  }
+
+  nav .nav-title-scrolled {
+    display: block;
+    opacity: 1;
+  }
+
+  #mobile-menu-trigger {
+    display: block;
+  }
+
+  .content-wrapper {
+    padding: 0 1rem 4rem;
+  }
+
+  header.main-header {
+    padding: 1rem;
+  }
+
+  header.main-header h1 {
+    font-size: 2rem;
+  }
+
+  .ios-card {
+    border-radius: 0;
+    margin: 0 -1rem;
+  }
+
+  .seo-content {
+    margin: 4rem -1rem 0;
+    padding: 2rem 1rem 0;
+    border-radius: 0;
+  }
+}
+
+/* --- [19] ACCESSIBILITY --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- [20] UTILITIES --- */
+.ios-hidden {
+  display: none !important;
+}
